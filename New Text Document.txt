@@ -1,0 +1,46 @@
+# Create the project
+npm create vite@latest bakery-app -- --template react
+
+# Move into the folder
+cd bakery-app
+
+# Install standard dependencies
+npm install
+
+# Install Tailwind CSS and its peers
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+# Install Animation & Utility libraries
+npm install framer-motion lucide-react lenis
+
+
+
+tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'], // You might need to import these fonts in index.css
+      },
+    },
+  },
+  plugins: [],
+}
+
+
+
+
+md src/components
+New-Item src/components/Navbar.jsx, src/components/Hero.jsx, src/components/Ingredients.jsx, src/components/Menu.jsx, src/components/Testimonials.jsx, src/components/Footer.jsx, src/components/Cart.jsx, src/components/ProductModal.jsx, src/components/SmoothScroll.jsx, src/components/RevealText.jsx, src/components/Marquee.jsx, src/components/CategoryWheel.jsx -ItemType File
+
+mkdir src/components
+touch src/components/{Navbar.jsx,Hero.jsx,Ingredients.jsx,Menu.jsx,Testimonials.jsx,Footer.jsx,Cart.jsx,ProductModal.jsx,SmoothScroll.jsx,RevealText.jsx,Marquee.jsx,CategoryWheel.jsx}
+
+npm run dev
