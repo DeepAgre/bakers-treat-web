@@ -132,7 +132,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                       onClick={() => onCheckout('whatsapp', deliveryDate)}
                       className="flex items-center justify-center gap-2 border-2 border-gray-200 bg-white py-4 rounded-full font-bold text-[11px] uppercase tracking-wider text-gray-700 hover:text-black transition-all"
                     >
-                      Chat
+                      Chat with Khushi
                     </motion.button>
 
                     <motion.button 
