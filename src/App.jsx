@@ -20,6 +20,8 @@ const BakeryApp = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  
+  // Persistent Cart via LocalStorage
   const [cartItems, setCartItems] = useState(() => {
     const saved = localStorage.getItem('bakers_treat_cart');
     return saved ? JSON.parse(saved) : [];
@@ -29,16 +31,24 @@ const BakeryApp = () => {
     localStorage.setItem('bakers_treat_cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
+  // Loader Timer
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 4000);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 4000);
     return () => clearTimeout(timer);
   }, []);
 
+  const handleSkipIntro = () => setIsLoading(false);
+
+  // Cart Logic
   const addToCart = (product) => {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
-        return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item);
+        return prev.map(item => 
+          item.id === product.id ? { ...item, qty: item.qty + 1 } : item
+        );
       }
       return [...prev, { ...product, qty: 1 }];
     });
@@ -48,55 +58,79 @@ const BakeryApp = () => {
 
   const updateQty = (id, change) => {
     setCartItems(prev => prev.map(item => {
-      if (item.id === id) return { ...item, qty: Math.max(0, item.qty + change) };
+      if (item.id === id) {
+        const newQty = Math.max(0, item.qty + change);
+        return { ...item, qty: newQty };
+      }
       return item;
     }).filter(item => item.qty > 0));
   };
 
   const cartTotal = cartItems.reduce((acc, item) => {
-    const price = parseFloat(item.price.toString().replace(/[₹,]/g, ''));
+    const priceString = item.price.toString().replace(/[₹,]/g, '');
+    const price = parseFloat(priceString);
     return acc + (price * item.qty);
   }, 0);
 
   const formattedTotal = new Intl.NumberFormat('en-IN', {
-    style: 'currency', currency: 'INR', maximumFractionDigits: 0
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0
   }).format(cartTotal);
 
-  const handleCheckout = (type, date) => {
-    if (!date) { alert("Please select a delivery date first!"); return; }
+  const cartCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
+
+  // Checkout Logic for Khushi
+  const handleCheckout = (type, deliveryDate) => {
+    if (!deliveryDate) {
+      alert("Please select a delivery date first!");
+      return;
+    }
+
     const phoneNumber = "919136371662";
     const itemSummary = cartItems.map(i => `• ${i.name} (x${i.qty})`).join('\n');
-    const header = type === 'whatsapp' ? "Hi Khushi! Query about:" : "NEW ORDER REQUEST";
-    const message = encodeURIComponent(`${header}\n\n${itemSummary}\n\n*Total: ${formattedTotal}*\n*Date: ${date}*`);
+    
+    const headerMsg = type === 'whatsapp' 
+      ? "Hi Khushi! I have a question about this order:" 
+      : "NEW ORDER REQUEST";
+    
+    const footerMsg = type === 'whatsapp'
+      ? "Can we discuss the details?"
+      : "Please confirm if you are available to bake this. I will pay once you confirm!";
+
+    const message = encodeURIComponent(
+      `${headerMsg}\n\n${itemSummary}\n\n*Total: ${formattedTotal}*\n*Requested Date: ${deliveryDate}*\n\n${footerMsg}`
+    );
+
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
   };
 
   return (
     <SmoothScroll>
       <AnimatePresence mode="wait">
-        {isLoading && <PreLoader key="loader" onSkip={() => setIsLoading(false)} />}
+        {isLoading && <PreLoader key="loader" onSkip={handleSkipIntro} />}
       </AnimatePresence>
 
       <Toast show={showToast} message="Added to your bag!" />
 
-      {/* HEADER SECTION: Fixed both the strip and navbar to the top */}
-      <header className="fixed top-0 left-0 w-full z-[120]">
-        {/* Notice Strip */}
-        <div className="bg-[#1A1A1A] text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] py-3 text-center border-b border-white/10">
-          Orders must be placed 24 hours in advance • Handmade in Thane
-        </div>
-        
-        {/* Navbar with glass effect to see content behind while scrolling */}
-        <div className="bg-[#F9F8F6]/80 backdrop-blur-lg border-b border-black/5">
-          <Navbar 
-            cartCount={cartItems.reduce((acc, item) => acc + item.qty, 0)} 
-            onOpenCart={() => setIsCartOpen(true)} 
-          />
-        </div>
-      </header>
+      {/* HEADER: Hidden while loading to prevent overlap with PreLoader */}
+      {!isLoading && (
+        <header className="fixed top-0 left-0 w-full z-[120] animate-in fade-in duration-700">
+          <div className="bg-[#1A1A1A] text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] py-3 text-center border-b border-white/10">
+            Orders must be placed 24 hours in advance • Handmade in Thane
+          </div>
+          
+          <div className="bg-[#F9F8F6]/80 backdrop-blur-lg border-b border-black/5">
+            <Navbar 
+              cartCount={cartCount} 
+              onOpenCart={() => setIsCartOpen(true)} 
+            />
+          </div>
+        </header>
+      )}
 
-      {/* Main Content: Added padding-top so content doesn't hide under the fixed header */}
-      <main className="pt-32">
+      {/* MAIN CONTENT: pt-32 only applies after loading is done */}
+      <main className={!isLoading ? "pt-32" : ""}>
         <div id="home">
           <Hero isParentLoading={isLoading} />
         </div>
@@ -108,22 +142,36 @@ const BakeryApp = () => {
           <AboutKhushi /> 
         </div>
 
-        <div className="relative z-10 bg-[#F9F8F6] rounded-t-[3rem] mt-[-50px] shadow-[0_-25px_50px_rgba(0,0,0,0.05)]">
+        <div className="relative z-10 bg-[#F9F8F6] rounded-t-[3rem] mt-[-50px] shadow-[0_-25px_50px_rgba(0,0,0,0.05)] border-t border-black/5">
           <Marquee />
-          <div id="menu"><Menu onProductSelect={setSelectedProduct} /></div>
+          
+          <div id="menu">
+            <Menu onProductSelect={setSelectedProduct} /> 
+          </div>
+
           <Testimonials />
-          <div id="contact"><Footer /></div>
+
+          <div id="contact">
+            <Footer />
+          </div>
         </div>
       </main>
 
       <Cart 
-        isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} 
-        items={cartItems} total={formattedTotal} 
-        updateQty={updateQty} removeItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)} 
+        items={cartItems} 
+        total={formattedTotal} 
+        updateQty={updateQty}
+        removeItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
         onCheckout={handleCheckout}
       />
 
-      <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={addToCart} />
+      <ProductModal 
+        product={selectedProduct} 
+        onClose={() => setSelectedProduct(null)}
+        onAddToCart={addToCart}
+      />
     </SmoothScroll>
   );
 };
