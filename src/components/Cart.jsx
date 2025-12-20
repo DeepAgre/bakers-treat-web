@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingBag, Plus, Minus, Trash2, Calendar } from 'lucide-react';
+import { X, ShoppingBag, Plus, Minus, Trash2, Calendar, Phone, MessageCircle } from 'lucide-react';
 
 const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout }) => {
   const [deliveryDate, setDeliveryDate] = useState('');
-
-  // Calculate "Tomorrow" for the date picker minimum
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDate = tomorrow.toISOString().split('T')[0];
@@ -26,7 +24,9 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
 
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {items.length === 0 ? (
-                <p className="text-center text-gray-400 mt-20 font-serif">Your bag is empty</p>
+                <div className="text-center mt-20">
+                  <p className="text-gray-400 font-serif">Your bag is empty</p>
+                </div>
               ) : (
                 items.map(item => (
                   <div key={item.id} className="flex gap-4">
@@ -50,10 +50,9 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
 
             {items.length > 0 && (
               <div className="p-8 bg-[#F9F8F6] border-t">
-                {/* Date Selection */}
                 <div className="mb-6">
                   <label className="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 flex items-center gap-2">
-                    <Calendar size={12} /> Desired Delivery Date
+                    <Calendar size={12} /> Requested Delivery Date
                   </label>
                   <input 
                     type="date" 
@@ -72,19 +71,29 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                 <div className="space-y-3">
                   <button 
                     onClick={() => onCheckout('preorder', deliveryDate)}
-                    className="w-full bg-[#E89EB8] text-white py-5 rounded-full font-bold shadow-lg hover:scale-[1.02] transition-transform"
+                    className="w-full bg-[#1A1A1A] text-white py-5 rounded-full font-bold shadow-lg flex items-center justify-center gap-2"
                   >
-                    Request Booking & Pay
+                    Place Order via WhatsApp
                   </button>
-                  <button 
-                    onClick={() => onCheckout('whatsapp', deliveryDate)}
-                    className="w-full border-2 border-[#1A1A1A] text-[#1A1A1A] py-4 rounded-full font-bold hover:bg-[#1A1A1A] hover:text-white transition-all text-sm"
-                  >
-                    Discuss on WhatsApp
-                  </button>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <button 
+                      onClick={() => onCheckout('whatsapp', deliveryDate)}
+                      className="flex items-center justify-center gap-2 border-2 border-gray-200 py-4 rounded-full font-bold text-xs hover:bg-gray-50 transition-all"
+                    >
+                      <MessageCircle size={14} /> WhatsApp Chat
+                    </button>
+                    <button 
+                      onClick={() => onCheckout('call', '')}
+                      className="flex items-center justify-center gap-2 border-2 border-gray-200 py-4 rounded-full font-bold text-xs hover:bg-gray-50 transition-all"
+                    >
+                      <Phone size={14} /> Call Khushi
+                    </button>
+                  </div>
                 </div>
+
                 <p className="text-[9px] text-center text-gray-400 mt-4 italic">
-                  *Khushi will confirm availability. Baking starts only after payment.
+                  *Orders are confirmed only after Khushi's approval and payment.
                 </p>
               </div>
             )}
