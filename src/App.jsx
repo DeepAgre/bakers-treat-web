@@ -20,6 +20,8 @@ const BakeryApp = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  
+  // Persistent Cart via LocalStorage
   const [cartItems, setCartItems] = useState(() => {
     const saved = localStorage.getItem('bakers_treat_cart');
     return saved ? JSON.parse(saved) : [];
@@ -29,16 +31,24 @@ const BakeryApp = () => {
     localStorage.setItem('bakers_treat_cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
+  // Loader Timer
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 4000);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 4000);
     return () => clearTimeout(timer);
   }, []);
 
+  const handleSkipIntro = () => setIsLoading(false);
+
+  // Cart Functions
   const addToCart = (product) => {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
-        return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item);
+        return prev.map(item => 
+          item.id === product.id ? { ...item, qty: item.qty + 1 } : item
+        );
       }
       return [...prev, { ...product, qty: 1 }];
     });
@@ -48,19 +58,29 @@ const BakeryApp = () => {
 
   const updateQty = (id, change) => {
     setCartItems(prev => prev.map(item => {
-      if (item.id === id) return { ...item, qty: Math.max(0, item.qty + change) };
+      if (item.id === id) {
+        const newQty = Math.max(0, item.qty + change);
+        return { ...item, qty: newQty };
+      }
       return item;
     }).filter(item => item.qty > 0));
   };
 
+  // RUPEE LOGIC: Parsing price strings with ₹ and commas
   const cartTotal = cartItems.reduce((acc, item) => {
-    const price = parseFloat(item.price.toString().replace(/[₹,]/g, ''));
+    const priceString = item.price.toString().replace(/[₹,]/g, '');
+    const price = parseFloat(priceString);
     return acc + (price * item.qty);
   }, 0);
 
+  // INDIAN LOCALE FORMATTING
   const formattedTotal = new Intl.NumberFormat('en-IN', {
-    style: 'currency', currency: 'INR', maximumFractionDigits: 0
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0
   }).format(cartTotal);
+
+  const cartCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
   // NEW: Updated Checkout Logic for Khushi's Workflow
   const handleCheckout = (type, deliveryDate) => {
@@ -89,38 +109,65 @@ const BakeryApp = () => {
 
   return (
     <SmoothScroll>
-      <AnimatePresence>{isLoading && <PreLoader onSkip={() => setIsLoading(false)} />}</AnimatePresence>
-      
-      {/* 24-Hour Policy Banner */}
-      <div className="bg-[#1A1A1A] text-white text-[10px] uppercase tracking-[0.2em] py-2.5 text-center sticky top-0 z-[100]">
+      <AnimatePresence mode="wait">
+        {isLoading && <PreLoader key="loader" onSkip={handleSkipIntro} />}
+      </AnimatePresence>
+
+      <Toast show={showToast} message="Added to your bag!" />
+
+      {/* TOP STRIP - Fixed Overlap by removing 'sticky' */}
+      <div className="bg-[#1A1A1A] text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] py-3 text-center relative z-[110]">
         Orders must be placed 24 hours in advance • Handmade in Thane
       </div>
 
-      <div className="bg-[#F9F8F6] text-[#1A1A1A]">
-        <Navbar cartCount={cartItems.reduce((a, b) => a + b.qty, 0)} onOpenCart={() => setIsCartOpen(true)} />
-        <Hero isParentLoading={isLoading} />
+      <div className="bg-[#F9F8F6] text-[#1A1A1A] font-sans selection:bg-[#E89EB8] selection:text-white">
+        
+        {/* Navbar now sits naturally below the strip */}
+        <Navbar 
+          cartCount={cartCount} 
+          onOpenCart={() => setIsCartOpen(true)} 
+        />
+
+        <div id="home">
+          <Hero isParentLoading={isLoading} />
+        </div>
+
         <CustomOrder />
-        <Ingredients />
-        <AboutKhushi />
-        <div className="relative z-10 bg-[#F9F8F6] rounded-t-[3rem] mt-[-50px]">
+
+        <div id="about">
+          <Ingredients />
+          <AboutKhushi /> 
+        </div>
+
+        <div className="relative z-10 bg-[#F9F8F6] rounded-t-[3rem] mt-[-50px] shadow-[0_-25px_50px_rgba(0,0,0,0.05)] border-t border-black/5">
           <Marquee />
-          <Menu onProductSelect={setSelectedProduct} />
+          
+          <div id="menu">
+            <Menu onProductSelect={setSelectedProduct} /> 
+          </div>
+
           <Testimonials />
-          <Footer />
+
+          <div id="contact">
+            <Footer />
+          </div>
         </div>
 
         <Cart 
           isOpen={isCartOpen} 
           onClose={() => setIsCartOpen(false)} 
           items={cartItems} 
-          total={formattedTotal}
+          total={formattedTotal} 
           updateQty={updateQty}
           removeItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
-          onCheckout={handleCheckout} 
+          onCheckout={handleCheckout}
         />
 
-        <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={addToCart} />
-        <Toast show={showToast} message="Added to your bag!" />
+        <ProductModal 
+          product={selectedProduct} 
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={addToCart}
+        />
       </div>
     </SmoothScroll>
   );
