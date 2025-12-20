@@ -21,7 +21,6 @@ const BakeryApp = () => {
   const [showToast, setShowToast] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   
-  // Persistent Cart via LocalStorage
   const [cartItems, setCartItems] = useState(() => {
     const saved = localStorage.getItem('bakers_treat_cart');
     return saved ? JSON.parse(saved) : [];
@@ -31,7 +30,6 @@ const BakeryApp = () => {
     localStorage.setItem('bakers_treat_cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  // Loader Timer (4 seconds)
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -41,7 +39,6 @@ const BakeryApp = () => {
 
   const handleSkipIntro = () => setIsLoading(false);
 
-  // Cart Functions
   const addToCart = (product) => {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
@@ -66,11 +63,14 @@ const BakeryApp = () => {
     }).filter(item => item.qty > 0));
   };
 
-  // Price Calculation Logic
+  // IMPROVED: Robust price calculation for Sanity data
   const cartTotal = cartItems.reduce((acc, item) => {
-    const priceString = item.price.toString().replace(/[₹,]/g, '');
-    const price = parseFloat(priceString);
-    return acc + (price * item.qty);
+    // This removes any non-numeric characters (like ₹ or ,) just in case
+    const priceValue = typeof item.price === 'string' 
+      ? parseFloat(item.price.replace(/[^\d.]/g, '')) 
+      : item.price;
+    
+    return acc + (priceValue * item.qty);
   }, 0);
 
   const formattedTotal = new Intl.NumberFormat('en-IN', {
@@ -81,9 +81,8 @@ const BakeryApp = () => {
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
-  // Checkout Logic (WhatsApp vs Call)
   const handleCheckout = (type, deliveryDate) => {
-    const khushiNumber = "919136371662"; // Khushi Manjrekar's Number
+    const khushiNumber = "919136371662"; 
 
     if (type === 'call') {
       window.location.href = `tel:+${khushiNumber}`;
@@ -96,17 +95,12 @@ const BakeryApp = () => {
     }
 
     const itemSummary = cartItems.map(i => `• ${i.name} (x${i.qty})`).join('\n');
-    
     const headerMsg = type === 'whatsapp' 
       ? "Hi Khushi! I have a question about this order:" 
       : "NEW ORDER REQUEST";
     
-    const footerMsg = type === 'whatsapp'
-      ? "Can we discuss the details?"
-      : "Please confirm if you are available to bake this. I will pay once you confirm!";
-
     const message = encodeURIComponent(
-      `${headerMsg}\n\n${itemSummary}\n\n*Total: ${formattedTotal}*\n*Requested Date: ${deliveryDate}*\n\n${footerMsg}`
+      `${headerMsg}\n\n${itemSummary}\n\n*Total: ${formattedTotal}*\n*Requested Date: ${deliveryDate}*\n\nBakers Treat Website Order`
     );
 
     window.open(`https://wa.me/${khushiNumber}?text=${message}`, '_blank');
@@ -120,7 +114,6 @@ const BakeryApp = () => {
 
       <Toast show={showToast} message="Added to your bag!" />
 
-      {/* FIXED HEADER: Only shows after loading is complete */}
       {!isLoading && (
         <header className="fixed top-0 left-0 w-full z-[120] animate-in fade-in duration-700">
           <div className="bg-[#1A1A1A] text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] py-3 text-center border-b border-white/10">
@@ -136,7 +129,6 @@ const BakeryApp = () => {
         </header>
       )}
 
-      {/* Main Content Area */}
       <main className={!isLoading ? "pt-32" : ""}>
         <div id="home">
           <Hero isParentLoading={isLoading} />
@@ -152,6 +144,7 @@ const BakeryApp = () => {
         <div className="relative z-10 bg-[#F9F8F6] rounded-t-[3rem] mt-[-50px] shadow-[0_-25px_50px_rgba(0,0,0,0.05)] border-t border-black/5">
           <Marquee />
           <div id="menu">
+            {/* The Menu now fetches its own data from Sanity */}
             <Menu onProductSelect={setSelectedProduct} /> 
           </div>
           <Testimonials />
