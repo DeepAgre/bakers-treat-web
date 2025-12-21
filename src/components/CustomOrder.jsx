@@ -1,49 +1,54 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-// Using your images from the screenshot
-import cake1 from '../assets/custom1.jpg'; 
-import box from '../assets/custom2.jpg';  
-import cupcake from '../assets/custom3.jpg'; 
-import pinkCake from '../assets/custom4.jpg'; 
-
 const CustomOrder = () => {
+  // Using direct URL links so Vercel doesn't crash looking for local files
+  const images = {
+    cake1: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=800",
+    box: "https://images.unsplash.com/photo-1548943487-a2e4e43b4853?auto=format&fit=crop&q=80&w=800",
+    cupcake: "https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&q=80&w=800",
+    pinkCake: "https://images.unsplash.com/photo-1562440499-64c9a111f713?auto=format&fit=crop&q=80&w=800"
+  };
+
   return (
-    /* This bg-[#E89EB8] now exactly matches your Testimonials section */
-    <section className="py-24 bg-[#E89EB8] relative overflow-hidden">
+    <section className="py-24 bg-[#E89EB8] relative overflow-hidden" id="custom-studio">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         
         {/* Left Side: Image Collage */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-4 pt-12">
             <motion.img 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              src={cake1} 
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              src={images.cake1} 
               className="rounded-[2.5rem] w-full h-80 object-cover shadow-2xl border-4 border-white/30"
+              alt="Artisan Cake"
             />
             <motion.img 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              src={cupcake} 
+              src={images.cupcake} 
               className="rounded-[2.5rem] w-full h-64 object-cover shadow-2xl border-4 border-white/30"
+              alt="Gourmet Cupcake"
             />
           </div>
           <div className="space-y-4">
             <motion.img 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.1 }}
-              src={box} 
+              src={images.box} 
               className="rounded-[2.5rem] w-full h-64 object-cover shadow-2xl border-4 border-white/30"
+              alt="Chocolate Box"
             />
             <motion.img 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.3 }}
-              src={pinkCake} 
+              src={images.pinkCake} 
               className="rounded-[2.5rem] w-full h-80 object-cover shadow-2xl border-4 border-white/30"
+              alt="Pink Drip Cake"
             />
           </div>
         </div>
@@ -60,10 +65,9 @@ const CustomOrder = () => {
             Khushi Manjrekar specializes in high-detail 3D cakes. From luxury cars to grand ships, our cakes are handcrafted in Thane and engineered for both awe and taste.
           </p>
 
-          {/* Features with Glass-morphism effect */}
           <div className="space-y-10 mb-14">
-            <div className="flex gap-6 items-start group">
-              <div className="bg-white/20 backdrop-blur-md p-5 rounded-2xl border border-white/30 group-hover:bg-white/40 transition-all">
+            <div className="flex gap-6 items-start">
+              <div className="bg-white/20 backdrop-blur-md p-5 rounded-2xl border border-white/30">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
               </div>
               <div>
@@ -71,24 +75,12 @@ const CustomOrder = () => {
                 <p className="text-white/80 text-lg">Every cake is a unique blueprint designed just for you.</p>
               </div>
             </div>
-
-            <div className="flex gap-6 items-start group">
-              <div className="bg-white/20 backdrop-blur-md p-5 rounded-2xl border border-white/30 group-hover:bg-white/40 transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-              </div>
-              <div>
-                <h4 className="font-bold text-2xl mb-2 text-white">Edible Engineering</h4>
-                <p className="text-white/80 text-lg">Gravity-defying structures built from premium ingredients.</p>
-              </div>
-            </div>
           </div>
 
-          {/* WhatsApp Button - High Contrast White */}
           <button 
             onClick={() => window.open('https://wa.me/919136371662', '_blank')}
-            className="flex items-center gap-4 bg-white text-[#E89EB8] px-12 py-6 rounded-full font-black uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-all shadow-2xl transform hover:scale-105"
+            className="flex items-center gap-4 bg-white text-[#E89EB8] px-12 py-6 rounded-full font-black uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-all shadow-2xl"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             Chat with Khushi
           </button>
         </div>
