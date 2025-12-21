@@ -12,12 +12,7 @@ const Menu = ({ onProductSelect }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch BOTH products (with category titles) and all categories
-        const productQuery = `*[_type == "product"]{
-          ...,
-          "categoryName": category->title 
-        } | order(_createdAt desc)`;
-        
+        const productQuery = `*[_type == "product"]{ ..., "categoryName": category->title } | order(_createdAt desc)`;
         const categoryQuery = '*[_type == "category"] | order(title asc)';
 
         const [productData, categoryData] = await Promise.all([
@@ -30,18 +25,17 @@ const Menu = ({ onProductSelect }) => {
           name: item.name,
           price: item.price,
           img: item.image ? urlFor(item.image).url() : '',
-          category: item.categoryName || 'Uncategorized',
+          category: item.categoryName || 'General',
           description: item.description,
-          isSoldOut: item.isSoldOut // Added the Sold Out flag
+          isSoldOut: item.isSoldOut 
         }));
 
         setProducts(formattedProducts);
         setFilteredProducts(formattedProducts);
-        // Map the categories from Sanity
         setCategories(['All', ...categoryData.map(c => c.title)]);
         setLoading(false);
       } catch (error) {
-        console.error("Data fetch error:", error);
+        console.error("Fetch error:", error);
         setLoading(false);
       }
     };
@@ -56,20 +50,18 @@ const Menu = ({ onProductSelect }) => {
     }
   }, [activeCategory, products]);
 
-  if (loading) return <div className="py-20 text-center">Loading the menu...</div>;
+  if (loading) return <div className="py-24 text-center font-serif text-gray-400">Loading Delight Bakehouse Menu...</div>;
 
   return (
     <section className="py-24 px-6 max-w-7xl mx-auto" id="menu">
-      <div className="text-center mb-12">
-        <h2 className="text-5xl font-serif font-bold mb-8">Our Menu</h2>
-        
-        {/* Dynamic Category Bar */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+      <div className="text-center mb-16">
+        <h2 className="text-5xl font-serif font-bold mb-4">Our Menu</h2>
+        <div className="flex flex-wrap justify-center gap-3 mt-8">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-2 rounded-full text-xs font-bold tracking-widest uppercase transition-all
+              className={`px-6 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase transition-all
                 ${activeCategory === cat ? 'bg-[#E89EB8] text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
             >
               {cat}
@@ -85,31 +77,28 @@ const Menu = ({ onProductSelect }) => {
               layout
               key={product.id}
               onClick={() => !product.isSoldOut && onProductSelect(product)}
-              className={`group relative ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+              className={`group ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
             >
               <div className="relative overflow-hidden rounded-[2.5rem] aspect-square shadow-lg">
                 <img 
                   src={product.img} 
                   alt={product.name} 
-                  className={`w-full h-full object-cover transition-transform duration-700 ${product.isSoldOut ? 'grayscale opacity-60' : 'group-hover:scale-110'}`} 
+                  className={`w-full h-full object-cover transition-transform duration-700 ${product.isSoldOut ? 'grayscale opacity-50' : 'group-hover:scale-110'}`} 
                 />
                 
-                {/* Sold Out Badge */}
                 {product.isSoldOut && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                    <span className="bg-white text-black font-bold px-6 py-2 rounded-full text-sm uppercase tracking-widest shadow-xl">
-                      Sold Out
-                    </span>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                    <span className="bg-white/90 backdrop-blur-sm text-black font-bold px-6 py-2 rounded-full text-xs uppercase tracking-[0.2em]">Sold Out</span>
                   </div>
                 )}
 
-                <div className="absolute top-5 right-5 bg-white/90 px-4 py-1.5 rounded-full">
-                  <span className="font-bold">₹{product.price}</span>
+                <div className="absolute top-5 right-5 bg-white/90 px-4 py-1.5 rounded-full shadow-sm">
+                  <span className="font-bold text-gray-900 font-serif">₹{product.price}</span>
                 </div>
               </div>
               <div className="mt-6 text-center">
-                <h3 className="text-2xl font-serif font-bold">{product.name}</h3>
-                <p className="text-[#E89EB8] text-[10px] font-bold uppercase tracking-widest mt-1">{product.category}</p>
+                <h3 className="text-2xl font-serif font-bold text-gray-800">{product.name}</h3>
+                <p className="text-[#E89EB8] uppercase tracking-[0.2em] text-[10px] font-bold mt-1">{product.category}</p>
               </div>
             </motion.div>
           ))}
