@@ -4,109 +4,117 @@ import { client, urlFor } from '../lib/sanity';
 
 const Menu = ({ onProductSelect }) => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState(['All']);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [loading, setLoading] = useState(true);
 
-  // 1. Fetch data from Sanity
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const query = '*[_type == "product"] | order(_createdAt desc)';
-        const data = await client.fetch(query);
+        // Fetch BOTH products (with category titles) and all categories
+        const productQuery = `*[_type == "product"]{
+          ...,
+          "categoryName": category->title 
+        } | order(_createdAt desc)`;
         
-        const formattedData = data.map(item => ({
+        const categoryQuery = '*[_type == "category"] | order(title asc)';
+
+        const [productData, categoryData] = await Promise.all([
+          client.fetch(productQuery),
+          client.fetch(categoryQuery)
+        ]);
+
+        const formattedProducts = productData.map(item => ({
           id: item._id,
           name: item.name,
           price: item.price,
           img: item.image ? urlFor(item.image).url() : '',
-          category: item.category || 'Other',
-          description: item.description
+          category: item.categoryName || 'Uncategorized',
+          description: item.description,
+          isSoldOut: item.isSoldOut // Added the Sold Out flag
         }));
-        
-        setProducts(formattedData);
-        setFilteredProducts(formattedData);
+
+        setProducts(formattedProducts);
+        setFilteredProducts(formattedProducts);
+        // Map the categories from Sanity
+        setCategories(['All', ...categoryData.map(c => c.title)]);
         setLoading(false);
       } catch (error) {
-        console.error("Sanity fetch error:", error);
+        console.error("Data fetch error:", error);
         setLoading(false);
       }
     };
-    fetchProducts();
+    fetchData();
   }, []);
 
-  // 2. Filter logic when category changes
   useEffect(() => {
     if (activeCategory === 'All') {
       setFilteredProducts(products);
     } else {
-      setFilteredProducts(products.filter(p => 
-        p.category.toLowerCase() === activeCategory.toLowerCase()
-      ));
+      setFilteredProducts(products.filter(p => p.category === activeCategory));
     }
   }, [activeCategory, products]);
 
-  const categories = ['All', 'Cakes', 'Brownies', 'Hampers', 'Cookies'];
-
-  if (loading) return <div className="py-20 text-center font-serif">Mixing the batter...</div>;
+  if (loading) return <div className="py-20 text-center">Loading the menu...</div>;
 
   return (
     <section className="py-24 px-6 max-w-7xl mx-auto" id="menu">
       <div className="text-center mb-12">
-        <h2 className="text-5xl font-serif font-bold mb-6">Our Menu</h2>
+        <h2 className="text-5xl font-serif font-bold mb-8">Our Menu</h2>
         
-        {/* Category Filter Bar */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
+        {/* Dynamic Category Bar */}
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-2 rounded-full text-sm font-bold tracking-widest uppercase transition-all
-                ${activeCategory === cat 
-                  ? 'bg-[#E89EB8] text-white shadow-lg' 
-                  : 'bg-white text-gray-400 hover:text-gray-900 border border-gray-100'}`}
+              className={`px-6 py-2 rounded-full text-xs font-bold tracking-widest uppercase transition-all
+                ${activeCategory === cat ? 'bg-[#E89EB8] text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
             >
               {cat}
             </button>
           ))}
         </div>
       </div>
-      
-      <motion.div 
-        layout
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
-      >
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         <AnimatePresence mode='popLayout'>
           {filteredProducts.map((product) => (
             <motion.div 
               layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
               key={product.id}
-              onClick={() => onProductSelect(product)}
-              className="group cursor-pointer"
+              onClick={() => !product.isSoldOut && onProductSelect(product)}
+              className={`group relative ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
             >
-              <div className="relative overflow-hidden rounded-[2.5rem] aspect-square shadow-md">
+              <div className="relative overflow-hidden rounded-[2.5rem] aspect-square shadow-lg">
                 <img 
                   src={product.img} 
                   alt={product.name} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                  className={`w-full h-full object-cover transition-transform duration-700 ${product.isSoldOut ? 'grayscale opacity-60' : 'group-hover:scale-110'}`} 
                 />
-                <div className="absolute top-5 right-5 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full shadow-sm">
-                  <span className="font-bold text-gray-900">₹{product.price}</span>
+                
+                {/* Sold Out Badge */}
+                {product.isSoldOut && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                    <span className="bg-white text-black font-bold px-6 py-2 rounded-full text-sm uppercase tracking-widest shadow-xl">
+                      Sold Out
+                    </span>
+                  </div>
+                )}
+
+                <div className="absolute top-5 right-5 bg-white/90 px-4 py-1.5 rounded-full">
+                  <span className="font-bold">₹{product.price}</span>
                 </div>
               </div>
               <div className="mt-6 text-center">
-                <h3 className="text-2xl font-serif font-bold text-gray-800">{product.name}</h3>
-                <p className="text-[#E89EB8] uppercase tracking-widest text-[10px] font-bold mt-1">
-                  {product.category}
-                </p>
+                <h3 className="text-2xl font-serif font-bold">{product.name}</h3>
+                <p className="text-[#E89EB8] text-[10px] font-bold uppercase tracking-widest mt-1">{product.category}</p>
               </div>
             </motion.div>
           ))}
         </AnimatePresence>
-      </motion.div>
+      </div>
     </section>
   );
 };
