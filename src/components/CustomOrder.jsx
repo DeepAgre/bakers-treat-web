@@ -2,7 +2,7 @@ import React from 'react';
 import { Palette, Hammer, MessageCircle } from 'lucide-react';
 
 const CustomOrder = () => {
-  // Encoded message for better UX: "Hi Khushi! I'd like to inquire about a custom cake from Bakers Treat."
+  // Encoded message for better UX: "Hi Khushi! I'd like to inquire about a custom cake from Delight Bakehouse."
   const whatsappUrl = "https://wa.me/919136371662?text=Hi%20Khushi!%20I'd%20like%20to%20inquire%20about%20a%20custom%20cake%20from%20Bakers%20Treat.";
 
   return (

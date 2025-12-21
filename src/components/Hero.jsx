@@ -37,7 +37,7 @@ const Hero = ({ isParentLoading }) => {
             </div>
             
             <h1 className="text-6xl md:text-8xl font-serif leading-tight mb-8 text-[#1A1A1A]">
-              Baker's<br/> Treat<span className="text-[#E89EB8]">.</span>
+              Delight<br/> Bakehouse<span className="text-[#E89EB8]">.</span>
             </h1>
             
             <p className="text-[#666666] text-lg max-w-md mb-10 leading-relaxed font-light">
@@ -72,7 +72,7 @@ const Hero = ({ isParentLoading }) => {
                {/* FIXED IMAGE: Using a reliable high-end cake image */}
                <img 
                  src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1000&auto=format&fit=crop" 
-                 alt="Bakers Treat Art" 
+                 alt="Delight Bakehouse Art" 
                  className="w-full h-full object-cover transition-all duration-700"
                />
                <div className="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-[3rem]" />

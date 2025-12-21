@@ -6,7 +6,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
     <nav className="max-w-7xl mx-auto py-5 px-6 md:px-12 flex justify-between items-center bg-transparent">
       {/* Brand Logo */}
       <div className="text-2xl font-serif font-bold tracking-tighter cursor-pointer">
-        Baker's <span className="text-[#E89EB8]">Treat.</span>
+        Delight <span className="text-[#E89EB8]">Bakehouse</span>
       </div>
       
       {/* Menu Links - Increased size to 13px and made medium weight */}

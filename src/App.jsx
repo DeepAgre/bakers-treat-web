@@ -100,7 +100,7 @@ const BakeryApp = () => {
       : "NEW ORDER REQUEST";
     
     const message = encodeURIComponent(
-      `${headerMsg}\n\n${itemSummary}\n\n*Total: ${formattedTotal}*\n*Requested Date: ${deliveryDate}*\n\nBakers Treat Website Order`
+      `${headerMsg}\n\n${itemSummary}\n\n*Total: ${formattedTotal}*\n*Requested Date: ${deliveryDate}*\n\nDelight Bakehouse Website Order`
     );
 
     window.open(`https://wa.me/${khushiNumber}?text=${message}`, '_blank');

@@ -12,7 +12,7 @@ const Footer = () => {
           
           {/* Brand Bio */}
           <div className="lg:col-span-2">
-            <h2 className="text-3xl font-serif mb-6">Bakers Treat<span className="text-[#E89EB8]">.</span></h2>
+            <h2 className="text-3xl font-serif mb-6">Delight Bakehouse<span className="text-[#E89EB8]">.</span></h2>
             <p className="text-gray-500 max-w-sm leading-relaxed mb-8">
               Handcrafted with love in Thane by Khushi Manjarekar. 
               Dedicated to bringing premium artisan bakes and sculptural cakes to your doorstep.
@@ -65,7 +65,7 @@ const Footer = () => {
         </div>
 
         <div className="pt-12 border-t border-black/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-xs text-gray-400">© 2025 Bakers Treat. All rights reserved.</p>
+          <p className="text-xs text-gray-400">© 2025 Delight Bakehouse. All rights reserved.</p>
           <div className="flex gap-8 text-[10px] uppercase tracking-widest font-bold text-gray-400">
             <a href="#" className="hover:text-black">Privacy Policy</a>
             <a href="#" className="hover:text-black">Terms of Service</a>

@@ -21,7 +21,7 @@ const reviews = [
     id: 3,
     name: "Priya Vaghani",
     location: "Vasant Vihar, Thane",
-    text: "Bakers Treat made our gender reveal cake. It was a gravity-defying sculpture that became the talk of the party. Professional service and world-class taste!",
+    text: "Delight Bakehouse made our gender reveal cake. It was a gravity-defying sculpture that became the talk of the party. Professional service and world-class taste!",
     rating: 5
   },
   {

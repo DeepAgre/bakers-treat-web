@@ -5,7 +5,7 @@ import {schemaTypes} from './schemaTypes'
 
 export default defineConfig({
   name: 'default',
-  title: 'bakers-treat-studio',
+  title: 'Delight Bakehouse Manager',
 
   projectId: '688oebb5',
   dataset: 'production',

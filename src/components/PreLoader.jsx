@@ -17,7 +17,7 @@ const PreLoader = ({ onSkip }) => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-white text-4xl md:text-6xl font-serif tracking-tighter text-center"
         >
-          Bakers Treat<span className="text-[#E89EB8]">.</span>
+          Delight Bakehouse<span className="text-[#E89EB8]">.</span>
         </motion.h1>
       </div>
       
