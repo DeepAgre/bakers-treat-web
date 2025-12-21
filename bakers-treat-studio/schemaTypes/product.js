@@ -26,7 +26,7 @@ export default {
       name: 'category',
       title: 'Category',
       type: 'reference',
-      to: [{ type: 'category' }], 
+      to: [{ type: 'category' }], // Links to the dynamic categories
       validation: Rule => Rule.required(),
     },
     {
@@ -36,10 +36,10 @@ export default {
     },
     {
       name: 'isSoldOut',
-      title: 'Sold Out Status',
+      title: 'Sold Out',
       type: 'boolean',
       initialValue: false,
-      description: 'Mark this if the item is currently unavailable',
+      description: 'Turn this on to show the "Sold Out" badge on the website',
     },
   ],
 }
