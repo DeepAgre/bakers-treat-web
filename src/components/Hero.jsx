@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 
 const Hero = ({ isParentLoading }) => {
   return (
-    /* Adjusted padding to ensure it never goes under the navbar */
-    <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-[#F9F8F6] px-6 pt-12 sm:pt-0">
+    /* Increased top padding specifically for mobile to prevent navbar overlap */
+    <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-[#F9F8F6] px-6 pt-24 sm:pt-0">
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
         {/* LEFT SIDE: Text Content */}
@@ -12,7 +12,7 @@ const Hero = ({ isParentLoading }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={!isParentLoading ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="z-10 mt-8 sm:mt-0"
+          className="z-10"
         >
           <div className="flex items-center gap-3 mb-6">
             <span className="w-12 h-[1px] bg-[#E89EB8]"></span>
@@ -21,10 +21,10 @@ const Hero = ({ isParentLoading }) => {
             </span>
           </div>
           
-          {/* NEW PREMIUM FONT: Playfair Display */}
-          <h1 style={{ fontFamily: "'Playfair Display', serif" }} className="text-6xl md:text-8xl font-bold leading-[0.9] mb-8 text-gray-900">
+          {/* FONT: Slim, non-italic premium serif */}
+          <h1 style={{ fontFamily: "'Playfair Display', serif", fontWeight: '400' }} className="text-5xl md:text-8xl leading-[1.1] mb-8 text-gray-900 tracking-tight">
             Delight <br />
-            <span className="italic text-[#E89EB8]">Bakehouse</span>
+            <span className="text-[#E89EB8]">Bakehouse</span>
           </h1>
           
           <p className="text-lg md:text-xl text-gray-500 mb-10 max-w-md leading-relaxed font-sans">
@@ -41,27 +41,25 @@ const Hero = ({ isParentLoading }) => {
           </div>
         </motion.div>
 
-        {/* RIGHT SIDE: Visual Elements */}
+        {/* RIGHT SIDE: Visual Elements (Fixed mobile visibility) */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={!isParentLoading ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 1 }}
-          className="relative hidden sm:block" 
+          className="relative block w-full" 
         >
-          {/* Main Floating Image - Using a more reliable URL */}
-          <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl border-[12px] border-white transform rotate-3">
+          {/* Main Floating Image */}
+          <div className="relative z-10 rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-2xl border-[8px] sm:border-[12px] border-white">
             <img 
               src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=1000" 
               alt="Delight Bakehouse Signature" 
-              className="w-full h-[550px] object-cover"
+              className="w-full h-[350px] sm:h-[550px] object-cover"
             />
           </div>
           
-          {/* Glass Card Overlay */}
-          <div className="absolute -bottom-6 -right-6 bg-white/80 backdrop-blur-lg p-8 rounded-3xl shadow-xl z-20 border border-white/20">
-            <p className="text-[#E89EB8] font-serif italic text-2xl">Bespoke</p>
-            <p className="text-gray-900 font-sans font-black uppercase tracking-widest text-[10px]">Quality Guaranteed</p>
-          </div>
+          {/* Glowing Accents */}
+          <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#E89EB8]/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-[#E89EB8]/20 rounded-full blur-3xl"></div>
         </motion.div>
       </div>
 
