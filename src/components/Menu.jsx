@@ -70,7 +70,7 @@ const Menu = ({ onProductSelect }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
         <AnimatePresence mode='popLayout'>
           {filteredProducts.map((product) => (
             <motion.div 
@@ -79,7 +79,8 @@ const Menu = ({ onProductSelect }) => {
               onClick={() => !product.isSoldOut && onProductSelect(product)}
               className={`group ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
             >
-              <div className="relative overflow-hidden rounded-[2.5rem] aspect-square shadow-lg">
+              {/* Product Image Container (Price Tag Removed) */}
+              <div className="relative overflow-hidden rounded-[2.5rem] aspect-square shadow-lg mb-6">
                 <img 
                   src={product.img} 
                   alt={product.name} 
@@ -87,18 +88,24 @@ const Menu = ({ onProductSelect }) => {
                 />
                 
                 {product.isSoldOut && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                    <span className="bg-white/90 backdrop-blur-sm text-black font-bold px-6 py-2 rounded-full text-xs uppercase tracking-[0.2em]">Sold Out</span>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
+                    <span className="bg-white/95 text-black font-black px-6 py-2 rounded-full text-xs uppercase tracking-[0.2em]">Sold Out</span>
                   </div>
                 )}
-
-                <div className="absolute top-5 right-5 bg-white/90 px-4 py-1.5 rounded-full shadow-sm">
-                  <span className="font-bold text-gray-900 font-serif">₹{product.price}</span>
-                </div>
               </div>
-              <div className="mt-6 text-center">
-                <h3 className="text-2xl font-serif font-bold text-gray-800">{product.name}</h3>
-                <p className="text-[#E89EB8] uppercase tracking-[0.2em] text-[10px] font-bold mt-1">{product.category}</p>
+
+              {/* Product Info (Name, Category, and NEW Price Position) */}
+              <div className="text-center">
+                <p className="text-[#E89EB8] uppercase tracking-[0.2em] text-[10px] font-black mb-1">
+                  {product.category}
+                </p>
+                <h3 className="text-2xl font-serif font-bold text-gray-900 mb-2">
+                  {product.name}
+                </h3>
+                {/* Updated Price Placement */}
+                <p className="text-xl font-bold text-gray-800">
+                  ₹{product.price}
+                </p>
               </div>
             </motion.div>
           ))}
