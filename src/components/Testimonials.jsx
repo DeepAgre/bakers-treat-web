@@ -24,9 +24,13 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="py-24 bg-[#F9F8F6]">
+    /* Background changed to the signature brand pink */
+    <section className="py-24 bg-[#E89EB8]">
       <div className="max-w-7xl mx-auto px-6">
-        <h2 className="text-4xl font-serif font-bold text-center mb-16 text-gray-900">Sweet Words</h2>
+        {/* Heading color changed to white for better contrast on pink */}
+        <h2 className="text-5xl font-serif font-bold text-center mb-16 text-white">
+          Sweet Words
+        </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((item) => (
@@ -35,12 +39,21 @@ const Testimonials = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-8 rounded-[2rem] shadow-sm border border-black/5 flex flex-col justify-between"
+              /* Review cards kept white for readability */
+              className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-white/20 flex flex-col justify-between transform hover:-translate-y-2 transition-transform duration-300"
             >
-              <p className="text-gray-600 italic mb-6">"{item.text}"</p>
               <div>
-                <h4 className="font-bold text-gray-900">{item.name}</h4>
-                <p className="text-[#E89EB8] text-xs font-bold uppercase tracking-widest">{item.location}</p>
+                {/* Quotation mark icon for style */}
+                <span className="text-4xl text-[#E89EB8] font-serif leading-none block mb-4">“</span>
+                <p className="text-gray-700 italic text-lg leading-relaxed mb-6">
+                  {item.text}
+                </p>
+              </div>
+              <div>
+                <h4 className="font-bold text-gray-900 text-xl">{item.name}</h4>
+                <p className="text-[#E89EB8] text-xs font-black uppercase tracking-[0.2em] mt-1">
+                  {item.location}
+                </p>
               </div>
             </motion.div>
           ))}
