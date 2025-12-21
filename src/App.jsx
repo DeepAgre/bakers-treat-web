@@ -125,7 +125,7 @@ const BakeryApp = () => {
       )}
 
       {/* Increased top padding to accommodate the taller header */}
-      <main className={!isLoading ? "pt-44" : ""}>
+      <main className={!isLoading ? "pt-32" : ""}>
         <div id="home">
           <Hero isParentLoading={isLoading} />
         </div>
