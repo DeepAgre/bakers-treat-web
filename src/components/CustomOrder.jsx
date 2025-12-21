@@ -1,62 +1,95 @@
 import React from 'react';
-import { Palette, Hammer, MessageCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+// Using your images from the screenshot
+import cake1 from '../assets/custom1.jpg'; // The white floral cake
+import box from '../assets/custom2.jpg';  // The chocolate box
+import cupcake from '../assets/custom3.jpg'; // The yellow cupcake
+import pinkCake from '../assets/custom4.jpg'; // The dripping pink cake
 
 const CustomOrder = () => {
-  // Encoded message for better UX: "Hi Khushi! I'd like to inquire about a custom cake from Delight Bakehouse."
-  const whatsappUrl = "https://wa.me/919136371662?text=Hi%20Khushi!%20I'd%20like%20to%20inquire%20about%20a%20custom%20cake%20from%20Bakers%20Treat.";
-
   return (
-    <section id="custom-order" className="py-24 bg-[#F3F1ED]">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <div className="order-2 md:order-1">
-             <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-4 pt-8">
-                   <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80&w=800&auto=format&fit=crop" className="rounded-3xl shadow-lg rotate-[-2deg]" alt="Custom Cake" />
-                   <img src="https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?q=80&w=800&auto=format&fit=crop" className="rounded-3xl shadow-lg" alt="Artisan Detail" />
-                </div>
-                <div className="space-y-4">
-                   <img src="https://images.unsplash.com/photo-1481391319762-47dff72954d9?q=80&w=800&auto=format&fit=crop" className="rounded-3xl shadow-lg rotate-[2deg]" alt="Chocolate Craft" />
-                   <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?q=80&w=800&auto=format&fit=crop" className="rounded-3xl shadow-lg" alt="Sculptural Cake" />
-                </div>
-             </div>
+    <section className="py-24 bg-[#E89EB8] relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        
+        {/* Left Side: Image Collage */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4 pt-12">
+            <motion.img 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              src={cake1} 
+              className="rounded-[2rem] w-full h-80 object-cover shadow-2xl border-4 border-white/20"
+            />
+            <motion.img 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              src={cupcake} 
+              className="rounded-[2rem] w-full h-64 object-cover shadow-2xl border-4 border-white/20"
+            />
           </div>
+          <div className="space-y-4">
+            <motion.img 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              src={box} 
+              className="rounded-[2rem] w-full h-64 object-cover shadow-2xl border-4 border-white/20"
+            />
+            <motion.img 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              src={pinkCake} 
+              className="rounded-[2rem] w-full h-80 object-cover shadow-2xl border-4 border-white/20"
+            />
+          </div>
+        </div>
 
-          <div className="order-1 md:order-2">
-            <h4 className="text-[#E89EB8] font-bold uppercase tracking-widest text-xs mb-4">The Custom Studio</h4>
-            <h2 className="text-5xl font-serif mb-8 leading-tight">If you can dream it, we can create it.</h2>
-            <p className="text-[#666666] text-lg mb-10 leading-relaxed font-light">
-              Khushi Manjrekar specializes in high-detail 3D cakes. From luxury cars to grand ships, our cakes are handcrafted in Thane and engineered for both awe and taste.
-            </p>
-            
-            <div className="space-y-6 mb-12">
-               <div className="flex gap-4">
-                  <div className="bg-white p-3 rounded-2xl shadow-sm h-fit text-[#E89EB8]"><Palette size={20}/></div>
-                  <div>
-                    <h5 className="font-bold text-sm">Bespoke Design</h5>
-                    <p className="text-xs text-[#888]">Every cake is a unique blueprint designed just for you.</p>
-                  </div>
-               </div>
-               <div className="flex gap-4">
-                  <div className="bg-white p-3 rounded-2xl shadow-sm h-fit text-[#E89EB8]"><Hammer size={20}/></div>
-                  <div>
-                    <h5 className="font-bold text-sm">Edible Engineering</h5>
-                    <p className="text-xs text-[#888]">Gravity-defying structures built from premium ingredients.</p>
-                  </div>
-               </div>
+        {/* Right Side: Content */}
+        <div className="text-white">
+          <span className="uppercase tracking-[0.3em] text-[12px] font-black opacity-80 mb-4 block">
+            The Custom Studio
+          </span>
+          <h2 className="text-5xl md:text-6xl font-serif font-bold mb-8 leading-tight">
+            If you can dream it, we can create it.
+          </h2>
+          <p className="text-lg opacity-90 mb-12 leading-relaxed max-w-lg font-medium">
+            Khushi Manjrekar specializes in high-detail 3D cakes. From luxury cars to grand ships, our cakes are handcrafted in Thane and engineered for both awe and taste.
+          </p>
+
+          {/* Features */}
+          <div className="space-y-8 mb-12">
+            <div className="flex gap-5 items-start group">
+              <div className="bg-white/20 p-4 rounded-2xl group-hover:bg-white/30 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              </div>
+              <div>
+                <h4 className="font-bold text-xl mb-1">Bespoke Design</h4>
+                <p className="opacity-80">Every cake is a unique blueprint designed just for you.</p>
+              </div>
             </div>
 
-            {/* HIGHLY VISIBLE WHATSAPP BUTTON */}
-            <a 
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-4 bg-[#1A1A1A] text-white px-10 py-5 rounded-full font-bold hover:bg-[#25D366] transition-all shadow-xl active:scale-95"
-            >
-              <MessageCircle className="group-hover:animate-pulse" />
-              Chat with Khushi on WhatsApp
-            </a>
+            <div className="flex gap-5 items-start group">
+              <div className="bg-white/20 p-4 rounded-2xl group-hover:bg-white/30 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              </div>
+              <div>
+                <h4 className="font-bold text-xl mb-1">Edible Engineering</h4>
+                <p className="opacity-80">Gravity-defying structures built from premium ingredients.</p>
+              </div>
+            </div>
           </div>
+
+          {/* WhatsApp Button - Inverted for contrast */}
+          <button 
+            onClick={() => window.open('https://wa.me/919136371662', '_blank')}
+            className="flex items-center gap-3 bg-white text-[#E89EB8] px-10 py-5 rounded-full font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all shadow-xl"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Chat with Khushi on WhatsApp
+          </button>
         </div>
       </div>
     </section>
