@@ -61,18 +61,20 @@ const Ingredients = () => {
               viewport={{ once: true }}
               className="relative group h-[500px] rounded-[2.5rem] overflow-hidden bg-[#1A1A1A] shadow-2xl"
             >
-              {/* IMAGE BACKGROUND: Absolute positioning forces it to fill the h-[500px] container */}
-              <img 
-                src={item.img} 
-                alt={item.title}
-                className="absolute inset-0 w-full h-full object-cover object-center opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000"
+              {/* WE ARE NOT USING <IMG> ANYMORE. THIS DIV FORCES THE IMAGE TO COVER THE AREA */}
+              <div 
+                className="absolute inset-0 w-full h-full transition-all duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-100"
+                style={{ 
+                  backgroundImage: `url(${item.img})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat'
+                }}
               />
               
-              {/* Dark Gradient for Text Legibility */}
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
 
               <div className="absolute inset-0 p-8 flex flex-col justify-end text-left">
-                {/* Decorative ID Number */}
                 <span className="absolute top-8 left-8 text-white/10 text-7xl font-serif select-none pointer-events-none">
                   {item.id}
                 </span>
@@ -81,7 +83,7 @@ const Ingredients = () => {
                   <h5 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-2">
                     {item.subtitle}
                   </h5>
-                  <h3 className="text-white text-2xl font-serif mb-3 group-hover:text-[#E89EB8] transition-colors duration-300">
+                  <h3 className="text-white text-2xl font-serif mb-3 group-hover:text-[#E89EB8] transition-colors">
                     {item.title}
                   </h3>
                   <p className="text-white/60 text-sm leading-relaxed font-light">
