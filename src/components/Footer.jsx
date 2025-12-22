@@ -3,7 +3,10 @@ import { motion } from 'framer-motion';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const khushiNumber = "919136371662"; // Your stored contact
+  const khushiNumber = "919136371662"; 
+  const bakeryInsta = "https://www.instagram.com/_bakers_treat_/";
+  const personalInsta = "https://www.instagram.com/_khushi_0810_/";
+  const bakeryEmail = "Khushimanjrekar08@gmail.com";
 
   const quickLinks = [
     { name: 'Our Story', href: '#about' },
@@ -26,7 +29,9 @@ const Footer = () => {
               Handcrafting premium, artisanal bakes in the heart of Thane. 
               Every treat is a story of quality and passion.
             </p>
-            <div className="flex gap-4">
+            
+            {/* BUTTON GROUP */}
+            <div className="flex flex-wrap gap-4">
               <a 
                 href={`https://wa.me/${khushiNumber}`}
                 target="_blank"
@@ -34,6 +39,14 @@ const Footer = () => {
                 className="bg-[#E89EB8] text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-white hover:text-black transition-all"
               >
                 Order on WhatsApp
+              </a>
+              <a 
+                href={bakeryInsta}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-white/20 text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-[#E89EB8] hover:border-[#E89EB8] transition-all"
+              >
+                Visit Instagram
               </a>
             </div>
           </motion.div>
@@ -58,26 +71,32 @@ const Footer = () => {
             </div>
             <div>
               <h4 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-6">Contact</h4>
-              <p className="text-sm text-white/60 leading-loose">
-                Thane, Maharashtra<br />
-                Mon - Sun: 9AM - 9PM<br />
-                <a href={`tel:+${khushiNumber}`} className="hover:text-white transition-colors">
-                  +91 91363 71662
+              <div className="text-sm text-white/60 space-y-4 leading-relaxed">
+                <p>Thane, Maharashtra</p>
+                <a href={`mailto:${bakeryEmail}`} className="block hover:text-white transition-colors break-all">
+                  {bakeryEmail}
                 </a>
-              </p>
+                <a href={`tel:+${khushiNumber}`} className="block hover:text-white transition-colors">
+                  +91 9136371662
+                </a>
+              </div>
             </div>
           </motion.div>
         </div>
 
-        {/* Bottom Section: Copyright */}
-        <div className="pt-10 flex flex-col md:row justify-between items-center gap-6">
-          <p className="text-white/20 text-[10px] font-black uppercase tracking-widest">
+        {/* Bottom Section: Copyright & Secondary Links */}
+        <div className="pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-white/20 text-[10px] font-black uppercase tracking-widest text-center md:text-left">
             © {currentYear} Bakers Treat • Handcrafted with love in Thane
           </p>
           
           <div className="flex gap-8">
-             <span className="text-white/20 text-[10px] font-black uppercase tracking-widest">Instagram</span>
-             <span className="text-white/20 text-[10px] font-black uppercase tracking-widest">Facebook</span>
+             <a href={bakeryInsta} target="_blank" rel="noopener noreferrer" className="text-white/20 hover:text-[#E89EB8] text-[10px] font-black uppercase tracking-widest transition-colors">
+               Bakery Instagram
+             </a>
+             <a href={personalInsta} target="_blank" rel="noopener noreferrer" className="text-white/20 hover:text-[#E89EB8] text-[10px] font-black uppercase tracking-widest transition-colors">
+               Khushi's Profile
+             </a>
           </div>
         </div>
       </div>
