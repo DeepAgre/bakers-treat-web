@@ -11,21 +11,28 @@ const Navbar = ({ cartCount, onOpenCart }) => {
     { name: 'Contact', href: '#contact' },
   ];
 
-  // Function to smoothly scroll to top
-  const scrollToTop = () => {
+  // FIXED: Improved scrollToTop function
+  const scrollToTop = (e) => {
+    if (e) e.preventDefault(); // Prevents the browser from fighting the script
+    
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
     });
+
+    // Reset URL hash without jumping the page
+    if (window.history.pushState) {
+      window.history.pushState(null, null, ' ');
+    }
+
     if (isMenuOpen) setIsMenuOpen(false);
   };
 
   return (
-    /* Background spans full width to remove transparent corner gaps */
     <nav className="w-full bg-white/95 backdrop-blur-md border-b border-black/5 z-[100] relative">
       <div className="px-4 py-3 sm:px-12 sm:py-6 max-w-[1600px] mx-auto flex items-center justify-between">
         
-        {/* LOGO SECTION: Now clickable to scroll to top */}
+        {/* LOGO SECTION: Click once to go home instantly */}
         <div 
           onClick={scrollToTop}
           className="flex items-center gap-2 sm:gap-4 shrink-0 cursor-pointer group"
@@ -40,7 +47,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
           </h1>
         </div>
 
-        {/* DESKTOP LINKS: Visible only on larger screens */}
+        {/* DESKTOP LINKS */}
         <div className="hidden lg:flex items-center gap-10">
           {navLinks.map((link) => (
             <a 
@@ -55,7 +62,6 @@ const Navbar = ({ cartCount, onOpenCart }) => {
 
         {/* RIGHT SIDE: Bag & Hamburger */}
         <div className="flex items-center gap-2 sm:gap-4">
-          {/* BAG BUTTON */}
           <button 
             onClick={onOpenCart}
             className="bg-white border border-black/10 px-3 py-2 sm:px-6 sm:py-3 rounded-full flex items-center gap-2 shadow-sm active:scale-95 transition-all group cursor-pointer"
@@ -73,7 +79,6 @@ const Navbar = ({ cartCount, onOpenCart }) => {
             </span>
           </button>
 
-          {/* MOBILE MENU TOGGLE (Hamburger) */}
           <button 
             className="lg:hidden p-2 flex-shrink-0 cursor-pointer"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -88,7 +93,6 @@ const Navbar = ({ cartCount, onOpenCart }) => {
         </div>
       </div>
 
-      {/* MOBILE DROPDOWN MENU */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div 
