@@ -34,10 +34,10 @@ const ingredients = [
 
 const Ingredients = () => {
   return (
-    <section className="bg-[#0A0A0A] py-24 sm:py-32 px-6" id="philosophy">
+    <section className="bg-[#0A0A0A] py-24 sm:py-32 px-6 overflow-hidden" id="philosophy">
       <div className="max-w-7xl mx-auto">
         
-        <div className="mb-16 sm:mb-24">
+        <div className="mb-16 sm:mb-24 text-left">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -51,7 +51,6 @@ const Ingredients = () => {
           </motion.div>
         </div>
 
-        {/* The Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {ingredients.map((item, idx) => (
             <motion.div 
@@ -60,22 +59,21 @@ const Ingredients = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1, duration: 0.8 }}
               viewport={{ once: true }}
-              className="relative group h-[500px] rounded-[2.5rem] overflow-hidden shadow-2xl"
+              className="relative group h-[500px] rounded-[2.5rem] overflow-hidden bg-[#1A1A1A] shadow-2xl"
             >
-              {/* IMAGE AS BACKGROUND: This ensures it fills the entire 500px height */}
+              {/* IMAGE BACKGROUND: Absolute positioning forces it to fill the h-[500px] container */}
               <img 
                 src={item.img} 
                 alt={item.title}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-50"
+                className="absolute inset-0 w-full h-full object-cover object-center opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000"
               />
               
-              {/* Dark Gradient Overlay for text readability */}
+              {/* Dark Gradient for Text Legibility */}
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
 
-              {/* Content positioned on top of image */}
-              <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                {/* ID Number inside the card */}
-                <span className="absolute top-8 left-8 text-white/10 text-7xl font-serif select-none">
+              <div className="absolute inset-0 p-8 flex flex-col justify-end text-left">
+                {/* Decorative ID Number */}
+                <span className="absolute top-8 left-8 text-white/10 text-7xl font-serif select-none pointer-events-none">
                   {item.id}
                 </span>
                 
@@ -83,7 +81,7 @@ const Ingredients = () => {
                   <h5 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-2">
                     {item.subtitle}
                   </h5>
-                  <h3 className="text-white text-2xl font-serif mb-3">
+                  <h3 className="text-white text-2xl font-serif mb-3 group-hover:text-[#E89EB8] transition-colors duration-300">
                     {item.title}
                   </h3>
                   <p className="text-white/60 text-sm leading-relaxed font-light">
