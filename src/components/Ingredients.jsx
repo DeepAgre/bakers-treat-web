@@ -34,7 +34,8 @@ const ingredients = [
 
 const Ingredients = () => {
   return (
-    <section className="bg-[#0A0A0A] py-24 sm:py-32 px-6" id="philosophy">
+    // Added a relative position and z-index to ensure it stays below the Navbar
+    <section className="relative z-0 bg-[#0A0A0A] py-24 sm:py-32 px-6" id="philosophy">
       <div className="max-w-7xl mx-auto">
         
         <div className="mb-16 sm:mb-24">
@@ -51,8 +52,8 @@ const Ingredients = () => {
           </motion.div>
         </div>
 
-        {/* FULL CARD DESIGN: Fixed the "half-visible" image issue */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* FIXED GRID: We use explicit heights to prevent Navbar layout shifts from clipping images */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {ingredients.map((item, idx) => (
             <motion.div 
               key={item.id}
@@ -60,32 +61,33 @@ const Ingredients = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1, duration: 0.8 }}
               viewport={{ once: true }}
-              className="relative group h-[500px] rounded-[2.5rem] overflow-hidden bg-[#1A1A1A] shadow-2xl"
+              className="flex flex-col group"
             >
-              {/* Background Image - Now takes full height of the card */}
-              <img 
-                src={item.img} 
-                alt={item.title}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-80"
-              />
+              {/* IMAGE CONTAINER: Set to a rigid height so the Navbar cannot compress it */}
+              <div className="relative w-full h-[450px] sm:h-[500px] rounded-[2.5rem] overflow-hidden mb-8 shadow-2xl bg-[#1A1A1A]">
+                <img 
+                  src={item.img} 
+                  alt={item.title}
+                  // Added object-top to ensure the main part of the ingredient isn't hidden
+                  className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-110"
+                />
+                
+                {/* ID Number Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-50" />
+                <span className="absolute top-8 left-8 text-white/10 text-7xl font-serif select-none">
+                  {item.id}
+                </span>
+              </div>
               
-              {/* Dark Gradient Overlay for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/40 to-transparent" />
-
-              {/* ID Number */}
-              <span className="absolute top-8 left-8 text-white/10 text-7xl font-serif select-none">
-                {item.id}
-              </span>
-              
-              {/* Text Content - Positioned at the bottom */}
-              <div className="absolute bottom-0 left-0 right-0 p-8">
-                <h5 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-2">
+              {/* Text Area */}
+              <div className="px-2">
+                <h5 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-3">
                   {item.subtitle}
                 </h5>
-                <h3 className="text-white text-3xl font-serif mb-4">
+                <h3 className="text-white text-2xl font-serif mb-4 group-hover:text-[#E89EB8] transition-colors duration-300">
                   {item.title}
                 </h3>
-                <p className="text-white/60 text-sm leading-relaxed font-light">
+                <p className="text-white/40 text-[15px] leading-relaxed font-light">
                   {item.text}
                 </p>
               </div>
