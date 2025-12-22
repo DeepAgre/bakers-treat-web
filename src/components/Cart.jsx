@@ -2,23 +2,34 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout }) => {
-  // Logic to calculate the minimum allowed date (Tomorrow)
+  // Robust logic to calculate strictly "Tomorrow"
   const getTomorrowDate = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    // Format to YYYY-MM-DD for the input 'min' attribute
-    return tomorrow.toISOString().split('T')[0];
+    const today = new Date();
+    const tomorrow = new Date(today);
+    // Force the date to tomorrow
+    tomorrow.setDate(today.getDate() + 1);
+    
+    // Format to YYYY-MM-DD for the HTML5 date input
+    const year = tomorrow.getFullYear();
+    const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const day = String(tomorrow.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
   };
 
   const minDate = getTomorrowDate();
   
-  // Set the default state to tomorrow's date
+  // Initialize with tomorrow's date by default
   const [deliveryDate, setDeliveryDate] = useState(minDate);
 
-  // Sync state if tomorrow changes (rare, but good practice for long-running sessions)
+  // Re-verify the date whenever the cart opens to handle date changes if the site stays open overnight
   useEffect(() => {
-    if (!deliveryDate) {
-      setDeliveryDate(minDate);
+    if (isOpen) {
+      const freshTomorrow = getTomorrowDate();
+      // If the currently selected date is now in the past or is "today", reset it to the new tomorrow
+      if (!deliveryDate || deliveryDate <= new Date().toISOString().split('T')[0]) {
+        setDeliveryDate(freshTomorrow);
+      }
     }
   }, [isOpen]);
 
@@ -95,7 +106,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               )}
             </div>
 
-            {/* Footer / Multi-Button Checkout Section */}
+            {/* Checkout Section */}
             {items.length > 0 && (
               <div className="p-6 bg-white border-t border-gray-100 space-y-6">
                 <div>
@@ -104,7 +115,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                   </label>
                   <input 
                     type="date" 
-                    min={minDate} // THIS BLOCKS TODAY AND PREVIOUS DATES
+                    min={minDate} // THIS NOW STYRICTLY BLOCKS TODAY
                     value={deliveryDate}
                     onChange={(e) => setDeliveryDate(e.target.value)}
                     className="w-full p-4 rounded-xl border border-gray-100 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#E89EB8] cursor-pointer font-sans text-sm"
@@ -140,11 +151,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                       Discuss More
                     </button>
                   </div>
-
-                  <p className="text-[11px] text-gray-400 text-center pt-2 font-medium leading-relaxed italic">
-                    Orders are confirmed manually. <br />
-                    Payment details will be shared on WhatsApp.
-                  </p>
                 </div>
               </div>
             )}
