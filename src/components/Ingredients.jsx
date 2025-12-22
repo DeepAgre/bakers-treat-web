@@ -1,36 +1,39 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+// IMPORTING LOCAL ASSETS
+import cocoaImg from '../assets/cocoa.jpeg';
+import butterImg from '../assets/butter.jpeg';
+import vanillaImg from '../assets/vanilla.jpeg';
+import fruitImg from '../assets/fruit.jpeg';
+
 const ingredients = [
   {
     id: "01",
     title: "Pure Cocoa",
     subtitle: "The Foundation",
-    // Premium White Chocolate/Cocoa aesthetic
-    img: "https://images.unsplash.com/photo-1516631141931-291763784143?auto=format&fit=crop&q=80&w=800",
+    img: cocoaImg,
     text: "Sourced from premium farms for an intense, honest chocolate experience."
   },
   {
     id: "02",
     title: "Butter",
     subtitle: "The Texture",
-    img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&q=80&w=800",
+    img: butterImg,
     text: "High-quality dairy butter for that perfect, melt-in-the-mouth pastry finish."
   },
   {
     id: "03",
     title: "Vanilla",
     subtitle: "The Soul",
-    // FIXED: Beautiful Vanilla Flower and Beans
-    img: "https://images.unsplash.com/photo-1615485925600-97237c4fc1ec?auto=format&fit=crop&q=80&w=800",
+    img: vanillaImg,
     text: "Hand-selected beans that provide the deep, aromatic heart of our bakes."
   },
   {
     id: "04",
     title: "Artisan Fruit",
     subtitle: "The Finish",
-    // FIXED: Reliable Fresh Berries for the 4th slot
-    img: "https://images.unsplash.com/photo-1464960350423-9f50e85a6cb0?auto=format&fit=crop&q=80&w=800",
+    img: fruitImg,
     text: "Fresh, seasonal fruits picked at their peak for natural sweetness."
   }
 ];
@@ -64,9 +67,9 @@ const Ingredients = () => {
               viewport={{ once: true }}
               className="relative group h-[550px] rounded-[2.5rem] overflow-hidden bg-[#1A1A1A] shadow-2xl"
             >
-              {/* Background Div Fix */}
+              {/* IMAGE AS BACKGROUND: Using local assets now */}
               <div 
-                className="absolute inset-0 w-full h-full transition-all duration-1000 group-hover:scale-110 opacity-50 group-hover:opacity-80"
+                className="absolute inset-0 w-full h-full transition-all duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-100"
                 style={{ 
                   backgroundImage: `url(${item.img})`,
                   backgroundSize: 'cover',
@@ -75,10 +78,11 @@ const Ingredients = () => {
                 }}
               />
               
-              {/* Overlay with slight adjustments for visibility */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent opacity-90" />
+              {/* Dark Gradient for Text Readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
 
               <div className="absolute inset-0 p-8 flex flex-col justify-end text-left">
+                {/* ID Number */}
                 <span className="absolute top-8 left-8 text-white/10 text-7xl font-serif select-none pointer-events-none">
                   {item.id}
                 </span>
