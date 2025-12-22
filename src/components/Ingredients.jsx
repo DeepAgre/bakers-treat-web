@@ -6,15 +6,14 @@ const ingredients = [
     id: "01",
     title: "Pure Cocoa",
     subtitle: "The Foundation",
-    // Reliable high-res cocoa image
-    img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?auto=format&fit=crop&q=80&w=800",
+    // Premium White Chocolate/Cocoa aesthetic
+    img: "https://images.unsplash.com/photo-1516631141931-291763784143?auto=format&fit=crop&q=80&w=800",
     text: "Sourced from premium farms for an intense, honest chocolate experience."
   },
   {
     id: "02",
     title: "Butter",
     subtitle: "The Texture",
-    // Reliable high-res butter image
     img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&q=80&w=800",
     text: "High-quality dairy butter for that perfect, melt-in-the-mouth pastry finish."
   },
@@ -22,16 +21,16 @@ const ingredients = [
     id: "03",
     title: "Vanilla",
     subtitle: "The Soul",
-    // REPLACED: New reliable vanilla beans image
-    img: "https://images.unsplash.com/photo-1610632380989-680fe40816c6?auto=format&fit=crop&q=80&w=800",
+    // FIXED: Beautiful Vanilla Flower and Beans
+    img: "https://images.unsplash.com/photo-1615485925600-97237c4fc1ec?auto=format&fit=crop&q=80&w=800",
     text: "Hand-selected beans that provide the deep, aromatic heart of our bakes."
   },
   {
     id: "04",
     title: "Artisan Fruit",
     subtitle: "The Finish",
-    // REPLACED: New reliable fresh berries/fruit image
-    img: "https://images.unsplash.com/photo-1563245339-6b2e5a95b703?auto=format&fit=crop&q=80&w=800",
+    // FIXED: Reliable Fresh Berries for the 4th slot
+    img: "https://images.unsplash.com/photo-1464960350423-9f50e85a6cb0?auto=format&fit=crop&q=80&w=800",
     text: "Fresh, seasonal fruits picked at their peak for natural sweetness."
   }
 ];
@@ -65,9 +64,9 @@ const Ingredients = () => {
               viewport={{ once: true }}
               className="relative group h-[550px] rounded-[2.5rem] overflow-hidden bg-[#1A1A1A] shadow-2xl"
             >
-              {/* Using Background Div for the "Nuclear Fix" - this forces the image to cover the card */}
+              {/* Background Div Fix */}
               <div 
-                className="absolute inset-0 w-full h-full transition-all duration-1000 group-hover:scale-110 opacity-40 group-hover:opacity-70"
+                className="absolute inset-0 w-full h-full transition-all duration-1000 group-hover:scale-110 opacity-50 group-hover:opacity-80"
                 style={{ 
                   backgroundImage: `url(${item.img})`,
                   backgroundSize: 'cover',
@@ -76,12 +75,11 @@ const Ingredients = () => {
                 }}
               />
               
-              {/* Elegant dark overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent opacity-80" />
+              {/* Overlay with slight adjustments for visibility */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent opacity-90" />
 
               <div className="absolute inset-0 p-8 flex flex-col justify-end text-left">
-                {/* Visual ID Number */}
-                <span className="absolute top-8 left-8 text-white/5 text-7xl font-serif select-none pointer-events-none">
+                <span className="absolute top-8 left-8 text-white/10 text-7xl font-serif select-none pointer-events-none">
                   {item.id}
                 </span>
                 
@@ -89,7 +87,7 @@ const Ingredients = () => {
                   <h5 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-2">
                     {item.subtitle}
                   </h5>
-                  <h3 className="text-white text-2xl font-serif mb-3 group-hover:text-[#E89EB8] transition-colors duration-300">
+                  <h3 className="text-white text-2xl font-serif mb-3 group-hover:text-[#E89EB8] transition-colors">
                     {item.title}
                   </h3>
                   <p className="text-white/60 text-sm leading-relaxed font-light">
