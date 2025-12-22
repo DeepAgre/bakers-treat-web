@@ -34,8 +34,7 @@ const ingredients = [
 
 const Ingredients = () => {
   return (
-    // Added a relative position and z-index to ensure it stays below the Navbar
-    <section className="relative z-0 bg-[#0A0A0A] py-24 sm:py-32 px-6" id="philosophy">
+    <section className="bg-[#0A0A0A] py-24 sm:py-32 px-6" id="philosophy">
       <div className="max-w-7xl mx-auto">
         
         <div className="mb-16 sm:mb-24">
@@ -52,8 +51,8 @@ const Ingredients = () => {
           </motion.div>
         </div>
 
-        {/* FIXED GRID: We use explicit heights to prevent Navbar layout shifts from clipping images */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* The Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {ingredients.map((item, idx) => (
             <motion.div 
               key={item.id}
@@ -61,35 +60,36 @@ const Ingredients = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1, duration: 0.8 }}
               viewport={{ once: true }}
-              className="flex flex-col group"
+              className="relative group h-[500px] rounded-[2.5rem] overflow-hidden shadow-2xl"
             >
-              {/* IMAGE CONTAINER: Set to a rigid height so the Navbar cannot compress it */}
-              <div className="relative w-full h-[450px] sm:h-[500px] rounded-[2.5rem] overflow-hidden mb-8 shadow-2xl bg-[#1A1A1A]">
-                <img 
-                  src={item.img} 
-                  alt={item.title}
-                  // Added object-top to ensure the main part of the ingredient isn't hidden
-                  className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-110"
-                />
-                
-                {/* ID Number Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-50" />
+              {/* IMAGE AS BACKGROUND: This ensures it fills the entire 500px height */}
+              <img 
+                src={item.img} 
+                alt={item.title}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-50"
+              />
+              
+              {/* Dark Gradient Overlay for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+
+              {/* Content positioned on top of image */}
+              <div className="absolute inset-0 p-8 flex flex-col justify-end">
+                {/* ID Number inside the card */}
                 <span className="absolute top-8 left-8 text-white/10 text-7xl font-serif select-none">
                   {item.id}
                 </span>
-              </div>
-              
-              {/* Text Area */}
-              <div className="px-2">
-                <h5 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-3">
-                  {item.subtitle}
-                </h5>
-                <h3 className="text-white text-2xl font-serif mb-4 group-hover:text-[#E89EB8] transition-colors duration-300">
-                  {item.title}
-                </h3>
-                <p className="text-white/40 text-[15px] leading-relaxed font-light">
-                  {item.text}
-                </p>
+                
+                <div className="relative z-10">
+                  <h5 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-2">
+                    {item.subtitle}
+                  </h5>
+                  <h3 className="text-white text-2xl font-serif mb-3">
+                    {item.title}
+                  </h3>
+                  <p className="text-white/60 text-sm leading-relaxed font-light">
+                    {item.text}
+                  </p>
+                </div>
               </div>
             </motion.div>
           ))}
