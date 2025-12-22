@@ -40,14 +40,14 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {items.length === 0 ? (
                 <div className="text-center py-20">
-                  <p className="text-gray-400 font-medium">Your bag is empty.</p>
+                  <p className="text-gray-400 font-medium font-sans">Your bag is empty.</p>
                 </div>
               ) : (
                 items.map((item) => (
                   <div key={item.id} className="flex gap-4 items-center bg-gray-50 p-4 rounded-2xl border border-black/5">
                     <img src={item.img} alt={item.name} className="w-20 h-20 rounded-xl object-cover" />
                     <div className="flex-1">
-                      <h4 className="font-bold text-gray-900 text-sm">{item.name}</h4>
+                      <h4 className="font-bold text-gray-900 text-sm font-sans">{item.name}</h4>
                       <p className="text-[#E89EB8] font-black text-sm">₹{item.price}</p>
                       
                       <div className="flex items-center gap-3 mt-2">
@@ -81,7 +81,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             {items.length > 0 && (
               <div className="p-6 bg-white border-t border-gray-100 space-y-6">
                 <div>
-                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 block">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 block font-sans">
                     Select Pickup/Delivery Date
                   </label>
                   <input 
@@ -93,7 +93,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                 </div>
 
                 <div className="flex justify-between items-center px-1">
-                  <span className="text-gray-500 font-medium">Subtotal</span>
+                  <span className="text-gray-500 font-medium font-sans">Subtotal</span>
                   <span className="text-2xl font-black text-gray-900">{total}</span>
                 </div>
 
@@ -123,6 +123,12 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                       Discuss More
                     </button>
                   </div>
+
+                  {/* THE NOTICE: Re-added below buttons */}
+                  <p className="text-[11px] text-gray-400 text-center pt-2 font-medium leading-relaxed italic">
+                    Orders are confirmed manually. <br />
+                    Payment details will be shared on WhatsApp.
+                  </p>
                 </div>
               </div>
             )}
