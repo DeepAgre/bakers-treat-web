@@ -6,13 +6,15 @@ const ingredients = [
     id: "01",
     title: "Pure Cocoa",
     subtitle: "The Foundation",
-    img: "https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&q=80&w=800",
+    // Reliable high-res cocoa image
+    img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?auto=format&fit=crop&q=80&w=800",
     text: "Sourced from premium farms for an intense, honest chocolate experience."
   },
   {
     id: "02",
     title: "Butter",
     subtitle: "The Texture",
+    // Reliable high-res butter image
     img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&q=80&w=800",
     text: "High-quality dairy butter for that perfect, melt-in-the-mouth pastry finish."
   },
@@ -20,14 +22,16 @@ const ingredients = [
     id: "03",
     title: "Vanilla",
     subtitle: "The Soul",
-    img: "https://images.unsplash.com/photo-1590779033100-9f60705a2d3d?auto=format&fit=crop&q=80&w=800",
+    // REPLACED: New reliable vanilla beans image
+    img: "https://images.unsplash.com/photo-1610632380989-680fe40816c6?auto=format&fit=crop&q=80&w=800",
     text: "Hand-selected beans that provide the deep, aromatic heart of our bakes."
   },
   {
     id: "04",
     title: "Artisan Fruit",
     subtitle: "The Finish",
-    img: "https://images.unsplash.com/photo-1610832958506-aa56338406cd?auto=format&fit=crop&q=80&w=800",
+    // REPLACED: New reliable fresh berries/fruit image
+    img: "https://images.unsplash.com/photo-1563245339-6b2e5a95b703?auto=format&fit=crop&q=80&w=800",
     text: "Fresh, seasonal fruits picked at their peak for natural sweetness."
   }
 ];
@@ -59,11 +63,11 @@ const Ingredients = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1, duration: 0.8 }}
               viewport={{ once: true }}
-              className="relative group h-[500px] rounded-[2.5rem] overflow-hidden bg-[#1A1A1A] shadow-2xl"
+              className="relative group h-[550px] rounded-[2.5rem] overflow-hidden bg-[#1A1A1A] shadow-2xl"
             >
-              {/* WE ARE NOT USING <IMG> ANYMORE. THIS DIV FORCES THE IMAGE TO COVER THE AREA */}
+              {/* Using Background Div for the "Nuclear Fix" - this forces the image to cover the card */}
               <div 
-                className="absolute inset-0 w-full h-full transition-all duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-100"
+                className="absolute inset-0 w-full h-full transition-all duration-1000 group-hover:scale-110 opacity-40 group-hover:opacity-70"
                 style={{ 
                   backgroundImage: `url(${item.img})`,
                   backgroundSize: 'cover',
@@ -72,10 +76,12 @@ const Ingredients = () => {
                 }}
               />
               
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+              {/* Elegant dark overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent opacity-80" />
 
               <div className="absolute inset-0 p-8 flex flex-col justify-end text-left">
-                <span className="absolute top-8 left-8 text-white/10 text-7xl font-serif select-none pointer-events-none">
+                {/* Visual ID Number */}
+                <span className="absolute top-8 left-8 text-white/5 text-7xl font-serif select-none pointer-events-none">
                   {item.id}
                 </span>
                 
@@ -83,7 +89,7 @@ const Ingredients = () => {
                   <h5 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-2">
                     {item.subtitle}
                   </h5>
-                  <h3 className="text-white text-2xl font-serif mb-3 group-hover:text-[#E89EB8] transition-colors">
+                  <h3 className="text-white text-2xl font-serif mb-3 group-hover:text-[#E89EB8] transition-colors duration-300">
                     {item.title}
                   </h3>
                   <p className="text-white/60 text-sm leading-relaxed font-light">
