@@ -45,15 +45,17 @@ const BakeryApp = () => {
     setIsModalOpen(true);
   };
 
-  const addToCart = (product) => {
+  // UPDATED: Now accepts a product object that already includes the selected variant info
+  const addToCart = (productWithVariant) => {
     setCartItems(prev => {
-      const existing = prev.find(item => item.id === product.id);
+      // Check for exact match of ID AND variant/size
+      const existing = prev.find(item => item.id === productWithVariant.id);
       if (existing) {
         return prev.map(item => 
-          item.id === product.id ? { ...item, qty: item.qty + 1 } : item
+          item.id === productWithVariant.id ? { ...item, qty: item.qty + 1 } : item
         );
       }
-      return [...prev, { ...product, qty: 1 }];
+      return [...prev, { ...productWithVariant, qty: 1 }];
     });
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
@@ -70,10 +72,7 @@ const BakeryApp = () => {
   };
 
   const cartTotal = cartItems.reduce((acc, item) => {
-    const priceValue = typeof item.price === 'string' 
-      ? parseFloat(item.price.replace(/[^\d.]/g, '')) 
-      : item.price;
-    return acc + (priceValue * item.qty);
+    return acc + (item.price * item.qty);
   }, 0);
 
   const formattedTotal = new Intl.NumberFormat('en-IN', {
@@ -90,16 +89,16 @@ const BakeryApp = () => {
       window.location.href = `tel:+${khushiNumber}`;
       return;
     }
-    if (!deliveryDate) {
-      alert("Please select a delivery date first!");
-      return;
-    }
+    
     const itemSummary = cartItems.map(i => `• ${i.name} (x${i.qty})`).join('\n');
-    const headerMsg = type === 'whatsapp' 
-      ? "Hi Khushi! I have a question about this order:" 
+    const headerMsg = type === 'whatsapp' && !deliveryDate
+      ? "Hi Khushi! I have a question about these items:" 
       : "NEW ORDER REQUEST";
+    
+    const dateLine = deliveryDate ? `\n*Requested Date: ${deliveryDate}*` : "";
+    
     const message = encodeURIComponent(
-      `${headerMsg}\n\n${itemSummary}\n\n*Total: ${formattedTotal}*\n*Requested Date: ${deliveryDate}*\n\nDelight Bakehouse Website Order`
+      `${headerMsg}\n\n${itemSummary}\n\n*Total: ${formattedTotal}*${dateLine}\n\nSent from Bakers Treat Website`
     );
     window.open(`https://wa.me/${khushiNumber}?text=${message}`, '_blank');
   };
@@ -141,7 +140,6 @@ const BakeryApp = () => {
             <AboutKhushi /> 
           </section>
 
-          {/* This container has the rounded top effect */}
           <div className="relative z-10 bg-[#F9F8F6] rounded-t-[2rem] sm:rounded-t-[3rem] mt-[-30px] sm:mt-[-50px] shadow-[0_-25px_50px_rgba(0,0,0,0.05)] border-t border-black/5">
             <Marquee />
             <section id="menu" className="w-full">
@@ -150,7 +148,6 @@ const BakeryApp = () => {
             <Testimonials />
           </div>
 
-          {/* Footer is now OUTSIDE the rounded block so it flows perfectly from dark to dark */}
           <section id="contact" className="w-full bg-[#0A0A0A]">
             <Footer />
           </section>

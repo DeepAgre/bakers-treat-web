@@ -12,7 +12,13 @@ const Menu = ({ onProductSelect }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productQuery = `*[_type == "product"]{ ..., "categoryName": category->title } | order(_createdAt desc)`;
+        // UPDATED QUERY: Now specifically fetching the variants array
+        const productQuery = `*[_type == "product"]{ 
+          ..., 
+          "categoryName": category->title,
+          variants 
+        } | order(_createdAt desc)`;
+        
         const categoryQuery = '*[_type == "category"] | order(title asc)';
 
         const [productData, categoryData] = await Promise.all([
@@ -20,15 +26,22 @@ const Menu = ({ onProductSelect }) => {
           client.fetch(categoryQuery)
         ]);
 
-        const formattedProducts = productData.map(item => ({
-          id: item._id,
-          name: item.name,
-          price: item.price,
-          img: item.image ? urlFor(item.image).url() : '',
-          category: item.categoryName || 'General',
-          description: item.description,
-          isSoldOut: item.isSoldOut 
-        }));
+        const formattedProducts = productData.map(item => {
+          // LOGIC: Find the lowest price among variants to show on the card
+          const prices = item.variants?.map(v => v.price) || [0];
+          const minPrice = Math.min(...prices);
+
+          return {
+            id: item._id,
+            name: item.name,
+            displayPrice: minPrice, // Lowest price for the "Starting at" label
+            variants: item.variants || [], // Pass all variants to the modal
+            img: item.image ? urlFor(item.image).url() : '',
+            category: item.categoryName || 'General',
+            description: item.description,
+            isSoldOut: item.isSoldOut 
+          };
+        });
 
         setProducts(formattedProducts);
         setFilteredProducts(formattedProducts);
@@ -64,11 +77,10 @@ const Menu = ({ onProductSelect }) => {
           whileInView={{ opacity: 1 }}
           className="text-[#E89EB8] uppercase tracking-[0.4em] text-[10px] sm:text-[12px] font-black mb-4 block"
         >
-          Freshly Baked
+          Freshly Baked in Thane
         </motion.span>
         <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 text-gray-900">Our Menu</h2>
         
-        {/* Category Filters */}
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-8">
           {categories.map((cat) => (
             <button
@@ -98,8 +110,6 @@ const Menu = ({ onProductSelect }) => {
               onClick={() => !product.isSoldOut && onProductSelect(product)}
               className={`group flex flex-col ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
             >
-              {/* Product Image Container */}
-              {/* FIXED: Using aspect-[4/5] ensures cake height is captured better than aspect-square */}
               <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[3rem] aspect-[4/5] shadow-xl mb-8 bg-gray-50">
                 <img 
                   src={product.img} 
@@ -108,11 +118,6 @@ const Menu = ({ onProductSelect }) => {
                     ${product.isSoldOut ? 'grayscale opacity-40' : 'group-hover:scale-110'}`} 
                 />
                 
-                {/* Subtle overlay on hover */}
-                {!product.isSoldOut && (
-                  <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                )}
-
                 {product.isSoldOut && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/10 backdrop-blur-[1px]">
                     <span className="bg-white/95 text-black font-black px-6 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] shadow-xl">
@@ -122,7 +127,6 @@ const Menu = ({ onProductSelect }) => {
                 )}
               </div>
 
-              {/* Product Info */}
               <div className="text-center px-4">
                 <p className="text-[#E89EB8] uppercase tracking-[0.3em] text-[9px] font-black mb-2">
                   {product.category}
@@ -133,7 +137,8 @@ const Menu = ({ onProductSelect }) => {
                 <div className="flex items-center justify-center gap-2">
                   <div className="h-px w-4 bg-gray-200"></div>
                   <p className="text-lg font-bold text-gray-700">
-                    ₹{product.price}
+                    {/* UPDATED: Shows "Starting at" for products with multiple sizes */}
+                    {product.variants.length > 1 ? 'From ' : ''}₹{product.displayPrice}
                   </p>
                   <div className="h-px w-4 bg-gray-200"></div>
                 </div>
