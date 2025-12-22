@@ -11,19 +11,31 @@ const Navbar = ({ cartCount, onOpenCart }) => {
     { name: 'Contact', href: '#contact' },
   ];
 
+  // Function to smoothly scroll to top
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    if (isMenuOpen) setIsMenuOpen(false);
+  };
+
   return (
     /* Background spans full width to remove transparent corner gaps */
     <nav className="w-full bg-white/95 backdrop-blur-md border-b border-black/5 z-[100] relative">
       <div className="px-4 py-3 sm:px-12 sm:py-6 max-w-[1600px] mx-auto flex items-center justify-between">
         
-        {/* LOGO SECTION: Adjusted to ensure 'Bakehouse' is visible */}
-        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+        {/* LOGO SECTION: Now clickable to scroll to top */}
+        <div 
+          onClick={scrollToTop}
+          className="flex items-center gap-2 sm:gap-4 shrink-0 cursor-pointer group"
+        >
           <img 
             src={logo} 
             alt="Delight Bakehouse" 
-            className="w-8 h-8 sm:w-12 sm:h-12 rounded-full object-cover shadow-sm border border-black/5" 
+            className="w-8 h-8 sm:w-12 sm:h-12 rounded-full object-cover shadow-sm border border-black/5 transition-transform group-hover:scale-105" 
           />
-          <h1 className="text-[16px] sm:text-2xl font-serif font-bold tracking-tight text-gray-900 leading-tight">
+          <h1 className="text-[16px] sm:text-2xl font-serif font-bold tracking-tight text-gray-900 leading-tight transition-colors group-hover:text-[#E89EB8]">
             Delight Bakehouse
           </h1>
         </div>
@@ -34,7 +46,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
             <a 
               key={link.name}
               href={link.href} 
-              className="text-[13px] font-black uppercase tracking-[0.2em] hover:text-[#E89EB8] transition-colors"
+              className="text-[13px] font-black uppercase tracking-[0.2em] hover:text-[#E89EB8] transition-colors cursor-pointer"
             >
               {link.name}
             </a>
@@ -43,10 +55,10 @@ const Navbar = ({ cartCount, onOpenCart }) => {
 
         {/* RIGHT SIDE: Bag & Hamburger */}
         <div className="flex items-center gap-2 sm:gap-4">
-          {/* BAG BUTTON: Keeping text for clarity with optimized sizing */}
+          {/* BAG BUTTON */}
           <button 
             onClick={onOpenCart}
-            className="bg-white border border-black/10 px-3 py-2 sm:px-6 sm:py-3 rounded-full flex items-center gap-2 shadow-sm active:scale-95 transition-all group"
+            className="bg-white border border-black/10 px-3 py-2 sm:px-6 sm:py-3 rounded-full flex items-center gap-2 shadow-sm active:scale-95 transition-all group cursor-pointer"
           >
             <div className="relative">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[20px] sm:h-[20px]">
@@ -63,7 +75,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
 
           {/* MOBILE MENU TOGGLE (Hamburger) */}
           <button 
-            className="lg:hidden p-2 flex-shrink-0"
+            className="lg:hidden p-2 flex-shrink-0 cursor-pointer"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle Menu"
           >
@@ -91,7 +103,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
                   key={link.name}
                   href={link.href} 
                   onClick={() => setIsMenuOpen(false)}
-                  className="px-8 py-4 text-[13px] font-black uppercase tracking-[0.2em] border-b border-black/[0.03] active:bg-gray-50"
+                  className="px-8 py-4 text-[13px] font-black uppercase tracking-[0.2em] border-b border-black/[0.03] active:bg-gray-50 cursor-pointer"
                 >
                   {link.name}
                 </a>
