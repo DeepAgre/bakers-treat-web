@@ -105,7 +105,6 @@ const BakeryApp = () => {
   };
 
   return (
-    // overflow-x-hidden here stops the side-to-side wobble across all pages
     <div className="relative w-full overflow-x-hidden bg-[#F9F8F6]">
       <SmoothScroll>
         <AnimatePresence mode="wait">
@@ -116,14 +115,11 @@ const BakeryApp = () => {
 
         {!isLoading && (
           <header className="fixed top-0 left-0 w-full z-[120] animate-in fade-in duration-700">
-            {/* Announcement Bar */}
             <div className="bg-[#1A1A1A] text-white text-[11px] sm:text-[13px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] py-3 sm:py-4 text-center border-b border-white/10 px-4">
                <span className="text-[#E89EB8] animate-pulse mr-2">✦</span>
                24-Hour Notice Required • Handmade with love in Thane
                <span className="text-[#E89EB8] animate-pulse ml-2">✦</span>
             </div>
-            
-            {/* Navigation Bar */}
             <Navbar 
               cartCount={cartCount} 
               onOpenCart={() => setIsCartOpen(true)} 
@@ -131,7 +127,6 @@ const BakeryApp = () => {
           </header>
         )}
 
-        {/* Main Content: pt-24 ensures content starts below the fixed header without gaps */}
         <main className={`relative w-full ${!isLoading ? "pt-24 sm:pt-32" : ""}`}>
           <section id="home" className="w-full overflow-hidden">
             <Hero isParentLoading={isLoading} />
@@ -146,20 +141,21 @@ const BakeryApp = () => {
             <AboutKhushi /> 
           </section>
 
-          {/* Marquee and following sections */}
+          {/* This container has the rounded top effect */}
           <div className="relative z-10 bg-[#F9F8F6] rounded-t-[2rem] sm:rounded-t-[3rem] mt-[-30px] sm:mt-[-50px] shadow-[0_-25px_50px_rgba(0,0,0,0.05)] border-t border-black/5">
             <Marquee />
             <section id="menu" className="w-full">
               <Menu onProductSelect={handleProductSelect} /> 
             </section>
             <Testimonials />
-            <section id="contact" className="w-full">
-              <Footer />
-            </section>
           </div>
+
+          {/* Footer is now OUTSIDE the rounded block so it flows perfectly from dark to dark */}
+          <section id="contact" className="w-full bg-[#0A0A0A]">
+            <Footer />
+          </section>
         </main>
 
-        {/* Overlays */}
         <Cart 
           isOpen={isCartOpen} 
           onClose={() => setIsCartOpen(false)} 

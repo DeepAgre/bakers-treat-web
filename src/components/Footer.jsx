@@ -1,74 +1,83 @@
 import React from 'react';
-import { Instagram, MessageCircle, ArrowUpRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Footer = () => {
-  const whatsappUrl = "https://wa.me/919136371662";
-  const instagramUrl = "https://www.instagram.com/_bakers_treat_/";
+  const currentYear = new Date().getFullYear();
+  const khushiNumber = "919136371662"; // Your stored contact
+
+  const quickLinks = [
+    { name: 'Our Story', href: '#about' },
+    { name: 'Menu', href: '#menu' },
+    { name: 'Custom Orders', href: '#home' },
+  ];
 
   return (
-    <footer className="bg-white pt-24 pb-12 px-6">
+    <footer className="bg-[#0A0A0A] text-white pt-20 pb-10 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
-          
-          {/* Brand Bio */}
-          <div className="lg:col-span-2">
-            <h2 className="text-3xl font-serif mb-6">Delight Bakehouse<span className="text-[#E89EB8]">.</span></h2>
-            <p className="text-gray-500 max-w-sm leading-relaxed mb-8">
-              Handcrafted with love in Thane by Khushi Manjrekar. 
-              Dedicated to bringing premium artisan bakes and sculptural cakes to your doorstep.
+        {/* Top Section: Branding & CTA */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pb-16 border-b border-white/10">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl font-serif mb-6">Bakers Treat<span className="text-[#E89EB8]">.</span></h2>
+            <p className="text-white/50 max-w-sm leading-relaxed mb-8">
+              Handcrafting premium, artisanal bakes in the heart of Thane. 
+              Every treat is a story of quality and passion.
             </p>
             <div className="flex gap-4">
-               <a href={instagramUrl} target="_blank" rel="noreferrer" className="p-3 bg-[#F9F8F6] rounded-full hover:text-[#E89EB8] transition-colors">
-                  <Instagram size={20} />
-               </a>
-               <a href={whatsappUrl} target="_blank" rel="noreferrer" className="p-3 bg-[#F9F8F6] rounded-full hover:text-[#25D366] transition-colors">
-                  <MessageCircle size={20} />
-               </a>
-            </div>
-          </div>
-
-          {/* Location */}
-          <div>
-            <h4 className="font-bold uppercase tracking-widest text-xs mb-8">Location</h4>
-            <address className="not-italic text-gray-500 space-y-2">
-              <p>Thane, Maharashtra</p>
-              <p>India</p>
-              <p className="pt-4 text-black font-medium">+91 91363 71662</p>
-            </address>
-          </div>
-
-          {/* High-Visibility Connect Links */}
-          <div>
-            <h4 className="font-bold uppercase tracking-widest text-xs mb-8">Connect</h4>
-            <div className="space-y-4">
               <a 
-                href={instagramUrl} 
-                target="_blank" 
-                rel="noreferrer"
-                className="flex items-center justify-between group border-b border-black/5 pb-2 hover:border-[#E89EB8] transition-all"
+                href={`https://wa.me/${khushiNumber}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#E89EB8] text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-white hover:text-black transition-all"
               >
-                <span className="text-lg font-serif group-hover:text-[#E89EB8]">Instagram</span>
-                <ArrowUpRight size={18} className="text-gray-300 group-hover:text-[#E89EB8]" />
-              </a>
-              <a 
-                href={whatsappUrl} 
-                target="_blank" 
-                rel="noreferrer"
-                className="flex items-center justify-between group border-b border-black/5 pb-2 hover:border-[#25D366] transition-all"
-              >
-                <span className="text-lg font-serif group-hover:text-[#25D366]">WhatsApp</span>
-                <ArrowUpRight size={18} className="text-gray-300 group-hover:text-[#25D366]" />
+                Order on WhatsApp
               </a>
             </div>
-          </div>
+          </motion.div>
 
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="grid grid-cols-2 gap-8"
+          >
+            <div>
+              <h4 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-6">Explore</h4>
+              <ul className="space-y-4">
+                {quickLinks.map(link => (
+                  <li key={link.name}>
+                    <a href={link.href} className="text-white/60 hover:text-white transition-colors text-sm">
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-6">Contact</h4>
+              <p className="text-sm text-white/60 leading-loose">
+                Thane, Maharashtra<br />
+                Mon - Sun: 9AM - 9PM<br />
+                <a href={`tel:+${khushiNumber}`} className="hover:text-white transition-colors">
+                  +91 91363 71662
+                </a>
+              </p>
+            </div>
+          </motion.div>
         </div>
 
-        <div className="pt-12 border-t border-black/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-xs text-gray-400">© 2025 Delight Bakehouse. All rights reserved.</p>
-          <div className="flex gap-8 text-[10px] uppercase tracking-widest font-bold text-gray-400">
-            <a href="#" className="hover:text-black">Privacy Policy</a>
-            <a href="#" className="hover:text-black">Terms of Service</a>
+        {/* Bottom Section: Copyright */}
+        <div className="pt-10 flex flex-col md:row justify-between items-center gap-6">
+          <p className="text-white/20 text-[10px] font-black uppercase tracking-widest">
+            © {currentYear} Bakers Treat • Handcrafted with love in Thane
+          </p>
+          
+          <div className="flex gap-8">
+             <span className="text-white/20 text-[10px] font-black uppercase tracking-widest">Instagram</span>
+             <span className="text-white/20 text-[10px] font-black uppercase tracking-widest">Facebook</span>
           </div>
         </div>
       </div>
