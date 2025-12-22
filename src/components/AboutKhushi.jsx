@@ -54,7 +54,7 @@ const AboutKhushi = () => {
 
           <div className="grid grid-cols-2 gap-8 mt-12 pt-12 border-t border-gray-100">
             <div>
-              <p className="text-3xl font-serif font-bold text-gray-900">500+</p>
+              <p className="text-3xl font-serif font-bold text-gray-900">100+</p>
               <p className="text-[10px] uppercase tracking-widest font-black text-[#E89EB8] mt-1">Cakes Delivered</p>
             </div>
             <div>

@@ -35,7 +35,7 @@ const PreLoader = ({ onSkip }) => {
         className="absolute bottom-10 flex flex-col items-center gap-2"
       >
         <p className="text-white text-[9px] uppercase tracking-[0.4em]">Thane • Artisan Bakes</p>
-        <p className="text-white text-[8px] uppercase tracking-[0.2em] mt-1 italic">By Khushi Manjarekar</p>
+        <p className="text-white text-[8px] uppercase tracking-[0.2em] mt-1 italic">By Khushi Manjrekar</p>
       </motion.div>
     </motion.div>
   );

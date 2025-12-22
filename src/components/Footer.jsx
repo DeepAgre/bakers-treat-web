@@ -14,7 +14,7 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <h2 className="text-3xl font-serif mb-6">Delight Bakehouse<span className="text-[#E89EB8]">.</span></h2>
             <p className="text-gray-500 max-w-sm leading-relaxed mb-8">
-              Handcrafted with love in Thane by Khushi Manjarekar. 
+              Handcrafted with love in Thane by Khushi Manjrekar. 
               Dedicated to bringing premium artisan bakes and sculptural cakes to your doorstep.
             </p>
             <div className="flex gap-4">
