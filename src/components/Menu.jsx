@@ -50,19 +50,34 @@ const Menu = ({ onProductSelect }) => {
     }
   }, [activeCategory, products]);
 
-  if (loading) return <div className="py-24 text-center font-serif text-gray-400">Loading Delight Bakehouse Menu...</div>;
+  if (loading) return (
+    <div className="py-40 text-center font-serif text-gray-400 animate-pulse">
+      Loading Delight Bakehouse Menu...
+    </div>
+  );
 
   return (
-    <section className="py-24 px-6 max-w-7xl mx-auto" id="menu">
-      <div className="text-center mb-16">
-        <h2 className="text-5xl font-serif font-bold mb-4">Our Menu</h2>
-        <div className="flex flex-wrap justify-center gap-3 mt-8">
+    <section className="py-20 sm:py-32 px-6 max-w-7xl mx-auto overflow-hidden" id="menu">
+      <div className="text-center mb-16 sm:mb-24">
+        <motion.span 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="text-[#E89EB8] uppercase tracking-[0.4em] text-[10px] sm:text-[12px] font-black mb-4 block"
+        >
+          Freshly Baked
+        </motion.span>
+        <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 text-gray-900">Our Menu</h2>
+        
+        {/* Category Filters */}
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-8">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase transition-all
-                ${activeCategory === cat ? 'bg-[#E89EB8] text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
+              className={`px-5 py-2 sm:px-8 sm:py-3 rounded-full text-[10px] font-black tracking-widest uppercase transition-all duration-300
+                ${activeCategory === cat 
+                  ? 'bg-[#E89EB8] text-white shadow-lg shadow-[#E89EB8]/20 scale-105' 
+                  : 'bg-white text-gray-400 border border-black/5 hover:border-[#E89EB8]/30 hover:text-[#E89EB8]'}`}
             >
               {cat}
             </button>
@@ -70,42 +85,58 @@ const Menu = ({ onProductSelect }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
         <AnimatePresence mode='popLayout'>
           {filteredProducts.map((product) => (
             <motion.div 
               layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.5 }}
               key={product.id}
               onClick={() => !product.isSoldOut && onProductSelect(product)}
-              className={`group ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+              className={`group flex flex-col ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
             >
-              {/* Product Image Container (Price Tag Removed) */}
-              <div className="relative overflow-hidden rounded-[2.5rem] aspect-square shadow-lg mb-6">
+              {/* Product Image Container */}
+              {/* FIXED: Using aspect-[4/5] ensures cake height is captured better than aspect-square */}
+              <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[3rem] aspect-[4/5] shadow-xl mb-8 bg-gray-50">
                 <img 
                   src={product.img} 
                   alt={product.name} 
-                  className={`w-full h-full object-cover transition-transform duration-700 ${product.isSoldOut ? 'grayscale opacity-50' : 'group-hover:scale-110'}`} 
+                  className={`w-full h-full object-cover object-center transition-transform duration-1000 ease-out 
+                    ${product.isSoldOut ? 'grayscale opacity-40' : 'group-hover:scale-110'}`} 
                 />
                 
+                {/* Subtle overlay on hover */}
+                {!product.isSoldOut && (
+                  <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                )}
+
                 {product.isSoldOut && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
-                    <span className="bg-white/95 text-black font-black px-6 py-2 rounded-full text-xs uppercase tracking-[0.2em]">Sold Out</span>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/10 backdrop-blur-[1px]">
+                    <span className="bg-white/95 text-black font-black px-6 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] shadow-xl">
+                      Sold Out
+                    </span>
                   </div>
                 )}
               </div>
 
-              {/* Product Info (Name, Category, and NEW Price Position) */}
-              <div className="text-center">
-                <p className="text-[#E89EB8] uppercase tracking-[0.2em] text-[10px] font-black mb-1">
+              {/* Product Info */}
+              <div className="text-center px-4">
+                <p className="text-[#E89EB8] uppercase tracking-[0.3em] text-[9px] font-black mb-2">
                   {product.category}
                 </p>
-                <h3 className="text-2xl font-serif font-bold text-gray-900 mb-2">
+                <h3 className="text-xl sm:text-2xl font-serif font-bold text-gray-900 mb-2 group-hover:text-[#E89EB8] transition-colors">
                   {product.name}
                 </h3>
-                {/* Updated Price Placement */}
-                <p className="text-xl font-bold text-gray-800">
-                  ₹{product.price}
-                </p>
+                <div className="flex items-center justify-center gap-2">
+                  <div className="h-px w-4 bg-gray-200"></div>
+                  <p className="text-lg font-bold text-gray-700">
+                    ₹{product.price}
+                  </p>
+                  <div className="h-px w-4 bg-gray-200"></div>
+                </div>
               </div>
             </motion.div>
           ))}

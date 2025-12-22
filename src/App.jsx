@@ -20,7 +20,7 @@ const BakeryApp = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // New state to control modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false); 
   
   const [cartItems, setCartItems] = useState(() => {
     const saved = localStorage.getItem('bakers_treat_cart');
@@ -40,7 +40,6 @@ const BakeryApp = () => {
 
   const handleSkipIntro = () => setIsLoading(false);
 
-  // Function called when a product is clicked in the Menu
   const handleProductSelect = (product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
@@ -106,72 +105,79 @@ const BakeryApp = () => {
   };
 
   return (
-    <SmoothScroll>
-      <AnimatePresence mode="wait">
-        {isLoading && <PreLoader key="loader" onSkip={handleSkipIntro} />}
-      </AnimatePresence>
+    // overflow-x-hidden here stops the side-to-side wobble across all pages
+    <div className="relative w-full overflow-x-hidden bg-[#F9F8F6]">
+      <SmoothScroll>
+        <AnimatePresence mode="wait">
+          {isLoading && <PreLoader key="loader" onSkip={handleSkipIntro} />}
+        </AnimatePresence>
 
-      <Toast show={showToast} message="Added to your bag!" />
+        <Toast show={showToast} message="Added to your bag!" />
 
-      {!isLoading && (
-        <header className="fixed top-0 left-0 w-full z-[120] animate-in fade-in duration-700">
-          <div className="bg-[#1A1A1A] text-white text-[13px] sm:text-[15px] font-black uppercase tracking-[0.3em] py-5 text-center border-b border-white/10 shadow-2xl">
-             <span className="text-[#E89EB8] animate-pulse mr-2">✦</span>
-             24-Hour Notice Required • Handmade with love in Thane
-             <span className="text-[#E89EB8] animate-pulse ml-2">✦</span>
-          </div>
-          
-          <div className="bg-[#F9F8F6]/95 backdrop-blur-xl border-b border-black/5">
+        {!isLoading && (
+          <header className="fixed top-0 left-0 w-full z-[120] animate-in fade-in duration-700">
+            {/* Announcement Bar */}
+            <div className="bg-[#1A1A1A] text-white text-[11px] sm:text-[13px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] py-3 sm:py-4 text-center border-b border-white/10 px-4">
+               <span className="text-[#E89EB8] animate-pulse mr-2">✦</span>
+               24-Hour Notice Required • Handmade with love in Thane
+               <span className="text-[#E89EB8] animate-pulse ml-2">✦</span>
+            </div>
+            
+            {/* Navigation Bar */}
             <Navbar 
               cartCount={cartCount} 
               onOpenCart={() => setIsCartOpen(true)} 
             />
+          </header>
+        )}
+
+        {/* Main Content: pt-24 ensures content starts below the fixed header without gaps */}
+        <main className={`relative w-full ${!isLoading ? "pt-24 sm:pt-32" : ""}`}>
+          <section id="home" className="w-full overflow-hidden">
+            <Hero isParentLoading={isLoading} />
+          </section>
+
+          <section className="w-full">
+            <CustomOrder />
+          </section>
+
+          <section id="about" className="w-full bg-[#F9F8F6]">
+            <Ingredients />
+            <AboutKhushi /> 
+          </section>
+
+          {/* Marquee and following sections */}
+          <div className="relative z-10 bg-[#F9F8F6] rounded-t-[2rem] sm:rounded-t-[3rem] mt-[-30px] sm:mt-[-50px] shadow-[0_-25px_50px_rgba(0,0,0,0.05)] border-t border-black/5">
+            <Marquee />
+            <section id="menu" className="w-full">
+              <Menu onProductSelect={handleProductSelect} /> 
+            </section>
+            <Testimonials />
+            <section id="contact" className="w-full">
+              <Footer />
+            </section>
           </div>
-        </header>
-      )}
+        </main>
 
-      <main className={!isLoading ? "pt-32" : ""}>
-        <div id="home">
-          <Hero isParentLoading={isLoading} />
-        </div>
+        {/* Overlays */}
+        <Cart 
+          isOpen={isCartOpen} 
+          onClose={() => setIsCartOpen(false)} 
+          items={cartItems} 
+          total={formattedTotal} 
+          updateQty={updateQty}
+          removeItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
+          onCheckout={handleCheckout}
+        />
 
-        <CustomOrder />
-
-        <div id="about">
-          <Ingredients />
-          <AboutKhushi /> 
-        </div>
-
-        <div className="relative z-10 bg-[#F9F8F6] rounded-t-[3rem] mt-[-50px] shadow-[0_-25px_50px_rgba(0,0,0,0.05)] border-t border-black/5">
-          <Marquee />
-          <div id="menu">
-            <Menu onProductSelect={handleProductSelect} /> 
-          </div>
-          <Testimonials />
-          <div id="contact">
-            <Footer />
-          </div>
-        </div>
-      </main>
-
-      <Cart 
-        isOpen={isCartOpen} 
-        onClose={() => setIsCartOpen(false)} 
-        items={cartItems} 
-        total={formattedTotal} 
-        updateQty={updateQty}
-        removeItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
-        onCheckout={handleCheckout}
-      />
-
-      {/* MODAL: Now using the isOpen state to trigger correctly */}
-      <ProductModal 
-        product={selectedProduct} 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAddToBag={addToCart}
-      />
-    </SmoothScroll>
+        <ProductModal 
+          product={selectedProduct} 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onAddToBag={addToCart}
+        />
+      </SmoothScroll>
+    </div>
   );
 };
 
