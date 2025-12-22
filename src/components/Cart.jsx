@@ -1,8 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout }) => {
-  const [deliveryDate, setDeliveryDate] = useState('');
+  // Logic to calculate the minimum allowed date (Tomorrow)
+  const getTomorrowDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    // Format to YYYY-MM-DD for the input 'min' attribute
+    return tomorrow.toISOString().split('T')[0];
+  };
+
+  const minDate = getTomorrowDate();
+  
+  // Set the default state to tomorrow's date
+  const [deliveryDate, setDeliveryDate] = useState(minDate);
+
+  // Sync state if tomorrow changes (rare, but good practice for long-running sessions)
+  useEffect(() => {
+    if (!deliveryDate) {
+      setDeliveryDate(minDate);
+    }
+  }, [isOpen]);
 
   return (
     <AnimatePresence>
@@ -82,10 +100,11 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               <div className="p-6 bg-white border-t border-gray-100 space-y-6">
                 <div>
                   <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 block font-sans">
-                    Select Pickup/Delivery Date
+                    Select Pickup/Delivery Date (Min 24h Notice)
                   </label>
                   <input 
                     type="date" 
+                    min={minDate} // THIS BLOCKS TODAY AND PREVIOUS DATES
                     value={deliveryDate}
                     onChange={(e) => setDeliveryDate(e.target.value)}
                     className="w-full p-4 rounded-xl border border-gray-100 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#E89EB8] cursor-pointer font-sans text-sm"
@@ -98,7 +117,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                 </div>
 
                 <div className="space-y-3">
-                  {/* BIG BUTTON: Checkout via WhatsApp */}
                   <button
                     onClick={() => onCheckout('whatsapp', deliveryDate)}
                     className="w-full bg-[#25D366] text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-3 shadow-lg cursor-pointer text-sm"
@@ -107,13 +125,12 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                     Checkout via WhatsApp
                   </button>
 
-                  {/* SMALLER BUTTONS ROW */}
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={() => onCheckout('call')}
                       className="bg-black text-white py-4 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 cursor-pointer hover:bg-gray-800 transition-colors"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.27-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.27-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                       Call Khushi
                     </button>
                     <button
@@ -124,7 +141,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                     </button>
                   </div>
 
-                  {/* THE NOTICE: Re-added below buttons */}
                   <p className="text-[11px] text-gray-400 text-center pt-2 font-medium leading-relaxed italic">
                     Orders are confirmed manually. <br />
                     Payment details will be shared on WhatsApp.
