@@ -1,64 +1,68 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import khushiImg from '../assets/khushi.jpg'; 
 
 const AboutKhushi = () => {
   return (
-    <section className="py-24 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center gap-16">
+    <section className="py-24 px-6 max-w-7xl mx-auto" id="about">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        
+        {/* LEFT SIDE: Image Container */}
+        <motion.div 
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="relative"
+        >
+          <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl aspect-[4/5] border border-black/5">
+            <img 
+              src={khushiImg} 
+              alt="Khushi Manjrekar" 
+              className="w-full h-full object-cover"
+            />
+          </div>
           
-          {/* Image Side */}
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="w-full md:w-1/2 relative"
-          >
-            <div className="aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl">
-              <img 
-                src="https://images.unsplash.com/photo-1556210335-0921327a683f?q=80&w=800&auto=format&fit=crop" 
-                alt="Khushi Manjrekar" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            {/* Decorative Element */}
-            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#E89EB8] rounded-full flex items-center justify-center text-white font-serif text-center p-4 leading-none rotate-12 shadow-xl">
-              Est. 2025
-            </div>
-          </motion.div>
+          {/* Decorative background shape */}
+          <div className="absolute -top-10 -left-10 w-64 h-64 bg-[#E89EB8]/10 rounded-full blur-3xl -z-10" />
+          
+          {/* NOTICE: The pink "Est. 2025" badge has been removed from here */}
+        </motion.div>
 
-          {/* Text Side */}
-          <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="w-full md:w-1/2"
-          >
-            <h4 className="text-[#E89EB8] font-bold uppercase tracking-[0.3em] text-[10px] mb-4">The Artist</h4>
-            <h2 className="text-5xl font-serif mb-8 leading-tight">Meet Khushi Manjarekar<span className="text-[#E89EB8]">.</span></h2>
-            
-            <div className="space-y-6 text-gray-500 text-lg leading-relaxed font-light">
-              <p>
-                Based in the heart of Thane, Khushi transformed her lifelong passion for art into a world of edible wonders. With a keen eye for detail and a background in structural design, she doesn't just bake cakes—she builds dreams.
-              </p>
-              <p>
-                Every creation at <strong>Delight Bakehouse</strong> is a labor of love, using only the finest ingredients like Belgian chocolate and fresh artisan fruits. For Khushi, the goal is simple: to create a centerpiece that tastes even better than it looks.
-              </p>
-            </div>
+        {/* RIGHT SIDE: Text Content */}
+        <motion.div 
+          initial={{ opacity: 0, x: 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <span className="text-[#E89EB8] uppercase tracking-[0.4em] text-[12px] font-black mb-6 block font-sans">
+            The Artist
+          </span>
+          <h2 style={{ fontFamily: "'Playfair Display', serif" }} className="text-5xl md:text-6xl font-bold text-gray-900 mb-8 leading-tight">
+            Meet Khushi Manjrekar<span className="text-[#E89EB8]">.</span>
+          </h2>
+          
+          <div className="space-y-6 text-gray-500 font-sans leading-relaxed text-lg text-justify">
+            <p>
+              Based in the heart of Thane, Khushi transformed her passion for art into a world of edible wonders. With a keen eye for detail and a background in design, she doesn't just bake cakes—she builds dreams.
+            </p>
+            <p>
+              Every creation at **Bakers Treat** is a labor of love, using only the finest ingredients. For Khushi, the goal is simple: to create a centerpiece that tastes even better than it looks.
+            </p>
+          </div>
 
-            <div className="mt-12 flex gap-8 border-t border-black/5 pt-8">
-               <div>
-                  <p className="text-2xl font-serif text-black">500+</p>
-                  <p className="text-[10px] uppercase tracking-widest text-[#E89EB8] font-bold">Cakes Delivered</p>
-               </div>
-               <div>
-                  <p className="text-2xl font-serif text-black">100%</p>
-                  <p className="text-[10px] uppercase tracking-widest text-[#E89EB8] font-bold">Eggless Options</p>
-               </div>
+          <div className="grid grid-cols-2 gap-8 mt-12 pt-12 border-t border-gray-100">
+            <div>
+              <p className="text-3xl font-serif font-bold text-gray-900">500+</p>
+              <p className="text-[10px] uppercase tracking-widest font-black text-[#E89EB8] mt-1">Cakes Delivered</p>
             </div>
-          </motion.div>
-
-        </div>
+            <div>
+              <p className="text-3xl font-serif font-bold text-gray-900">100%</p>
+              <p className="text-[10px] uppercase tracking-widest font-black text-[#E89EB8] mt-1">Eggless Options</p>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
