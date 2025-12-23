@@ -16,15 +16,20 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
   const [deliveryDate, setDeliveryDate] = useState(minDate);
   const [address, setAddress] = useState('');
 
-  // FIX: Prevent background scrolling when Bag is open
+  // HARD FIX: Global Scroll Lock
   useEffect(() => {
     if (isOpen) {
+      // Prevent scrolling on both body and html to bypass SmoothScroll conflicts
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = '0px'; // Prevents layout shift
     } else {
-      document.body.style.overflow = 'unset';
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
     };
   }, [isOpen]);
 
@@ -41,7 +46,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -50,15 +54,15 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] cursor-pointer"
           />
 
-          {/* Bag Panel */}
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-[201] shadow-2xl flex flex-col"
+            /* Added h-screen and fixed positioning to ensure it stays in view */
+            className="fixed right-0 top-0 h-screen w-full max-w-md bg-white z-[201] shadow-2xl flex flex-col"
           >
-            {/* Header - Fixed */}
+            {/* Header */}
             <div className="p-6 border-b border-gray-100 flex justify-between items-center shrink-0 bg-white">
               <h2 className="text-2xl font-serif font-bold text-gray-900">Your Bag</h2>
               <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer text-gray-400">
@@ -66,15 +70,18 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               </button>
             </div>
 
-            {/* Scrollable Items Area - Enhanced Scroll Capture */}
-            <div className="flex-1 overflow-y-auto overflow-x-hidden p-6 space-y-6 overscroll-contain touch-auto">
+            {/* PRODUCT LIST - This is the scrolly part */}
+            <div 
+              className="flex-1 overflow-y-auto p-6 space-y-6 overscroll-contain"
+              style={{ WebkitOverflowScrolling: 'touch' }} // Smooth touch for mobile
+            >
               {items.length === 0 ? (
                 <div className="text-center py-20">
                   <p className="text-gray-400 font-medium font-sans">Your bag is empty.</p>
                 </div>
               ) : (
                 items.map((item) => (
-                  <div key={item.id} className="flex gap-4 items-center bg-gray-50 p-4 rounded-2xl border border-black/5">
+                  <div key={item.id} className="flex gap-4 items-center bg-gray-50 p-4 rounded-2xl border border-black/5 shrink-0">
                     <img src={item.img} alt={item.name} className="w-20 h-20 rounded-xl object-cover shrink-0" />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-bold text-gray-900 text-sm font-sans truncate">{item.name}</h4>
@@ -85,7 +92,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                         <button onClick={() => updateQty(item.id, 1)} className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-white cursor-pointer font-bold text-gray-600">+</button>
                       </div>
                     </div>
-                    <button onClick={() => removeItem(item.id)} className="text-gray-300 hover:text-red-500 transition-colors cursor-pointer p-2">
+                    <button onClick={() => removeItem(item.id)} className="text-gray-300 hover:text-red-500 transition-colors cursor-pointer p-2 shrink-0">
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     </button>
                   </div>
@@ -93,7 +100,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               )}
             </div>
 
-            {/* Checkout Section - Fixed at bottom */}
+            {/* Checkout Section */}
             {items.length > 0 && (
               <div className="p-6 bg-white border-t border-gray-100 space-y-4 shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
                 <div className="grid grid-cols-1 gap-4">
@@ -104,7 +111,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                       min={minDate} 
                       value={deliveryDate}
                       onChange={(e) => setDeliveryDate(e.target.value)}
-                      className="w-full p-3 rounded-xl border border-gray-100 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#E89EB8] font-sans text-sm"
+                      className="w-full p-3 rounded-xl border border-gray-100 bg-gray-50 font-sans text-sm"
                     />
                   </div>
                   <div>
@@ -114,7 +121,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       rows="2"
-                      className="w-full p-3 rounded-xl border border-gray-100 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#E89EB8] font-sans text-sm resize-none"
+                      className="w-full p-3 rounded-xl border border-gray-100 bg-gray-50 font-sans text-sm resize-none"
                     />
                   </div>
                 </div>
@@ -136,11 +143,11 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                   >
                     Checkout via WhatsApp
                   </button>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button onClick={() => onCheckout('call')} className="bg-black text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2">
+                  <div className="grid grid-cols-2 gap-3 pb-2">
+                    <button onClick={() => onCheckout('call')} className="bg-black text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-[9px]">
                       Call Khushi
                     </button>
-                    <button onClick={() => onCheckout('whatsapp', 'Inquiry')} className="border-2 border-black text-black py-3.5 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2">
+                    <button onClick={() => onCheckout('whatsapp', 'Inquiry')} className="border-2 border-black text-black py-3.5 rounded-xl font-black uppercase tracking-widest text-[9px]">
                       Inquiry
                     </button>
                   </div>
