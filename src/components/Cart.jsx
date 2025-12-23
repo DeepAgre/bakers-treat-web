@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout }) => {
+  const scrollRef = useRef(null); // Reference to the scrollable area
+
   const getTomorrowDate = () => {
     const today = new Date();
     const tomorrow = new Date(today);
@@ -16,13 +18,11 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
   const [deliveryDate, setDeliveryDate] = useState(minDate);
   const [address, setAddress] = useState('');
 
-  // HARD FIX: Global Scroll Lock
+  // 1. CSS Scroll Lock
   useEffect(() => {
     if (isOpen) {
-      // Prevent scrolling on both body and html to bypass SmoothScroll conflicts
       document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
-      document.body.style.paddingRight = '0px'; // Prevents layout shift
     } else {
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
@@ -31,6 +31,28 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     };
+  }, [isOpen]);
+
+  // 2. MOUSE WHEEL FIX: Stop scroll from reaching the background SmoothScroll
+  useEffect(() => {
+    const handleWheel = (e) => {
+      if (!isOpen) return;
+      
+      const el = scrollRef.current;
+      if (!el) return;
+
+      // Check if the user is scrolling inside the cart
+      const isInsideCart = el.contains(e.target);
+      
+      if (isInsideCart) {
+        // Stop the event from reaching the 'SmoothScroll' component
+        e.stopPropagation();
+      }
+    };
+
+    // Attach listener with 'passive: false' to allow e.stopPropagation()
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    return () => window.removeEventListener('wheel', handleWheel);
   }, [isOpen]);
 
   useEffect(() => {
@@ -46,6 +68,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -54,26 +77,27 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] cursor-pointer"
           />
 
+          {/* Bag Panel */}
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            /* Added h-screen and fixed positioning to ensure it stays in view */
             className="fixed right-0 top-0 h-screen w-full max-w-md bg-white z-[201] shadow-2xl flex flex-col"
           >
-            {/* Header */}
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center shrink-0 bg-white">
+            {/* Header - Fixed */}
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center shrink-0">
               <h2 className="text-2xl font-serif font-bold text-gray-900">Your Bag</h2>
-              <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer text-gray-400">
+              <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full text-gray-400">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
 
-            {/* PRODUCT LIST - This is the scrolly part */}
+            {/* PRODUCT LIST - Added 'ref' and 'data-lenis-prevent' to stop background scrolling */}
             <div 
+              ref={scrollRef}
+              data-lenis-prevent
               className="flex-1 overflow-y-auto p-6 space-y-6 overscroll-contain"
-              style={{ WebkitOverflowScrolling: 'touch' }} // Smooth touch for mobile
             >
               {items.length === 0 ? (
                 <div className="text-center py-20">
@@ -92,7 +116,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                         <button onClick={() => updateQty(item.id, 1)} className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-white cursor-pointer font-bold text-gray-600">+</button>
                       </div>
                     </div>
-                    <button onClick={() => removeItem(item.id)} className="text-gray-300 hover:text-red-500 transition-colors cursor-pointer p-2 shrink-0">
+                    <button onClick={() => removeItem(item.id)} className="text-gray-300 hover:text-red-500 transition-colors p-2 shrink-0">
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     </button>
                   </div>
@@ -100,7 +124,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               )}
             </div>
 
-            {/* Checkout Section */}
+            {/* Checkout Section - Fixed */}
             {items.length > 0 && (
               <div className="p-6 bg-white border-t border-gray-100 space-y-4 shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
                 <div className="grid grid-cols-1 gap-4">
