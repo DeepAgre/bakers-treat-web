@@ -23,12 +23,12 @@ const BakeryApp = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); 
   
   const [cartItems, setCartItems] = useState(() => {
-    const saved = localStorage.getItem('bakers_treat_cart');
+    const saved = localStorage.getItem('delight_bakehouse_cart');
     return saved ? JSON.parse(saved) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem('bakers_treat_cart', JSON.stringify(cartItems));
+    localStorage.setItem('delight_bakehouse_cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
   useEffect(() => {
@@ -45,10 +45,8 @@ const BakeryApp = () => {
     setIsModalOpen(true);
   };
 
-  // UPDATED: Now accepts a product object that already includes the selected variant info
   const addToCart = (productWithVariant) => {
     setCartItems(prev => {
-      // Check for exact match of ID AND variant/size
       const existing = prev.find(item => item.id === productWithVariant.id);
       if (existing) {
         return prev.map(item => 
@@ -71,35 +69,45 @@ const BakeryApp = () => {
     }).filter(item => item.qty > 0));
   };
 
-  const cartTotal = cartItems.reduce((acc, item) => {
-    return acc + (item.price * item.qty);
-  }, 0);
+  const cartTotal = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
 
   const formattedTotal = new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0
+    style: 'currency', currency: 'INR', maximumFractionDigits: 0
   }).format(cartTotal);
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
-  const handleCheckout = (type, deliveryDate) => {
+  // Updated handleCheckout to support Address and Delivery logic
+  const handleCheckout = (type, deliveryDate, address) => {
     const khushiNumber = "919136371662"; 
+    
     if (type === 'call') {
       window.location.href = `tel:+${khushiNumber}`;
       return;
     }
-    
+
+    if (!deliveryDate || deliveryDate === 'Inquiry') {
+      const msg = encodeURIComponent("Hi Khushi! I'm interested in ordering from Delight Bakehouse...");
+      window.open(`https://wa.me/${khushiNumber}?text=${msg}`, '_blank');
+      return;
+    }
+
+    if (!address || address.trim().length < 3) {
+      alert("Please enter a delivery address or area first!");
+      return;
+    }
+
     const itemSummary = cartItems.map(i => `• ${i.name} (x${i.qty})`).join('\n');
-    const headerMsg = type === 'whatsapp' && !deliveryDate
-      ? "Hi Khushi! I have a question about these items:" 
-      : "NEW ORDER REQUEST";
-    
-    const dateLine = deliveryDate ? `\n*Requested Date: ${deliveryDate}*` : "";
     
     const message = encodeURIComponent(
-      `${headerMsg}\n\n${itemSummary}\n\n*Total: ${formattedTotal}*${dateLine}\n\nSent from Bakers Treat Website`
+      `🥯 *NEW ORDER FROM DELIGHT BAKEHOUSE*\n\n` +
+      `${itemSummary}\n\n` +
+      `*Subtotal: ${formattedTotal}*\n` +
+      `*Delivery Date: ${deliveryDate}*\n` +
+      `*Location: ${address}*\n\n` +
+      `_Note: Please confirm the order and let me know the delivery charges for my area._`
     );
+
     window.open(`https://wa.me/${khushiNumber}?text=${message}`, '_blank');
   };
 
@@ -119,38 +127,20 @@ const BakeryApp = () => {
                24-Hour Notice Required • Handmade with love in Thane
                <span className="text-[#E89EB8] animate-pulse ml-2">✦</span>
             </div>
-            <Navbar 
-              cartCount={cartCount} 
-              onOpenCart={() => setIsCartOpen(true)} 
-            />
+            <Navbar cartCount={cartCount} onOpenCart={() => setIsCartOpen(true)} />
           </header>
         )}
 
         <main className={`relative w-full ${!isLoading ? "pt-24 sm:pt-32" : ""}`}>
-          <section id="home" className="w-full overflow-hidden">
-            <Hero isParentLoading={isLoading} />
-          </section>
-
-          <section className="w-full">
-            <CustomOrder />
-          </section>
-
-          <section id="about" className="w-full bg-[#F9F8F6]">
-            <Ingredients />
-            <AboutKhushi /> 
-          </section>
-
+          <section id="home"><Hero isParentLoading={isLoading} /></section>
+          <section><CustomOrder /></section>
+          <section id="about" className="bg-[#F9F8F6]"><Ingredients /><AboutKhushi /></section>
           <div className="relative z-10 bg-[#F9F8F6] rounded-t-[2rem] sm:rounded-t-[3rem] mt-[-30px] sm:mt-[-50px] shadow-[0_-25px_50px_rgba(0,0,0,0.05)] border-t border-black/5">
             <Marquee />
-            <section id="menu" className="w-full">
-              <Menu onProductSelect={handleProductSelect} /> 
-            </section>
+            <section id="menu"><Menu onProductSelect={handleProductSelect} /></section>
             <Testimonials />
           </div>
-
-          <section id="contact" className="w-full bg-[#0A0A0A]">
-            <Footer />
-          </section>
+          <section id="contact" className="bg-[#0A0A0A]"><Footer /></section>
         </main>
 
         <Cart 
