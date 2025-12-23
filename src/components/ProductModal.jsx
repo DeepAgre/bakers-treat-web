@@ -27,9 +27,12 @@ const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[300] flex items-end sm:items-center justify-center">
-          {/* Dark Backdrop */}
+          {/* Dark Backdrop - Fades out quickly */}
           <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={onClose}
             className="absolute inset-0 bg-black/80 backdrop-blur-sm"
           />
@@ -38,10 +41,11 @@ const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="relative bg-white w-full max-w-4xl h-[92vh] sm:h-auto sm:max-h-[90vh] sm:rounded-[2rem] overflow-hidden flex flex-col md:flex-row"
+            /* CHANGED: Removed spring physics for a direct, fast slide-down */
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="relative bg-white w-full max-w-4xl h-[92vh] sm:h-auto sm:max-h-[90vh] sm:rounded-[2rem] overflow-hidden flex flex-col md:flex-row shadow-2xl"
           >
-            {/* Close Button - Solid background for visibility */}
+            {/* Close Button */}
             <button 
               onClick={onClose} 
               className="absolute top-4 right-4 z-[320] bg-white p-2 rounded-full text-black shadow-xl border border-gray-100"
@@ -49,7 +53,7 @@ const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
 
-            {/* 1. IMAGE SECTION - Takes top half on mobile */}
+            {/* 1. IMAGE SECTION */}
             <div className="w-full md:w-1/2 h-[40%] md:h-auto shrink-0">
               <img 
                 src={product.img} 
@@ -58,9 +62,8 @@ const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
               />
             </div>
 
-            {/* 2. CONTENT SECTION - Takes bottom half on mobile */}
+            {/* 2. CONTENT SECTION */}
             <div className="w-full md:w-1/2 flex flex-col h-[60%] md:h-auto bg-white">
-              {/* Scrollable text area */}
               <div className="flex-1 overflow-y-auto p-6 sm:p-10">
                 <span className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.4em] mb-2 block">
                   {product.category}
@@ -93,7 +96,7 @@ const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
                 </div>
               </div>
 
-              {/* 3. FIXED FOOTER - Always visible at bottom of modal */}
+              {/* 3. FIXED FOOTER */}
               <div className="p-6 sm:p-10 border-t border-gray-100 flex items-center justify-between gap-4 bg-white">
                 <div>
                   <p className="text-gray-400 text-[9px] font-black uppercase tracking-widest mb-1">Price</p>
