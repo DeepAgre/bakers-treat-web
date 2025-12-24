@@ -1,78 +1,172 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { moderateFeedback } from '../lib/aiModerator';
-import { client } from '../lib/sanity'; // Ensure your client has write token enabled
+import { client } from '../lib/sanity';
 
 const FeedbackForm = () => {
-  const [formData, setFormData] = useState({ name: '', rating: 5, comment: '' });
-  const [status, setStatus] = useState(''); // 'loading', 'success', 'error'
+  const [formData, setFormData] = useState({ name: '', rating: 0, comment: '' });
+  const [hoverRating, setHoverRating] = useState(0);
+  const [status, setStatus] = useState('idle'); // 'idle', 'loading', 'success', 'error'
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus('loading');
-
-    // 1. Run Generative AI Moderation
-    const aiResult = await moderateFeedback(formData.comment);
-
-    if (aiResult.status === "REJECTED") {
+    if (formData.rating === 0) {
+      setErrorMessage("Please select a star rating.");
       setStatus('error');
-      alert(`Sorry! Your review was flagged: ${aiResult.reason}`);
       return;
     }
 
-    // 2. Prepare for Sanity
-    const doc = {
-      _type: 'feedback',
-      name: formData.name,
-      rating: Number(formData.rating),
-      comment: formData.comment,
-      isApproved: aiResult.status === "APPROVED", // Auto-approve if AI says it's genuine
-      aiFlaggedReason: aiResult.reason,
-      createdAt: new Date().toISOString(),
-    };
+    setStatus('loading');
+    setErrorMessage('');
 
     try {
+      // 1. Run Generative AI Moderation
+      const aiResult = await moderateFeedback(formData.comment);
+
+      if (aiResult.status === "REJECTED") {
+        setStatus('error');
+        setErrorMessage(`Note: ${aiResult.reason}`);
+        return;
+      }
+
+      // 2. Prepare for Sanity
+      const doc = {
+        _type: 'feedback',
+        name: formData.name,
+        rating: Number(formData.rating),
+        comment: formData.comment,
+        isApproved: aiResult.status === "APPROVED",
+        aiFlaggedReason: aiResult.reason,
+        createdAt: new Date().toISOString(),
+      };
+
       await client.create(doc);
       setStatus('success');
-      setFormData({ name: '', rating: 5, comment: '' });
+      setFormData({ name: '', rating: 0, comment: '' });
+      
+      // Reset success message after 5 seconds
+      setTimeout(() => setStatus('idle'), 5000);
+
     } catch (err) {
+      console.error(err);
       setStatus('error');
+      setErrorMessage("Something went wrong. Please try again.");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-2xl shadow-lg border-2 border-pink-100">
-      <h2 className="text-2xl font-bold text-pink-600 mb-4">Leave a Review for Khushi 🍰</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input 
-          className="w-full p-2 border rounded-lg" 
-          placeholder="Your Name" 
-          value={formData.name}
-          onChange={(e) => setFormData({...formData, name: e.target.value})}
-          required 
-        />
-        <select 
-          className="w-full p-2 border rounded-lg"
-          value={formData.rating}
-          onChange={(e) => setFormData({...formData, rating: e.target.value})}
-        >
-          {[5,4,3,2,1].map(num => <option key={num} value={num}>{num} Stars</option>)}
-        </select>
-        <textarea 
-          className="w-full p-2 border rounded-lg" 
-          placeholder="How were the brownies?"
-          value={formData.comment}
-          onChange={(e) => setFormData({...formData, comment: e.target.value})}
-          required
-        />
-        <button 
-          type="submit" 
-          className="w-full bg-pink-500 text-white py-2 rounded-lg font-bold hover:bg-pink-600 transition"
-          disabled={status === 'loading'}
-        >
-          {status === 'loading' ? 'AI is checking...' : 'Submit Review'}
-        </button>
-        {status === 'success' && <p className="text-green-500 text-center">Thanks! Review submitted.</p>}
-      </form>
+    <div className="max-w-2xl mx-auto px-4 py-12">
+      <div className="bg-white rounded-[3rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-black/5 relative overflow-hidden">
+        
+        {/* Elegant Background Decoration */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[#E89EB8]/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+        
+        <div className="relative z-10">
+          <header className="text-center mb-10">
+            <h2 className="text-4xl font-serif font-bold text-gray-900 mb-4">Share Your Experience</h2>
+            <p className="text-gray-500 uppercase tracking-widest text-xs font-black">Bakers Treat • Thane</p>
+          </header>
+
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Name Input */}
+            <div className="relative">
+              <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1">Your Name</label>
+              <input 
+                type="text"
+                className="w-full bg-[#F9F8F6] border-none rounded-2xl px-6 py-4 text-gray-900 placeholder-gray-300 focus:ring-2 focus:ring-[#E89EB8] transition-all outline-none" 
+                placeholder="e.g. Ananya Sharma" 
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                required 
+              />
+            </div>
+
+            {/* Interactive Star Rating */}
+            <div className="text-center">
+              <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-4">Rate your delight</label>
+              <div className="flex justify-center items-center gap-3">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, rating: star })}
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    className="transition-transform active:scale-90 focus:outline-none"
+                  >
+                    <svg 
+                      className={`w-10 h-10 transition-colors duration-300 ${
+                        (hoverRating || formData.rating) >= star ? 'fill-[#E89EB8]' : 'fill-gray-200'
+                      }`}
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Feedback Textarea */}
+            <div className="relative">
+              <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1">Your Thoughts</label>
+              <textarea 
+                className="w-full bg-[#F9F8F6] border-none rounded-[2rem] px-6 py-5 text-gray-900 placeholder-gray-300 focus:ring-2 focus:ring-[#E89EB8] transition-all outline-none min-h-[150px] resize-none" 
+                placeholder="Please drop your feedback here..."
+                value={formData.comment}
+                onChange={(e) => setFormData({...formData, comment: e.target.value})}
+                required
+              />
+            </div>
+
+            {/* Status Messages */}
+            <AnimatePresence>
+              {status === 'error' && (
+                <motion.p 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-red-400 text-sm text-center font-medium"
+                >
+                  {errorMessage}
+                </motion.p>
+              )}
+              {status === 'success' && (
+                <motion.p 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-[#E89EB8] text-sm text-center font-medium"
+                >
+                  Thank you! Your feedback has been sent to Khushi. ✨
+                </motion.p>
+              )}
+            </AnimatePresence>
+
+            {/* Premium Submit Button */}
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit" 
+              className={`w-full py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-xs transition-all duration-500 shadow-lg ${
+                status === 'loading' 
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                : 'bg-black text-white hover:bg-[#E89EB8]'
+              }`}
+              disabled={status === 'loading'}
+            >
+              {status === 'loading' ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4 text-gray-400" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Authenticating...
+                </span>
+              ) : 'Submit Feedback'}
+            </motion.button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
