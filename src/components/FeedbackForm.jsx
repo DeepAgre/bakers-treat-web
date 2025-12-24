@@ -12,7 +12,6 @@ const FeedbackForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Basic validation
     if (formData.rating === 0) {
       setErrorMessage("Please select a star rating.");
       setStatus('error');
@@ -23,38 +22,43 @@ const FeedbackForm = () => {
     setErrorMessage('');
 
     try {
-      // 1. CALL AI MODERATOR
+      // 1. GET AI RESULT
       const aiResult = await moderateFeedback(formData.comment);
-      console.log("AI Decision:", aiResult);
+      
+      // Fix: Convert status to uppercase to ensure the comparison works perfectly
+      const aiStatus = aiResult.status?.toUpperCase();
 
-      // 2. THE WALL: If REJECTED, we stop everything here.
-      if (aiResult.status === "REJECTED") {
+      // 2. THE ABSOLUTE WALL
+      // If the AI says REJECTED, we stop here and show the error.
+      if (aiStatus === "REJECTED") {
+        console.log("🚫 AI REJECTED THIS CONTENT:", aiResult.reason);
+        setErrorMessage(`Submission Blocked: ${aiResult.reason || "Policy violation"}`);
         setStatus('error');
-        setErrorMessage(`Rejected by AI: ${aiResult.reason || "Content policy violation"}`);
-        // We do NOT clear the form so the user can see what they did wrong
+        // IMPORTANT: This 'return' stops the function so it NEVER reaches the Sanity code below.
         return; 
       }
 
-      // 3. THE SAVE: This code ONLY runs if status is NOT "REJECTED"
+      // 3. SANITY SAVE (Only happens if status is NOT REJECTED)
       const doc = {
         _type: 'feedback',
         name: formData.name,
         rating: Number(formData.rating),
         comment: formData.comment,
-        isApproved: aiResult.status === "APPROVED", // Auto-approve if AI is happy
+        // If AI is unsure (PENDING), we save it but keep isApproved as false
+        isApproved: aiStatus === "APPROVED", 
         aiFlaggedReason: aiResult.reason,
         createdAt: new Date().toISOString(),
       };
 
       await client.create(doc);
       
-      // 4. SUCCESS: Only clear form and show success if the save worked
+      // 4. FINAL SUCCESS
       setStatus('success');
       setFormData({ name: '', rating: 0, comment: '' });
       setTimeout(() => setStatus('idle'), 5000);
 
     } catch (err) {
-      console.error("Critical Error:", err);
+      console.error("Critical Error during submission:", err);
       setStatus('error');
       setErrorMessage("System Error: Could not process feedback.");
     }
@@ -123,12 +127,12 @@ const FeedbackForm = () => {
             <AnimatePresence>
               {status === 'error' && (
                 <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-red-50 border border-red-200 p-4 rounded-2xl"
+                  className="bg-red-50 border border-red-100 p-4 rounded-2xl text-center"
                 >
-                   <p className="text-red-600 text-xs font-black uppercase tracking-widest text-center mb-1">Moderation Alert</p>
-                   <p className="text-red-500 text-sm text-center">{errorMessage}</p>
+                   <p className="text-red-600 text-[10px] font-black uppercase tracking-widest mb-1">Moderation Warning</p>
+                   <p className="text-red-500 text-sm font-medium">{errorMessage}</p>
                 </motion.div>
               )}
               {status === 'success' && (
@@ -153,7 +157,7 @@ const FeedbackForm = () => {
               }`}
               disabled={status === 'loading'}
             >
-              {status === 'loading' ? 'AI is analyzing...' : 'Submit Feedback'}
+              {status === 'loading' ? 'Analyzing...' : 'Submit Feedback'}
             </motion.button>
           </form>
         </div>
