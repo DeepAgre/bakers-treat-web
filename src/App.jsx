@@ -9,6 +9,7 @@ import AboutKhushi from './components/AboutKhushi';
 import Marquee from './components/Marquee';
 import Menu from './components/Menu';
 import Testimonials from './components/Testimonials';
+import FeedbackForm from './components/FeedbackForm'; // 1. Added AI Feedback Form
 import Footer from './components/Footer';
 import Cart from './components/Cart';
 import ProductModal from './components/ProductModal';
@@ -77,7 +78,6 @@ const BakeryApp = () => {
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
-  // Updated handleCheckout to support Address and Delivery logic
   const handleCheckout = (type, deliveryDate, address) => {
     const khushiNumber = "919136371662"; 
     
@@ -133,14 +133,34 @@ const BakeryApp = () => {
 
         <main className={`relative w-full ${!isLoading ? "pt-24 sm:pt-32" : ""}`}>
           <section id="home"><Hero isParentLoading={isLoading} /></section>
+          
           <section><CustomOrder /></section>
-          <section id="about" className="bg-[#F9F8F6]"><Ingredients /><AboutKhushi /></section>
+          
+          <section id="about" className="bg-[#F9F8F6]">
+            <Ingredients />
+            <AboutKhushi />
+          </section>
+          
           <div className="relative z-10 bg-[#F9F8F6] rounded-t-[2rem] sm:rounded-t-[3rem] mt-[-30px] sm:mt-[-50px] shadow-[0_-25px_50px_rgba(0,0,0,0.05)] border-t border-black/5">
             <Marquee />
-            <section id="menu"><Menu onProductSelect={handleProductSelect} /></section>
+            
+            <section id="menu">
+              <Menu onProductSelect={handleProductSelect} />
+            </section>
+
+            {/* AI FEEDBACK SECTION - Added right before Testimonials */}
+            <section id="feedback" className="py-20 bg-white">
+              <div className="max-w-7xl mx-auto px-6">
+                <FeedbackForm />
+              </div>
+            </section>
+
             <Testimonials />
           </div>
-          <section id="contact" className="bg-[#0A0A0A]"><Footer /></section>
+
+          <section id="contact" className="bg-[#0A0A0A]">
+            <Footer />
+          </section>
         </main>
 
         <Cart 

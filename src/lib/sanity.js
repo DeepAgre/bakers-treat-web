@@ -2,10 +2,19 @@ import { createClient } from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
 
 export const client = createClient({
-  projectId: '688oebb5', // Your Project ID from screenshots
-  dataset: 'production',
-  useCdn: false, // Set to false temporarily to ensure you see changes instantly
+  // Use the variables from your .env file
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID, 
+  dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
   apiVersion: '2023-05-03',
+  
+  // Set to false so new reviews appear instantly without waiting for the cache
+  useCdn: false, 
+  
+  // This token allows the Feedback Form to submit new reviews
+  token: import.meta.env.VITE_SANITY_WRITE_TOKEN,
+  
+  // This is required when using tokens in a browser-based app like React
+  ignoreBrowserTokenWarning: true, 
 });
 
 const builder = imageUrlBuilder(client);
