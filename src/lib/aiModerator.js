@@ -4,18 +4,18 @@ const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 export const moderateFeedback = async (comment) => {
   try {
-    // Ensuring we use the correct model name
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // UPDATED FOR 2025: Using Gemini 2.5 Flash
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `
-      You are a strict moderator for "Delight Bakehouse". 
-      Analyze this review: "${comment}"
+      You are a strict security moderator for a bakery. 
+      Analyze this text: "${comment}"
       
       RULES:
-      1. If it contains URLs, links (http, .com), or obvious spam, return: {"status": "REJECTED", "reason": "Spam links detected"}
-      2. If it is a real customer review, return: {"status": "APPROVED", "reason": "Genuine"}
+      1. If it contains links (http, .com), crypto spam, or gibberish, return: {"status": "REJECTED", "reason": "Spam/Links detected"}
+      2. If it is a normal customer review, return: {"status": "APPROVED", "reason": "Clear"}
       
-      Return ONLY a raw JSON object.
+      Return ONLY raw JSON.
     `;
 
     const result = await model.generateContent(prompt);
@@ -24,8 +24,8 @@ export const moderateFeedback = async (comment) => {
     
     return JSON.parse(text);
   } catch (error) {
-    console.error("AI Moderation Error:", error);
-    // FALLBACK: If AI crashes, we REJECT to prevent spam from leaking through
-    return { status: "REJECTED", reason: "Moderation service temporarily unavailable" };
+    console.error("AI CRASHED:", error);
+    // EMERGENCY STOP: If AI fails (like that 404), we reject by default to protect the site
+    return { status: "REJECTED", reason: "Moderation system offline" };
   }
 };
