@@ -22,33 +22,29 @@ const FeedbackForm = () => {
     setErrorMessage('');
 
     try {
-      // 1. CALL AI
+      // 1. CALL AI MODERATOR
       const aiResult = await moderateFeedback(formData.comment);
-      
-      // Force everything to Uppercase to avoid "rejected" vs "REJECTED" issues
       const aiStatus = String(aiResult.status).toUpperCase();
 
-      // 2. THE NUCLEAR WALL
-      if (aiStatus === "REJECTED") {
-        console.error("AI REJECTED CONTENT:", aiResult.reason);
+      // 2. THE WALL: If not Approved, we stop here.
+      if (aiStatus !== "APPROVED") {
+        console.error("SUBMISSION BLOCKED:", aiResult.reason);
         
-        // This popup will prove if you are running the NEW code or OLD code
-        window.alert("AI MODERATION: Submission blocked due to spam/policy.");
+        // TESTING POPUP: If you see this, the code is working!
+        window.alert(`MODERATION ALERT: ${aiResult.reason}`);
         
         setErrorMessage(`Blocked: ${aiResult.reason || "Policy violation"}`);
         setStatus('error');
-        
-        // We throw an error to physically CRASH this function so it cannot reach Sanity
-        throw new Error("MODERATION_BLOCK");
+        return; // This physically stops the code from reaching Sanity
       }
 
-      // 3. SANITY SAVE (Only runs if NO error was thrown above)
+      // 3. SANITY SAVE: Only runs if AI returned "APPROVED"
       const doc = {
         _type: 'feedback',
         name: formData.name,
         rating: Number(formData.rating),
         comment: formData.comment,
-        isApproved: aiStatus === "APPROVED", 
+        isApproved: true, 
         aiFlaggedReason: aiResult.reason,
         createdAt: new Date().toISOString(),
       };
@@ -60,10 +56,6 @@ const FeedbackForm = () => {
       setTimeout(() => setStatus('idle'), 5000);
 
     } catch (err) {
-      if (err.message === "MODERATION_BLOCK") {
-        console.log("Function stopped successfully by AI wall.");
-        return;
-      }
       console.error("Critical Error:", err);
       setStatus('error');
       setErrorMessage("System Error: Could not process feedback.");
