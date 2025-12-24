@@ -8,14 +8,23 @@ export const moderateFeedback = async (comment) => {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `
-      You are a strict security moderator for a bakery. 
-      Analyze this text: "${comment}"
+      You are a high-security automated moderator for "Delight Bakehouse". 
+      Your job is to protect the brand from competition, insults, and spam.
       
-      RULES:
-      1. If it contains links (http, .com), crypto spam, or gibberish, return: {"status": "REJECTED", "reason": "Spam/Links detected"}
-      2. If it is a normal customer review, return: {"status": "APPROVED", "reason": "Clear"}
+      CRITICAL REJECTION RULES (Return "REJECTED" if):
+      1. Mention of other bakeries, shops, or Mumbai/competitor locations.
+      2. Any negative, rude, or aggressive language toward the owner (Khushi) or the brand.
+      3. Any links (http, .com, .in, .net).
+      4. Any gibberish or random letters/numbers.
+      5. Any promotional "Buy this" or "Go there" tone.
+
+      APPROVAL RULES (Return "APPROVED" only if):
+      1. It is a genuine review about the food, taste, or service of Delight Bakehouse.
       
-      Return ONLY raw JSON.
+      Return ONLY a raw JSON object like this:
+      {"status": "REJECTED", "reason": "Detailed reason here"} 
+      OR 
+      {"status": "APPROVED", "reason": "Genuine"}
     `;
 
     const result = await model.generateContent(prompt);
