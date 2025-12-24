@@ -22,29 +22,32 @@ const FeedbackForm = () => {
     setErrorMessage('');
 
     try {
-      // 1. GET AI RESULT
+      // 1. CALL AI
       const aiResult = await moderateFeedback(formData.comment);
       
-      // Fix: Convert status to uppercase to ensure the comparison works perfectly
-      const aiStatus = aiResult.status?.toUpperCase();
+      // Force everything to Uppercase to avoid "rejected" vs "REJECTED" issues
+      const aiStatus = String(aiResult.status).toUpperCase();
 
-      // 2. THE ABSOLUTE WALL
-      // If the AI says REJECTED, we stop here and show the error.
+      // 2. THE NUCLEAR WALL
       if (aiStatus === "REJECTED") {
-        console.log("🚫 AI REJECTED THIS CONTENT:", aiResult.reason);
-        setErrorMessage(`Submission Blocked: ${aiResult.reason || "Policy violation"}`);
+        console.error("AI REJECTED CONTENT:", aiResult.reason);
+        
+        // This popup will prove if you are running the NEW code or OLD code
+        window.alert("AI MODERATION: Submission blocked due to spam/policy.");
+        
+        setErrorMessage(`Blocked: ${aiResult.reason || "Policy violation"}`);
         setStatus('error');
-        // IMPORTANT: This 'return' stops the function so it NEVER reaches the Sanity code below.
-        return; 
+        
+        // We throw an error to physically CRASH this function so it cannot reach Sanity
+        throw new Error("MODERATION_BLOCK");
       }
 
-      // 3. SANITY SAVE (Only happens if status is NOT REJECTED)
+      // 3. SANITY SAVE (Only runs if NO error was thrown above)
       const doc = {
         _type: 'feedback',
         name: formData.name,
         rating: Number(formData.rating),
         comment: formData.comment,
-        // If AI is unsure (PENDING), we save it but keep isApproved as false
         isApproved: aiStatus === "APPROVED", 
         aiFlaggedReason: aiResult.reason,
         createdAt: new Date().toISOString(),
@@ -52,13 +55,16 @@ const FeedbackForm = () => {
 
       await client.create(doc);
       
-      // 4. FINAL SUCCESS
       setStatus('success');
       setFormData({ name: '', rating: 0, comment: '' });
       setTimeout(() => setStatus('idle'), 5000);
 
     } catch (err) {
-      console.error("Critical Error during submission:", err);
+      if (err.message === "MODERATION_BLOCK") {
+        console.log("Function stopped successfully by AI wall.");
+        return;
+      }
+      console.error("Critical Error:", err);
       setStatus('error');
       setErrorMessage("System Error: Could not process feedback.");
     }
