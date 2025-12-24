@@ -11,6 +11,8 @@ const FeedbackForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Basic validation
     if (formData.rating === 0) {
       setErrorMessage("Please select a star rating.");
       setStatus('error');
@@ -21,37 +23,40 @@ const FeedbackForm = () => {
     setErrorMessage('');
 
     try {
-      // 1. Run AI Moderation
+      // 1. CALL AI MODERATOR
       const aiResult = await moderateFeedback(formData.comment);
+      console.log("AI Decision:", aiResult);
 
-      // 2. STOP if rejected
+      // 2. THE WALL: If REJECTED, we stop everything here.
       if (aiResult.status === "REJECTED") {
         setStatus('error');
-        setErrorMessage(`Submission Blocked: ${aiResult.reason}`);
-        return; // This prevents the code from reaching the Sanity part
+        setErrorMessage(`Rejected by AI: ${aiResult.reason || "Content policy violation"}`);
+        // We do NOT clear the form so the user can see what they did wrong
+        return; 
       }
 
-      // 3. Only save if NOT rejected
+      // 3. THE SAVE: This code ONLY runs if status is NOT "REJECTED"
       const doc = {
         _type: 'feedback',
         name: formData.name,
         rating: Number(formData.rating),
         comment: formData.comment,
-        isApproved: aiResult.status === "APPROVED",
+        isApproved: aiResult.status === "APPROVED", // Auto-approve if AI is happy
         aiFlaggedReason: aiResult.reason,
         createdAt: new Date().toISOString(),
       };
 
       await client.create(doc);
+      
+      // 4. SUCCESS: Only clear form and show success if the save worked
       setStatus('success');
       setFormData({ name: '', rating: 0, comment: '' });
-      
       setTimeout(() => setStatus('idle'), 5000);
 
     } catch (err) {
-      console.error(err);
+      console.error("Critical Error:", err);
       setStatus('error');
-      setErrorMessage("Something went wrong. Please try again.");
+      setErrorMessage("System Error: Could not process feedback.");
     }
   };
 
@@ -117,13 +122,14 @@ const FeedbackForm = () => {
 
             <AnimatePresence>
               {status === 'error' && (
-                <motion.p 
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-red-500 text-sm text-center font-bold bg-red-50 p-3 rounded-xl border border-red-100"
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-red-50 border border-red-200 p-4 rounded-2xl"
                 >
-                  {errorMessage}
-                </motion.p>
+                   <p className="text-red-600 text-xs font-black uppercase tracking-widest text-center mb-1">Moderation Alert</p>
+                   <p className="text-red-500 text-sm text-center">{errorMessage}</p>
+                </motion.div>
               )}
               {status === 'success' && (
                 <motion.p 
@@ -147,7 +153,7 @@ const FeedbackForm = () => {
               }`}
               disabled={status === 'loading'}
             >
-              {status === 'loading' ? 'Checking Review...' : 'Submit Feedback'}
+              {status === 'loading' ? 'AI is analyzing...' : 'Submit Feedback'}
             </motion.button>
           </form>
         </div>
