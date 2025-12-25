@@ -5,7 +5,8 @@ const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 export const moderateFeedback = async (comment) => {
   try {
     // UPDATED FOR 2025: Using Gemini 2.5 Flash
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    // Change this line in your moderateFeedback function:
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
     const prompt = `
       You are a high-security automated moderator for "Delight Bakehouse". 
