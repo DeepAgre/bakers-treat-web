@@ -1,31 +1,18 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const genAI = new GoogleGenerativeAI(apiKey);
 
 export const moderateFeedback = async (comment) => {
   try {
-    // UPDATED FOR 2025: Using Gemini 2.5 Flash
-    // Change this line in your moderateFeedback function:
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // UPDATED: Standard model ID for Dec 2025
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt = `
-      You are a high-security automated moderator for "Delight Bakehouse". 
-      Your job is to protect the brand from competition, insults, and spam.
-      
-      CRITICAL REJECTION RULES (Return "REJECTED" if):
-      1. Mention of other bakeries, shops, or Mumbai/competitor locations.
-      2. Any negative, rude, or aggressive language toward the owner (Khushi) or the brand.
-      3. Any links (http, .com, .in, .net).
-      4. Any gibberish or random letters/numbers.
-      5. Any promotional "Buy this" or "Go there" tone.
-
-      APPROVAL RULES (Return "APPROVED" only if):
-      1. It is a genuine review about the food, taste, or service of Delight Bakehouse.
-      
-      Return ONLY a raw JSON object like this:
-      {"status": "REJECTED", "reason": "Detailed reason here"} 
-      OR 
-      {"status": "APPROVED", "reason": "Genuine"}
+      You are a strict security moderator for "Delight Bakehouse". 
+      If the text contains links, competitor names, or insults to Khushi, return REJECTED.
+      If it is a nice review, return APPROVED.
+      Return ONLY raw JSON: {"status": "REJECTED", "reason": "why"} OR {"status": "APPROVED", "reason": "Genuine"}
     `;
 
     const result = await model.generateContent(prompt);
@@ -34,8 +21,8 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     return JSON.parse(text);
   } catch (error) {
-    console.error("AI CRASHED:", error);
-    // EMERGENCY STOP: If AI fails (like that 404), we reject by default to protect the site
+    console.error("AI MODERATION FAILED:", error.message);
+    // Safety Wall: Reject if AI is offline
     return { status: "REJECTED", reason: "Moderation system offline" };
   }
 };

@@ -1,24 +1,21 @@
 import { createClient } from '@sanity/client';
-import imageUrlBuilder from '@sanity/image-url';
+// Fix: Switch to named export to resolve deprecation warning
+import { createImageUrlBuilder } from '@sanity/image-url';
 
 export const client = createClient({
-  // Use the variables from your .env file
-  projectId: import.meta.env.VITE_SANITY_PROJECT_ID, 
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID, // Ensure this matches Vercel/env
   dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
-  apiVersion: '2023-05-03',
-  
-  // Set to false so new reviews appear instantly without waiting for the cache
-  useCdn: false, 
-  
-  // This token allows the Feedback Form to submit new reviews
-  token: import.meta.env.VITE_SANITY_WRITE_TOKEN,
-  
-  // This is required when using tokens in a browser-based app like React
-  ignoreBrowserTokenWarning: true, 
+  useCdn: true,
+  apiVersion: '2023-05-03', // Use current stable API version
 });
 
-const builder = imageUrlBuilder(client);
+// Fix: Use the new createImageUrlBuilder instead of the default builder
+const builder = createImageUrlBuilder(client);
 
+/**
+ * Helper function to generate optimized Sanity image URLs
+ * @param {object} source - The image asset from Sanity
+ */
 export const urlFor = (source) => {
   if (!source) return '';
   return builder.image(source);
