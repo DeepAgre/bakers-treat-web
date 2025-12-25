@@ -6,7 +6,7 @@ export const moderateFeedback = async (comment) => {
   try {
     // UPDATED FOR 2025: Using Gemini 2.5 Flash
     // Change this line in your moderateFeedback function:
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt = `
       You are a high-security automated moderator for "Delight Bakehouse". 
