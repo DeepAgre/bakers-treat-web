@@ -5,17 +5,15 @@ const genAI = new GoogleGenerativeAI(apiKey);
 
 export const moderateFeedback = async (comment) => {
   try {
-    // FIX: Using the exact model ID that supports v1beta calls
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-lite" });
+    // FIX: This is the ONLY string that works consistently for v1beta right now
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt = `
-      You are a strict security moderator for "Delight Bakehouse". 
-      Analyze this text: "${comment}"
-      RULES:
-      - If it mentions other bakeries or cities like Mumbai, return REJECTED.
-      - If it is rude to Khushi, return REJECTED.
-      - If it is a normal review, return APPROVED.
-      Return ONLY raw JSON: {"status": "REJECTED", "reason": "reason here"} OR {"status": "APPROVED", "reason": "Genuine"}
+      You are a moderator for "Delight Bakehouse". 
+      Text: "${comment}"
+      If it's spam, links, or rude to Khushi, return: {"status": "REJECTED", "reason": "Policy"}
+      Otherwise return: {"status": "APPROVED", "reason": "Genuine"}
+      Return ONLY raw JSON.
     `;
 
     const result = await model.generateContent(prompt);
@@ -24,8 +22,8 @@ export const moderateFeedback = async (comment) => {
     
     return JSON.parse(text);
   } catch (error) {
-    console.error("AI MODERATION FAILED:", error.message);
-    // This is the "Wall" that shows you the red error box
+    console.error("AI CRASHED:", error.message);
+    // If the API is busy or offline, we block by default to keep the site clean
     return { status: "REJECTED", reason: "Moderation system offline" };
   }
 };
