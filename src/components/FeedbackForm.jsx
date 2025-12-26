@@ -21,8 +21,7 @@ const FeedbackForm = () => {
     setErrorMessage('');
 
     try {
-      // Step 1: Create the document for Sanity
-      // We set isApproved to FALSE so no spam shows up on the site automatically.
+      // Manual Moderation: Every post starts as HIDDEN (isApproved: false)
       const doc = {
         _type: 'feedback',
         name: formData.name,
@@ -32,13 +31,11 @@ const FeedbackForm = () => {
         createdAt: new Date().toISOString(),
       };
 
-      // Step 2: Save directly to Sanity
       await client.create(doc);
       
       setStatus('success');
       setFormData({ name: '', rating: 0, comment: '' });
       
-      // Reset back to idle after 5 seconds
       setTimeout(() => setStatus('idle'), 5000);
 
     } catch (err) {
@@ -54,7 +51,8 @@ const FeedbackForm = () => {
         <div className="relative z-10">
           <header className="text-center mb-10">
             <h2 className="text-4xl font-serif font-bold text-gray-900 mb-4">Share Your Experience</h2>
-            <p className="text-gray-500 uppercase tracking-widest text-xs font-black">Bakers Treat • Thane</p>
+            {/* Corrected Brand Name below */}
+            <p className="text-gray-500 uppercase tracking-widest text-xs font-black">Delight Bakehouse • Thane</p>
           </header>
 
           <form onSubmit={handleSubmit} className="space-y-8">
