@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { moderateFeedback } from '../lib/aiModerator';
 import { client } from '../lib/sanity';
 
 const FeedbackForm = () => {
@@ -11,6 +10,7 @@ const FeedbackForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (formData.rating === 0) {
       setErrorMessage("Please select a star rating.");
       setStatus('error');
@@ -21,39 +21,30 @@ const FeedbackForm = () => {
     setErrorMessage('');
 
     try {
-      // Step 1: Run AI
-      const aiResult = await moderateFeedback(formData.comment);
-      const aiStatus = String(aiResult.status).toUpperCase();
-
-      // Step 2: The Final Wall
-      if (aiStatus !== "APPROVED") {
-        // This creates the popup you need to see
-        window.alert(`BLOCKED BY AI: ${aiResult.reason}`);
-        
-        setErrorMessage(`Security Block: ${aiResult.reason}`);
-        setStatus('error');
-        return; // STOP! Do not move to Sanity.
-      }
-
-      // Step 3: Sanity Save (Only happens if approved)
+      // Step 1: Create the document for Sanity
+      // We set isApproved to FALSE so no spam shows up on the site automatically.
       const doc = {
         _type: 'feedback',
         name: formData.name,
         rating: Number(formData.rating),
         comment: formData.comment,
-        isApproved: true,
+        isApproved: false, 
         createdAt: new Date().toISOString(),
       };
 
+      // Step 2: Save directly to Sanity
       await client.create(doc);
+      
       setStatus('success');
       setFormData({ name: '', rating: 0, comment: '' });
+      
+      // Reset back to idle after 5 seconds
       setTimeout(() => setStatus('idle'), 5000);
 
     } catch (err) {
-      console.error("Critical Error:", err);
+      console.error("Sanity Submission Error:", err);
       setStatus('error');
-      setErrorMessage("Service busy. Please try again.");
+      setErrorMessage("Could not send feedback. Please check your connection.");
     }
   };
 
@@ -113,16 +104,19 @@ const FeedbackForm = () => {
                 </motion.div>
               )}
               {status === 'success' && (
-                <p className="text-[#E89EB8] text-center">Sent to Khushi! ✨</p>
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+                  <p className="text-[#E89EB8] font-bold">Sent to Khushi! ✨</p>
+                  <p className="text-[10px] text-gray-400 uppercase mt-1">Review pending approval</p>
+                </motion.div>
               )}
             </AnimatePresence>
 
             <button 
               type="submit" 
-              className={`w-full py-5 rounded-2xl font-black uppercase tracking-widest text-xs ${status === 'loading' ? 'bg-gray-200' : 'bg-black text-white'}`}
+              className={`w-full py-5 rounded-2xl font-black uppercase tracking-widest text-xs transition-all ${status === 'loading' ? 'bg-gray-200' : 'bg-black text-white hover:bg-gray-800'}`}
               disabled={status === 'loading'}
             >
-              {status === 'loading' ? 'Checking...' : 'Submit'}
+              {status === 'loading' ? 'Sending...' : 'Submit Review'}
             </button>
           </form>
         </div>
