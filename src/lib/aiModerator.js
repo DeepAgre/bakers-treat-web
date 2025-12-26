@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
 export const moderateFeedback = async (comment) => {
   try {
     // FIX: Using the exact model ID that supports v1beta calls
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-lite" });
 
     const prompt = `
       You are a strict security moderator for "Delight Bakehouse". 
