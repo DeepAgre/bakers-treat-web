@@ -2,6 +2,71 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { client } from '../lib/sanity';
 
+// --- NEW COMPONENT: BIRTHDAY SIGNUP ---
+const BirthdaySignup = () => {
+  const [email, setEmail] = useState('');
+  const [birthday, setBirthday] = useState('');
+  const [joined, setJoined] = useState(false);
+
+  const handleJoin = (e) => {
+    e.preventDefault();
+    // For now, this shows a success message. 
+    // Once you have your Mailchimp account, we will link it here.
+    setJoined(true);
+    setEmail('');
+    setBirthday('');
+  };
+
+  return (
+    <div className="mt-16 bg-[#F9F8F6] p-8 md:p-12 rounded-[3rem] text-center border border-[#E89EB8]/20 shadow-sm">
+      <h3 className="text-3xl font-serif font-bold text-gray-900 mb-2">Join the Delight Club</h3>
+      <p className="text-gray-500 text-sm mb-8 uppercase tracking-widest font-bold">Free Treats on Your Birthday • Thane Only</p>
+      
+      <AnimatePresence>
+        {!joined ? (
+          <motion.form 
+            initial={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            onSubmit={handleJoin} 
+            className="flex flex-col gap-4 max-w-sm mx-auto"
+          >
+            <input 
+              type="email" 
+              placeholder="Email Address" 
+              className="w-full bg-white rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#E89EB8] border-none shadow-inner"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required 
+            />
+            <div className="text-left">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4 mb-1 block">Your Birthday</label>
+              <input 
+                type="date" 
+                className="w-full bg-white rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#E89EB8] border-none shadow-inner text-gray-500"
+                value={birthday}
+                onChange={(e) => setBirthday(e.target.value)}
+                required 
+              />
+            </div>
+            <button 
+              type="submit" 
+              className="bg-black text-white py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-gray-800 transition-all shadow-lg"
+            >
+              Send Me Birthday Treats
+            </button>
+          </motion.form>
+        ) : (
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+            <p className="text-[#E89EB8] font-bold text-xl">Welcome to the family! 🍰</p>
+            <p className="text-gray-400 text-xs mt-2">Check your email for your welcome surprise.</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// --- MAIN COMPONENT: FEEDBACK FORM ---
 const FeedbackForm = () => {
   const [formData, setFormData] = useState({ name: '', rating: 0, comment: '' });
   const [hoverRating, setHoverRating] = useState(0);
@@ -10,7 +75,6 @@ const FeedbackForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (formData.rating === 0) {
       setErrorMessage("Please select a star rating.");
       setStatus('error');
@@ -21,7 +85,6 @@ const FeedbackForm = () => {
     setErrorMessage('');
 
     try {
-      // Manual Moderation: Every post starts as HIDDEN (isApproved: false)
       const doc = {
         _type: 'feedback',
         name: formData.name,
@@ -32,12 +95,9 @@ const FeedbackForm = () => {
       };
 
       await client.create(doc);
-      
       setStatus('success');
       setFormData({ name: '', rating: 0, comment: '' });
-      
       setTimeout(() => setStatus('idle'), 5000);
-
     } catch (err) {
       console.error("Sanity Submission Error:", err);
       setStatus('error');
@@ -47,11 +107,11 @@ const FeedbackForm = () => {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
+      {/* 1. THE FEEDBACK FORM BOX */}
       <div className="bg-white rounded-[3rem] p-8 md:p-12 shadow-xl border border-black/5 relative overflow-hidden">
         <div className="relative z-10">
           <header className="text-center mb-10">
             <h2 className="text-4xl font-serif font-bold text-gray-900 mb-4">Share Your Experience</h2>
-            {/* Corrected Brand Name below */}
             <p className="text-gray-500 uppercase tracking-widest text-xs font-black">Delight Bakehouse • Thane</p>
           </header>
 
@@ -119,6 +179,10 @@ const FeedbackForm = () => {
           </form>
         </div>
       </div>
+
+      {/* 2. THE BIRTHDAY CLUB BOX */}
+      <BirthdaySignup />
+
     </div>
   );
 };
