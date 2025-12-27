@@ -10,8 +10,13 @@ const BirthdaySignup = () => {
 
   const handleJoin = (e) => {
     e.preventDefault();
-    // For now, this shows a success message. 
-    // Once you have your Mailchimp account, we will link it here.
+    
+    // This is your unique Mailchimp link from your setup
+    const mailchimpUrl = "http://eepurl.com/jvz-zo";
+    
+    // Opens Khushi's signup page in a new tab to capture the data safely
+    window.open(mailchimpUrl, '_blank');
+    
     setJoined(true);
     setEmail('');
     setBirthday('');
@@ -58,7 +63,7 @@ const BirthdaySignup = () => {
         ) : (
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
             <p className="text-[#E89EB8] font-bold text-xl">Welcome to the family! 🍰</p>
-            <p className="text-gray-400 text-xs mt-2">Check your email for your welcome surprise.</p>
+            <p className="text-gray-400 text-xs mt-2">Check the new tab to confirm your subscription.</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -112,7 +117,7 @@ const FeedbackForm = () => {
         <div className="relative z-10">
           <header className="text-center mb-10">
             <h2 className="text-4xl font-serif font-bold text-gray-900 mb-4">Share Your Experience</h2>
-            <p className="text-gray-500 uppercase tracking-widest text-xs font-black">Delight Bakehouse • Thane</p>
+            <p className="text-gray-500 uppercase tracking-widest text-xs font-black">Bakers Treat • Thane</p>
           </header>
 
           <form onSubmit={handleSubmit} className="space-y-8">
