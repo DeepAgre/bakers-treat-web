@@ -1,21 +1,19 @@
 import { createClient } from '@sanity/client';
-// Fix: Switch to named export to resolve deprecation warning
 import { createImageUrlBuilder } from '@sanity/image-url';
 
 export const client = createClient({
-  projectId: import.meta.env.VITE_SANITY_PROJECT_ID, // Ensure this matches Vercel/env
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
   dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
-  useCdn: true,
-  apiVersion: '2023-05-03', // Use current stable API version
+  // CHANGE 1: Must be false to allow "Write" operations (submitting feedback)
+  useCdn: false, 
+  apiVersion: '2023-05-03',
+  // CHANGE 2: You must include the token here for permissions to work
+  token: import.meta.env.VITE_SANITY_WRITE_TOKEN, 
 });
 
-// Fix: Use the new createImageUrlBuilder instead of the default builder
+// Image helper remains the same
 const builder = createImageUrlBuilder(client);
 
-/**
- * Helper function to generate optimized Sanity image URLs
- * @param {object} source - The image asset from Sanity
- */
 export const urlFor = (source) => {
   if (!source) return '';
   return builder.image(source);
