@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { client } from '../lib/sanity';
 
-// --- BIRTHDAY SIGNUP COMPONENT ---
+// --- NEW COMPONENT: BIRTHDAY SIGNUP (Connected to Brevo) ---
 const BirthdaySignup = () => {
   const [email, setEmail] = useState('');
   const [birthday, setBirthday] = useState('');
@@ -13,9 +13,9 @@ const BirthdaySignup = () => {
     e.preventDefault();
     setLoading(true);
     
-    // Using the secure VITE variable you set up in your .env and Vercel
+    // We use VITE_ prefix so Vite allows the browser to access this key
     const BREVO_API_KEY = import.meta.env.VITE_BREVO_API_KEY; 
-    const LIST_ID = 5; 
+    const LIST_ID = 5; // Your Delight Club ID
 
     try {
       const response = await fetch('https://api.brevo.com/v3/contacts', {
@@ -28,7 +28,7 @@ const BirthdaySignup = () => {
         body: JSON.stringify({
           email: email,
           attributes: {
-            BIRTHDAY: birthday, 
+            BIRTHDAY: birthday, // Make sure 'BIRTHDAY' is the attribute name in Brevo
           },
           listIds: [LIST_ID],
           updateEnabled: true 
@@ -42,11 +42,11 @@ const BirthdaySignup = () => {
       } else {
         const errorData = await response.json();
         console.error("Brevo Error:", errorData);
-        alert("Oops! We couldn't sign you up. Please check if the email is valid.");
+        alert("Oops! We couldn't sign you up. Please try again.");
       }
     } catch (error) {
       console.error("Connection error:", error);
-      alert("Network error. Please try again.");
+      alert("Check your internet connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -55,7 +55,7 @@ const BirthdaySignup = () => {
   return (
     <div className="mt-16 bg-[#F9F8F6] p-8 md:p-12 rounded-[3rem] text-center border border-[#E89EB8]/20 shadow-sm">
       <h3 className="text-3xl font-serif font-bold text-gray-900 mb-2">Join the Delight Club</h3>
-      <p className="text-gray-500 text-sm mb-8 uppercase tracking-widest font-bold">Free Treats on Your Birthday • Thane Only</p>
+      <p className="text-gray-500 text-sm mb-8 uppercase tracking-widest font-bold">Get reminded of offers for your next birthday</p>
       
       <AnimatePresence mode="wait">
         {!joined ? (
