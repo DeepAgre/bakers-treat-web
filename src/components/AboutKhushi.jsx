@@ -53,7 +53,7 @@ const AboutKhushi = () => {
               Based in the heart of Thane, Khushi transformed her passion for art into a world of edible wonders. With a keen eye for detail and a background in design, she doesn't just bake cakes—she builds dreams.
             </p>
             <p className="text-justify">
-              Every creation at <strong className="text-gray-900">Bakers Treat</strong> is a labor of love, using only the finest ingredients like Belgian chocolate and fresh artisan fruits. For Khushi, the goal is simple: to create a centerpiece that tastes even better than it looks.
+              Every creation at <strong className="text-gray-900">Delight Bakehouse</strong> is a labor of love, using only the finest ingredients like Belgian chocolate and fresh artisan fruits. For Khushi, the goal is simple: to create a centerpiece that tastes even better than it looks.
             </p>
           </div>
 

@@ -36,7 +36,7 @@ const Footer = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-serif mb-6">Bakers Treat<span className="text-[#E89EB8]">.</span></h2>
+            <h2 className="text-4xl font-serif mb-6">Delight Bakehouse<span className="text-[#E89EB8]">.</span></h2>
             <p className="text-white/70 max-w-sm leading-relaxed mb-8">
               Handcrafting premium, artisanal bakes in the heart of Thane. 
               Every treat is a story of quality and passion.
@@ -98,7 +98,7 @@ const Footer = () => {
         {/* Bottom Section: Copyright & Secondary Links */}
         <div className="pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-white/30 text-[10px] font-black uppercase tracking-widest text-center md:text-left">
-            © {currentYear} Bakers Treat • Handcrafted with love in Thane
+            © {currentYear} Delight Bakehouse • Handcrafted with love in Thane
           </p>
           
           <div className="flex gap-8">

@@ -153,7 +153,7 @@ const FeedbackForm = () => {
         <div className="relative z-10">
           <header className="text-center mb-10">
             <h2 className="text-4xl font-serif font-bold text-gray-900 mb-4">Share Your Experience</h2>
-            <p className="text-gray-500 uppercase tracking-widest text-xs font-black">Bakers Treat • Thane</p>
+            <p className="text-gray-500 uppercase tracking-widest text-xs font-black">Delight Bakehouse • Thane</p>
           </header>
 
           <form onSubmit={handleSubmit} className="space-y-8">
