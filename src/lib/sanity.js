@@ -2,16 +2,15 @@ import { createClient } from '@sanity/client';
 import { createImageUrlBuilder } from '@sanity/image-url';
 
 export const client = createClient({
-  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
-  dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
-  // CHANGE 1: Must be false to allow "Write" operations (submitting feedback)
+  // HARDCODED FIX: Directly using the ID and Dataset to stop the blank page crash
+  projectId: '688oebb5', 
+  dataset: 'production',
   useCdn: false, 
   apiVersion: '2023-05-03',
-  // CHANGE 2: You must include the token here for permissions to work
+  // The token is secret, so we keep using the environment variable
   token: import.meta.env.VITE_SANITY_WRITE_TOKEN, 
 });
 
-// Image helper remains the same
 const builder = createImageUrlBuilder(client);
 
 export const urlFor = (source) => {
