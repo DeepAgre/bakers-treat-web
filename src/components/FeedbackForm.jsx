@@ -2,34 +2,62 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { client } from '../lib/sanity';
 
-// --- NEW COMPONENT: BIRTHDAY SIGNUP ---
+// --- NEW COMPONENT: BIRTHDAY SIGNUP (Connected to Brevo) ---
 const BirthdaySignup = () => {
   const [email, setEmail] = useState('');
   const [birthday, setBirthday] = useState('');
   const [joined, setJoined] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleJoin = (e) => {
+  const handleJoin = async (e) => {
     e.preventDefault();
+    setLoading(true);
     
-    // This is your unique Mailchimp link from your setup
-    const mailchimpUrl = "http://eepurl.com/jvz-zo";
-    
-    // Opens Khushi's signup page in a new tab to capture the data safely
-    window.open(mailchimpUrl, '_blank');
-    
-    setJoined(true);
-    setEmail('');
-    setBirthday('');
+    // REPLACE 'YOUR_BREVO_API_KEY' with your actual key from Brevo
+    const BREVO_API_KEY = import.meta.env.VITE_BREVO_API_KEY; 
+    const LIST_ID = 5; // Your Delight Club ID
+
+    try {
+      const response = await fetch('https://api.brevo.com/v3/contacts', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'api-key': BREVO_API_KEY,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          attributes: {
+            BIRTHDAY: birthday, // Make sure 'BIRTHDAY' is the attribute name in Brevo
+          },
+          listIds: [LIST_ID],
+          updateEnabled: true 
+        }),
+      });
+
+      if (response.ok) {
+        setJoined(true);
+        setEmail('');
+        setBirthday('');
+      } else {
+        alert("Oops! We couldn't sign you up. Please try again.");
+      }
+    } catch (error) {
+      console.error("Connection error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="mt-16 bg-[#F9F8F6] p-8 md:p-12 rounded-[3rem] text-center border border-[#E89EB8]/20 shadow-sm">
       <h3 className="text-3xl font-serif font-bold text-gray-900 mb-2">Join the Delight Club</h3>
-      <p className="text-gray-500 text-sm mb-8 uppercase tracking-widest font-bold">Free Treats on Your Birthday • Thane Only</p>
+      <p className="text-gray-500 text-sm mb-8 uppercase tracking-widest font-bold">Get reminded of offers for your next birthday</p>
       
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {!joined ? (
           <motion.form 
+            key="signup-form"
             initial={{ opacity: 1 }} 
             exit={{ opacity: 0 }} 
             onSubmit={handleJoin} 
@@ -55,15 +83,20 @@ const BirthdaySignup = () => {
             </div>
             <button 
               type="submit" 
-              className="bg-black text-white py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-gray-800 transition-all shadow-lg"
+              disabled={loading}
+              className={`bg-black text-white py-5 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-lg ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-800'}`}
             >
-              Send Me Birthday Treats
+              {loading ? 'Adding you...' : 'Send Me Birthday Treats'}
             </button>
           </motion.form>
         ) : (
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+          <motion.div 
+            key="success-message"
+            initial={{ scale: 0.9, opacity: 0 }} 
+            animate={{ scale: 1, opacity: 1 }}
+          >
             <p className="text-[#E89EB8] font-bold text-xl">Welcome to the family! 🍰</p>
-            <p className="text-gray-400 text-xs mt-2">Check the new tab to confirm your subscription.</p>
+            <p className="text-gray-400 text-xs mt-2">Khushi will send you something sweet on your big day!</p>
           </motion.div>
         )}
       </AnimatePresence>
