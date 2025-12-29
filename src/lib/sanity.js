@@ -1,16 +1,20 @@
 import { createClient } from '@sanity/client';
 import { createImageUrlBuilder } from '@sanity/image-url';
 
-// This helps us see in the browser console if Vercel is actually sending the key
-console.log("Checking Token:", import.meta.env.VITE_SANITY_WRITE_TOKEN ? "Token Found ✅" : "Token Missing ❌");
+// This version checks both the Vite meta and the standard process env
+const token = import.meta.env.VITE_SANITY_WRITE_TOKEN || process.env.VITE_SANITY_WRITE_TOKEN;
+
+console.log("Debug Info:", {
+  hasToken: !!token,
+  envName: "VITE_SANITY_WRITE_TOKEN"
+});
 
 export const client = createClient({
   projectId: '688oebb5', 
   dataset: 'production',
   useCdn: false, 
   apiVersion: '2023-05-03',
-  // We use the variable again so we can stop hardcoding
-  token: import.meta.env.VITE_SANITY_WRITE_TOKEN, 
+  token: token, 
 });
 
 const builder = createImageUrlBuilder(client);
