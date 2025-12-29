@@ -1,13 +1,8 @@
 import { createClient } from '@sanity/client';
 import { createImageUrlBuilder } from '@sanity/image-url';
 
-// This version checks both the Vite meta and the standard process env
+// This version checks both possible Vite environments
 const token = import.meta.env.VITE_SANITY_WRITE_TOKEN || process.env.VITE_SANITY_WRITE_TOKEN;
-
-console.log("Debug Info:", {
-  hasToken: !!token,
-  envName: "VITE_SANITY_WRITE_TOKEN"
-});
 
 export const client = createClient({
   projectId: '688oebb5', 
