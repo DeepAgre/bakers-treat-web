@@ -1,19 +1,17 @@
 import { createClient } from '@sanity/client';
 import { createImageUrlBuilder } from '@sanity/image-url';
 
+// This helps us see in the browser console if Vercel is actually sending the key
+console.log("Checking Token:", import.meta.env.VITE_SANITY_WRITE_TOKEN ? "Token Found ✅" : "Token Missing ❌");
+
 export const client = createClient({
-  // HARDCODED FIX: Directly using the ID and Dataset to stop the blank page crash
   projectId: '688oebb5', 
   dataset: 'production',
   useCdn: false, 
   apiVersion: '2023-05-03',
-  // The token is secret, so we keep using the environment variable
-  token: 'skgMMvqdx4yGIrMkBeU6Tgr6DOjWDG47UTuwluWaWcLwo5cNNkE8iwFDqhUkdvLrXYpRMuHAAl4s2KJyNlfaEXwf5YvbX7WYmabStNDdBfTuTlknVQ13cPSQjTnr7nB6P0fddFGrR1LonTpUXNHw9WJy2lIHXoslteFjP6XfzmIdqMcKYBtE' 
+  // We use the variable again so we can stop hardcoding
+  token: import.meta.env.VITE_SANITY_WRITE_TOKEN, 
 });
 
 const builder = createImageUrlBuilder(client);
-
-export const urlFor = (source) => {
-  if (!source) return '';
-  return builder.image(source);
-};
+export const urlFor = (source) => (source ? builder.image(source) : '');
