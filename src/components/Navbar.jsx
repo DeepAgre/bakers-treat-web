@@ -48,8 +48,8 @@ const Navbar = ({ cartCount, onOpenCart }) => {
 
         <div className="px-5 md:px-12 flex items-center justify-between relative z-10">
           
-          {/* 1. LEFT: Logo & Brand Name with Glow Hover */}
-          <div className="flex-[2] flex justify-start">
+          {/* 1. LEFT: Logo & Brand (Equal Width) */}
+          <div className="flex-1 flex justify-start">
             <motion.button 
               onClick={handleLogoClick} 
               whileHover={{ scale: 1.02 }}
@@ -61,31 +61,31 @@ const Navbar = ({ cartCount, onOpenCart }) => {
                   alt="Delight Bakehouse" 
                   className="w-9 h-9 md:w-11 md:h-11 rounded-full object-cover border-2 border-[#E89EB8]/10 group-hover:border-[#E89EB8] transition-all" 
                 />
-                {/* PINK GLOW EFFECT */}
                 <div className="absolute inset-0 rounded-full bg-[#E89EB8] blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
               </div>
-              
-              <h1 className="text-[14px] md:text-xl font-serif font-bold tracking-tight text-gray-900 group-hover:text-[#E89EB8] transition-all duration-300 drop-shadow-sm group-hover:drop-shadow-[0_0_8px_rgba(232,158,184,0.4)]">
+              <h1 className="text-[14px] md:text-xl font-serif font-bold tracking-tight text-gray-900 group-hover:text-[#E89EB8] transition-all duration-300 drop-shadow-sm group-hover:drop-shadow-[0_0_8px_rgba(232,158,184,0.4)] whitespace-nowrap">
                 Delight Bakehouse
               </h1>
             </motion.button>
           </div>
 
-          {/* 2. CENTER: Nav Links */}
-          <div className="hidden lg:flex items-center gap-8 bg-[#FAF9F6] px-8 py-2.5 rounded-full border border-black/[0.03]">
-            {navLinks.map((link) => (
-              <a 
-                key={link.name}
-                href={link.href} 
-                className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-[#E89EB8] transition-all relative group"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-[1.5px] bg-[#E89EB8] transition-all group-hover:w-full" />
-              </a>
-            ))}
+          {/* 2. CENTER: Nav Links (Equal Width & Centered) */}
+          <div className="hidden lg:flex flex-1 justify-center">
+            <div className="flex items-center gap-8 bg-[#FAF9F6] px-8 py-2.5 rounded-full border border-black/[0.03]">
+              {navLinks.map((link) => (
+                <a 
+                  key={link.name}
+                  href={link.href} 
+                  className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-[#E89EB8] transition-all relative group"
+                >
+                  {link.name}
+                  <span className="absolute -bottom-1 left-0 w-0 h-[1.5px] bg-[#E89EB8] transition-all group-hover:w-full" />
+                </a>
+              ))}
+            </div>
           </div>
 
-          {/* 3. RIGHT: Bag & Toggle */}
+          {/* 3. RIGHT: Bag & Toggle (Equal Width) */}
           <div className="flex-1 flex justify-end items-center gap-2 md:gap-3">
             <button 
               onClick={onOpenCart}
