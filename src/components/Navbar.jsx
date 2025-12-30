@@ -28,14 +28,13 @@ const Navbar = ({ cartCount, onOpenCart }) => {
   };
 
   return (
-    /* Changed from fixed to sticky and adjusted top spacing */
     <div className={`sticky ${scrolled ? 'top-0' : 'top-2'} left-0 w-full z-[100] px-4 py-2 pointer-events-none transition-all duration-300`}>
       <motion.nav 
         initial={false}
         animate={{
           paddingTop: scrolled ? '10px' : '16px',
           paddingBottom: scrolled ? '10px' : '16px',
-          scale: scrolled ? 0.98 : 1, // Subtle shrink effect when scrolling
+          scale: scrolled ? 0.98 : 1,
         }}
         className={`
           max-w-[1400px] mx-auto pointer-events-auto transition-all duration-500
@@ -45,23 +44,31 @@ const Navbar = ({ cartCount, onOpenCart }) => {
           overflow-hidden
         `}
       >
-        {/* INNER GRADIENT BORDER */}
         <div className="absolute inset-0 rounded-[inherit] border-2 border-[#E89EB8]/5 pointer-events-none" />
 
         <div className="px-5 md:px-12 flex items-center justify-between relative z-10">
           
-          {/* 1. LEFT: Logo */}
-          <div className="flex-1 flex justify-start">
-            <button onClick={handleLogoClick} className="flex items-center gap-2 md:gap-3 group outline-none">
-              <img 
-                src={logo} 
-                alt="Delight Bakehouse" 
-                className="w-9 h-9 md:w-11 md:h-11 rounded-full object-cover border-2 border-[#E89EB8]/10" 
-              />
-              <h1 className="text-base md:text-xl font-serif font-bold tracking-tight text-gray-900">
-                Delight <span className="hidden sm:inline">Bakehouse</span>
+          {/* 1. LEFT: Logo & Brand Name with Glow Hover */}
+          <div className="flex-[2] flex justify-start">
+            <motion.button 
+              onClick={handleLogoClick} 
+              whileHover={{ scale: 1.02 }}
+              className="flex items-center gap-2 md:gap-3 group outline-none cursor-pointer"
+            >
+              <div className="relative">
+                <img 
+                  src={logo} 
+                  alt="Delight Bakehouse" 
+                  className="w-9 h-9 md:w-11 md:h-11 rounded-full object-cover border-2 border-[#E89EB8]/10 group-hover:border-[#E89EB8] transition-all" 
+                />
+                {/* PINK GLOW EFFECT */}
+                <div className="absolute inset-0 rounded-full bg-[#E89EB8] blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+              </div>
+              
+              <h1 className="text-[14px] md:text-xl font-serif font-bold tracking-tight text-gray-900 group-hover:text-[#E89EB8] transition-all duration-300 drop-shadow-sm group-hover:drop-shadow-[0_0_8px_rgba(232,158,184,0.4)]">
+                Delight Bakehouse
               </h1>
-            </button>
+            </motion.button>
           </div>
 
           {/* 2. CENTER: Nav Links */}
@@ -100,9 +107,9 @@ const Navbar = ({ cartCount, onOpenCart }) => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <div className="w-4 h-3 flex flex-col justify-between">
-                <motion.span animate={{ rotate: isMenuOpen ? 45 : 0, y: isMenuOpen ? 5 : 0 }} className="h-[2px] bg-black rounded-full w-full origin-center transition-transform" />
-                <motion.span animate={{ opacity: isMenuOpen ? 0 : 1 }} className="h-[2px] bg-black rounded-full w-full transition-opacity" />
-                <motion.span animate={{ rotate: isMenuOpen ? -45 : 0, y: isMenuOpen ? -5 : 0 }} className="h-[2px] bg-black rounded-full w-full origin-center transition-transform" />
+                <motion.span animate={{ rotate: isMenuOpen ? 45 : 0, y: isMenuOpen ? 5 : 0 }} className="h-[2px] bg-black rounded-full w-full origin-center" />
+                <motion.span animate={{ opacity: isMenuOpen ? 0 : 1 }} className="h-[2px] bg-black rounded-full w-full" />
+                <motion.span animate={{ rotate: isMenuOpen ? -45 : 0, y: isMenuOpen ? -5 : 0 }} className="h-[2px] bg-black rounded-full w-full origin-center" />
               </div>
             </button>
           </div>
