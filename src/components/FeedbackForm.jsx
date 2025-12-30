@@ -78,7 +78,7 @@ const FeedbackForm = () => {
               animate={{ opacity: 1, x: 0 }}
               className="text-[#E89EB8] font-black text-[10px] uppercase tracking-[0.6em] mb-8 block"
             >
-              Bakers Treat • Thane
+              Delight Bakehouse • Thane
             </motion.div>
             <h2 className="text-5xl lg:text-6xl font-serif font-bold leading-tight mb-6">
               Your sweet words fuel our oven.
@@ -119,7 +119,7 @@ const FeedbackForm = () => {
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Full Name</label>
               <input 
                 type="text"
-                placeholder="Deep Agre"
+                placeholder="How should we call you?"
                 className="w-full bg-white border border-black/5 rounded-2xl px-6 py-5 outline-none focus:ring-4 focus:ring-[#E89EB8]/10 focus:border-[#E89EB8]/30 transition-all text-gray-800 shadow-sm" 
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
