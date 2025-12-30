@@ -6,7 +6,7 @@ export const client = createClient({
   dataset: 'production',
   useCdn: false, 
   apiVersion: '2023-05-03',
-  // Vite looks for the Vercel variable here
+  // Vite will grab this from Vercel after the clean redeploy
   token: import.meta.env.VITE_SANITY_WRITE_TOKEN, 
 });
 
