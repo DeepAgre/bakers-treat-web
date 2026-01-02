@@ -1,29 +1,44 @@
 @import "tailwindcss";
 
-/* 1. Only apply transitions to specific properties to avoid lag/bugs */
-html, body {
-  transition: background-color 0.5s ease, color 0.5s ease;
+/* 1. Global Reset & Transitions */
+* {
+  /* Applying transition only to specific properties to avoid layout jumps */
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 500ms;
 }
 
-/* Prevent horizontal scroll globally */
+/* 2. Force Light Mode Defaults */
+:root {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+}
+
 html, 
 body {
   max-width: 100%;
   overflow-x: hidden;
   position: relative;
-  /* FORCE white as the default background */
-  background-color: white; 
-  color: #1a1a1a;
+  /* Hard-coding white for the initial load */
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* 2. Global background colors for Dark Mode specifically */
-/* This only triggers when the 'dark' class is present on <html> */
+/* 3. Dark Mode Specific Overrides */
+/* These only trigger when <html class="dark"> is present */
+.dark,
 .dark body {
-  background-color: #0F0F0F;
-  color: #f3f4f6;
+  background-color: #0F0F0F !important;
+  color: #f9fafb !important;
 }
 
-button, a, input, select {
+/* 4. Interactive Elements */
+button, 
+a, 
+input, 
+select,
+.cursor-pointer {
   cursor: pointer !important;
 }
 
@@ -32,17 +47,25 @@ img {
   height: auto;
 }
 
-/* Custom Scrollbar */
+/* 5. Custom Scrollbar Logic */
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #e5e7eb;
   border-radius: 99px;
 }
-.dark ::webkit-scrollbar-thumb {
+
+/* Change scrollbar in Dark Mode */
+.dark ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #E89EB8; /* Khushi's brand pink */
 }
