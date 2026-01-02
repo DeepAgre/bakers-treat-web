@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { useTheme } from './components/ThemeContext'; // 1. Added useTheme
 import SmoothScroll from './components/SmoothScroll';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -9,7 +10,7 @@ import AboutKhushi from './components/AboutKhushi';
 import Marquee from './components/Marquee';
 import Menu from './components/Menu';
 import Testimonials from './components/Testimonials';
-import FeedbackForm from './components/FeedbackForm'; // 1. Added AI Feedback Form
+import FeedbackForm from './components/FeedbackForm'; 
 import Footer from './components/Footer';
 import Cart from './components/Cart';
 import ProductModal from './components/ProductModal';
@@ -23,6 +24,8 @@ const BakeryApp = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); 
   
+  const { isDarkMode } = useTheme(); // 2. Access the theme state
+
   const [cartItems, setCartItems] = useState(() => {
     const saved = localStorage.getItem('delight_bakehouse_cart');
     return saved ? JSON.parse(saved) : [];
@@ -112,7 +115,8 @@ const BakeryApp = () => {
   };
 
   return (
-    <div className="relative w-full overflow-x-hidden bg-[#F9F8F6]">
+    // 3. Updated background classes to support Dark Mode (bg-white dark:bg-[#0F0F0F])
+    <div className="relative w-full overflow-x-hidden bg-white dark:bg-[#0F0F0F] transition-colors duration-500">
       <SmoothScroll>
         <AnimatePresence mode="wait">
           {isLoading && <PreLoader key="loader" onSkip={handleSkipIntro} />}
@@ -122,7 +126,8 @@ const BakeryApp = () => {
 
         {!isLoading && (
           <header className="fixed top-0 left-0 w-full z-[120] animate-in fade-in duration-700">
-            <div className="bg-[#1A1A1A] text-white text-[11px] sm:text-[13px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] py-3 sm:py-4 text-center border-b border-white/10 px-4">
+            {/* Announcement Bar Dark Mode Support */}
+            <div className="bg-[#1A1A1A] dark:bg-black text-white text-[11px] sm:text-[13px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] py-3 sm:py-4 text-center border-b border-white/10 px-4">
                <span className="text-[#E89EB8] animate-pulse mr-2">✦</span>
                24-Hour Notice Required • Handmade with love in Thane
                <span className="text-[#E89EB8] animate-pulse ml-2">✦</span>
@@ -136,20 +141,22 @@ const BakeryApp = () => {
           
           <section><CustomOrder /></section>
           
-          <section id="about" className="bg-[#F9F8F6]">
+          {/* 4. Updated section backgrounds */}
+          <section id="about" className="bg-white dark:bg-[#0F0F0F] transition-colors duration-500">
             <Ingredients />
             <AboutKhushi />
           </section>
           
-          <div className="relative z-10 bg-[#F9F8F6] rounded-t-[2rem] sm:rounded-t-[3rem] mt-[-30px] sm:mt-[-50px] shadow-[0_-25px_50px_rgba(0,0,0,0.05)] border-t border-black/5">
+          {/* 5. Updated the overlapping container to be dark-mode ready */}
+          <div className="relative z-10 bg-white dark:bg-[#0F0F0F] rounded-t-[2rem] sm:rounded-t-[3rem] mt-[-30px] sm:mt-[-50px] shadow-[0_-25px_50px_rgba(0,0,0,0.05)] border-t border-black/5 dark:border-white/5 transition-colors duration-500">
             <Marquee />
             
             <section id="menu">
               <Menu onProductSelect={handleProductSelect} />
             </section>
 
-            {/* AI FEEDBACK SECTION - Added right before Testimonials */}
-            <section id="feedback" className="py-20 bg-white">
+            {/* AI FEEDBACK SECTION */}
+            <section id="feedback" className="py-20 bg-white dark:bg-[#151515] transition-colors duration-500">
               <div className="max-w-7xl mx-auto px-6">
                 <FeedbackForm />
               </div>

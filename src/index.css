@@ -1,11 +1,19 @@
 @import "tailwindcss";
 
+/* 1. Dark Mode Smooth Transition */
+/* This ensures that every color change on the site happens over 500ms */
+* {
+  @apply transition-colors duration-500;
+}
+
 /* Prevent horizontal scroll globally */
 html, 
 body {
   max-width: 100%;
   overflow-x: hidden;
   position: relative;
+  /* 2. Global background colors for Light/Dark Mode */
+  @apply bg-white dark:bg-[#0F0F0F] text-gray-900 dark:text-gray-100;
   /* Smooths out the scrolling experience on mobile */
   -webkit-overflow-scrolling: touch;
 }
@@ -22,4 +30,21 @@ select,
 img {
   max-width: 100%;
   height: auto;
+}
+
+/* 3. Custom Scrollbar for Dark Mode (Optional but Recommended) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-white/10 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-[#E89EB8];
 }
