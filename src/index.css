@@ -1,9 +1,8 @@
 @import "tailwindcss";
 
-/* 1. Dark Mode Smooth Transition */
-/* This ensures that every color change on the site happens over 500ms */
-* {
-  @apply transition-colors duration-500;
+/* 1. Only apply transitions to specific properties to avoid lag/bugs */
+html, body {
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 /* Prevent horizontal scroll globally */
@@ -12,39 +11,38 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   position: relative;
-  /* 2. Global background colors for Light/Dark Mode */
-  @apply bg-white dark:bg-[#0F0F0F] text-gray-900 dark:text-gray-100;
-  /* Smooths out the scrolling experience on mobile */
-  -webkit-overflow-scrolling: touch;
+  /* FORCE white as the default background */
+  background-color: white; 
+  color: #1a1a1a;
 }
 
-button, 
-a, 
-input[type="date"], 
-select,
-.cursor-pointer {
+/* 2. Global background colors for Dark Mode specifically */
+/* This only triggers when the 'dark' class is present on <html> */
+.dark body {
+  background-color: #0F0F0F;
+  color: #f3f4f6;
+}
+
+button, a, input, select {
   cursor: pointer !important;
 }
 
-/* Ensure images don't break the layout */
 img {
   max-width: 100%;
   height: auto;
 }
 
-/* 3. Custom Scrollbar for Dark Mode (Optional but Recommended) */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-track {
-  @apply bg-transparent;
+  background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 dark:bg-white/10 rounded-full;
+  background: #d1d5db;
+  border-radius: 99px;
 }
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-[#E89EB8];
+.dark ::webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
 }
