@@ -13,33 +13,38 @@ const Footer = () => {
   const quickLinks = [
     { name: 'Our Story', href: '#about' },
     { name: 'Menu', href: '#menu' },
-    { name: 'Custom Orders', href: '#home' },
+    { name: 'Reviews', href: '#feedback' },
   ];
 
   return (
     <footer 
-      className="relative pt-20 pb-10 px-6 overflow-hidden text-white"
-      style={{ 
-        // This gradient makes the top part black to blend with the rest of the site, 
-        // then slowly reveals the image behind a dark tint
-        backgroundImage: `linear-gradient(to bottom, #0A0A0A 0%, rgba(10, 10, 10, 0.85) 100%), url(${cakeGallery})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed' // This gives a cool parallax effect!
-      }}
+      className="relative pt-24 pb-12 px-6 overflow-hidden transition-colors duration-500 bg-white dark:bg-[#0A0A0A]"
     >
+      {/* --- DYNAMIC BACKGROUND IMAGE WITH PARALLAX --- */}
+      <div 
+        className="absolute inset-0 z-0 opacity-10 dark:opacity-20 pointer-events-none"
+        style={{ 
+          backgroundImage: `url(${cakeGallery})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      />
+
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Top Section: Branding & CTA */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pb-16 border-b border-white/10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 pb-16 border-b border-gray-100 dark:border-white/5">
           <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-serif mb-6">Delight Bakehouse<span className="text-[#E89EB8]">.</span></h2>
-            <p className="text-white/70 max-w-sm leading-relaxed mb-8">
+            <h2 className="text-4xl font-serif font-bold mb-6 text-gray-900 dark:text-white">
+              Delight Bakehouse<span className="text-[#E89EB8]">.</span>
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 max-w-sm leading-relaxed mb-10">
               Handcrafting premium, artisanal bakes in the heart of Thane. 
-              Every treat is a story of quality and passion.
+              Every treat by Khushi Manjrekar is a story of quality and passion.
             </p>
             
             <div className="flex flex-wrap gap-4">
@@ -47,7 +52,7 @@ const Footer = () => {
                 href={`https://wa.me/${khushiNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[#E89EB8] text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-white hover:text-black transition-all"
+                className="bg-black dark:bg-[#E89EB8] text-white dark:text-black px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all shadow-lg"
               >
                 Order on WhatsApp
               </a>
@@ -55,25 +60,27 @@ const Footer = () => {
                 href={bakeryInsta}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-[#E89EB8] hover:border-[#E89EB8] transition-all"
+                className="bg-gray-100 dark:bg-white/5 border border-transparent dark:border-white/10 text-gray-900 dark:text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all"
               >
                 Visit Instagram
               </a>
             </div>
           </motion.div>
 
+          {/* Quick Links & Contact */}
           <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 gap-8"
+            transition={{ delay: 0.2 }}
+            className="grid grid-cols-2 gap-12"
           >
             <div>
-              <h4 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-6">Explore</h4>
+              <h4 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-8">Navigation</h4>
               <ul className="space-y-4">
                 {quickLinks.map(link => (
                   <li key={link.name}>
-                    <a href={link.href} className="text-white/60 hover:text-white transition-colors text-sm">
+                    <a href={link.href} className="text-gray-500 dark:text-gray-400 hover:text-[#E89EB8] dark:hover:text-white transition-colors text-sm font-medium">
                       {link.name}
                     </a>
                   </li>
@@ -81,13 +88,13 @@ const Footer = () => {
               </ul>
             </div>
             <div>
-              <h4 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-6">Contact</h4>
-              <div className="text-sm text-white/60 space-y-4 leading-relaxed">
+              <h4 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-8">Studio</h4>
+              <div className="text-sm text-gray-500 dark:text-gray-400 space-y-4 leading-relaxed font-medium">
                 <p>Thane, Maharashtra</p>
-                <a href={`mailto:${bakeryEmail}`} className="block hover:text-white transition-colors break-all">
+                <a href={`mailto:${bakeryEmail}`} className="block hover:text-[#E89EB8] transition-colors break-all">
                   {bakeryEmail}
                 </a>
-                <a href={`tel:+${khushiNumber}`} className="block hover:text-white transition-colors">
+                <a href={`tel:+${khushiNumber}`} className="block hover:text-[#E89EB8] transition-colors">
                   +91 91363 71662
                 </a>
               </div>
@@ -95,18 +102,21 @@ const Footer = () => {
           </motion.div>
         </div>
 
-        {/* Bottom Section: Copyright & Secondary Links */}
-        <div className="pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-white/30 text-[10px] font-black uppercase tracking-widest text-center md:text-left">
-            © {currentYear} Delight Bakehouse • Handcrafted with love in Thane
-          </p>
+        {/* Bottom Section: Copyright */}
+        <div className="pt-12 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex flex-col gap-2 text-center md:text-left">
+            <p className="text-gray-400 dark:text-white/20 text-[10px] font-black uppercase tracking-widest">
+              © {currentYear} Bakers Treat • Designed for Khushi Manjrekar
+            </p>
+          </div>
           
-          <div className="flex gap-8">
-             <a href={bakeryInsta} target="_blank" rel="noopener noreferrer" className="text-white/30 hover:text-[#E89EB8] text-[10px] font-black uppercase tracking-widest transition-colors">
-               Bakery Instagram
+          <div className="flex items-center gap-8">
+             <a href={bakeryInsta} target="_blank" rel="noopener noreferrer" className="text-gray-400 dark:text-white/20 hover:text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.2em] transition-colors">
+               Bakery Feed
              </a>
-             <a href={personalInsta} target="_blank" rel="noopener noreferrer" className="text-white/30 hover:text-[#E89EB8] text-[10px] font-black uppercase tracking-widest transition-colors">
-               Khushi's Profile
+             <span className="w-1 h-1 bg-[#E89EB8] rounded-full opacity-30" />
+             <a href={personalInsta} target="_blank" rel="noopener noreferrer" className="text-gray-400 dark:text-white/20 hover:text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.2em] transition-colors">
+               Owner Profile
              </a>
           </div>
         </div>

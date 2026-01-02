@@ -80,7 +80,7 @@ const Menu = ({ onProductSelect }) => {
         
         <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 text-gray-900 dark:text-white transition-colors">Our Menu</h2>
         
-        {/* FIX: Improved button colors for Light Mode visibility */}
+        {/* Category Filter Buttons */}
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-8">
           {categories.map((cat) => (
             <button
@@ -110,6 +110,7 @@ const Menu = ({ onProductSelect }) => {
               onClick={() => !product.isSoldOut && onProductSelect(product)}
               className={`group flex flex-col ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
             >
+              {/* Image Container */}
               <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[3rem] aspect-[4/5] shadow-xl mb-8 bg-gray-50 dark:bg-[#151515] transition-colors">
                 <img 
                   src={product.img} 
@@ -127,19 +128,21 @@ const Menu = ({ onProductSelect }) => {
                 )}
               </div>
 
+              {/* Product Info */}
               <div className="text-center px-4">
                 <p className="text-[#E89EB8] uppercase tracking-[0.3em] text-[9px] font-black mb-2">
                   {product.category}
                 </p>
                 
+                {/* FIXED: text-gray-900 ensures visibility in Light Mode, group-hover remains for effect */}
                 <h3 className="text-xl sm:text-2xl font-serif font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[#E89EB8] transition-colors">
                   {product.name}
                 </h3>
 
-                {/* FIX: Centered alignment and improved contrast for Price */}
+                {/* Price Display */}
                 <div className="flex items-center justify-center gap-3">
                   <div className="h-px w-6 bg-gray-200 dark:bg-white/10"></div>
-                  <p className="text-lg font-bold text-gray-800 dark:text-gray-300 transition-colors">
+                  <p className="text-lg font-bold text-gray-700 dark:text-gray-300 transition-colors">
                     {product.variants.length > 1 ? 'From ' : ''}₹{product.displayPrice}
                   </p>
                   <div className="h-px w-6 bg-gray-200 dark:bg-white/10"></div>
