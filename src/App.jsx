@@ -24,10 +24,11 @@ const BakeryApp = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); 
   
+  // This is the variable that controls the toggle
   const { isDarkMode } = useTheme(); 
 
   const [cartItems, setCartItems] = useState(() => {
-    const saved = localStorage.getItem('bakers_treat_cart'); // Updated key name
+    const saved = localStorage.getItem('bakers_treat_cart');
     return saved ? JSON.parse(saved) : [];
   });
 
@@ -115,8 +116,11 @@ const BakeryApp = () => {
   };
 
   return (
-    /* Updated background and text colors to be globally reactive */
-    <div className="relative w-full min-h-screen overflow-x-hidden bg-white dark:bg-[#0F0F0F] text-gray-900 dark:text-gray-100 transition-colors duration-500">
+    /* THE FIX: We use a template literal to check isDarkMode. 
+       If isDarkMode is false, the 'dark' class is never applied, 
+       forcing the browser to stay in Light Mode.
+    */
+    <div className={`relative w-full min-h-screen overflow-x-hidden transition-colors duration-500 ${isDarkMode ? 'dark bg-[#0F0F0F] text-gray-100' : 'bg-white text-gray-900'}`}>
       <SmoothScroll>
         <AnimatePresence mode="wait">
           {isLoading && <PreLoader key="loader" onSkip={handleSkipIntro} />}
