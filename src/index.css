@@ -1,71 +1,38 @@
 @import "tailwindcss";
 
-/* 1. Force Browser to ignore System Theme */
+/* 1. Reset browser defaults to avoid system dark mode override */
 :root {
-  color-scheme: light !important;
+  color-scheme: light;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  /* Force white background as the ultimate default */
   background-color: #ffffff !important;
-  color: #111827 !important;
+  color: #1a1a1a !important;
 }
 
-/* 2. When Dark Class is present, change the scheme */
-html.dark {
-  color-scheme: dark !important;
-}
-
-/* 3. Global Reset & Transitions */
-* {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 500ms;
-}
-
-html, 
-body {
-  max-width: 100%;
-  overflow-x: hidden;
-  position: relative;
-  /* FORCE light background on initial load */
-  background-color: #ffffff !important;
-  color: #111827 !important;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* 4. Dark Mode Specific Overrides */
-/* We target the body specifically to ensure the whole page flips */
+/* 2. Standard Dark Mode transition */
 html.dark body {
   background-color: #0F0F0F !important;
-  color: #f9fafb !important;
+  color: #ffffff !important;
 }
 
-/* 5. Fix for that "weird area" behind navbar */
-header, nav {
-  background-color: transparent !important;
+/* 3. Global Smooth Transitions */
+* {
+  transition-property: background-color, color, border-color;
+  transition-duration: 500ms;
+  transition-timing-function: ease;
 }
 
-/* Interactive Elements */
-button, a, input, select, .cursor-pointer {
+/* 4. Fix for the Navbar gap */
+header {
+  background: transparent !important;
+}
+
+button, a {
   cursor: pointer !important;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Scrollbar Logic */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #e5e7eb;
-  border-radius: 99px;
-}
-html.dark ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-}
-html.dark ::-webkit-scrollbar-thumb:hover {
-  background: #E89EB8;
 }
