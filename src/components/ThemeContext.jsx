@@ -9,15 +9,16 @@ export const ThemeProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    const root = window.document.documentElement;
-    if (isDarkMode) {
-      root.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      root.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDarkMode]);
+  const root = window.document.documentElement;
+  if (isDarkMode) {
+    root.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
+  } else {
+    // This is the crucial part that might be missing or failing
+    root.classList.remove('dark'); 
+    localStorage.setItem('theme', 'light');
+  }
+}, [isDarkMode]);
 
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
