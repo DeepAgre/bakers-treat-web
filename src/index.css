@@ -1,40 +1,43 @@
 @import "tailwindcss";
 
-/* 1. Global Reset */
+/* 1. Reset & Force Light Mode Base */
 html, body {
   background-color: white !important;
   color: #1a1a1a !important;
 }
 
-html.dark body {
-  background-color: #0F0F0F !important;
-  color: #ffffff !important;
-}
-
-/* 2. THE FIX: Force all dark sections to follow the theme */
-/* This targets the specific hex code you used (#0A0A0A and #0F0F0F) */
-
-/* When NOT in dark mode, force background to white and text to dark */
+/* 2. Fix the "White Sides" by making sections span full width or match theme */
 html:not(.dark) section, 
-html:not(.dark) div[class*="bg-[#0"] {
-  background-color: #ffffff !important;
-  color: #1a1a1a !important;
-  border-color: rgba(0,0,0,0.1) !important;
+html:not(.dark) main {
+  background-color: white !important;
 }
 
-/* Specific fix for your Hero text visibility */
-html:not(.dark) h1, 
-html:not(.dark) h2, 
-html:not(.dark) p {
+/* 3. Preloader Text Visibility Fix */
+/* Ensures "Delight Bakehouse" is visible even if the loader background is light */
+html:not(.dark) .preloader-text {
   color: #1a1a1a !important;
 }
 
-/* 3. Keep the Navbar clean */
-header {
-  background: transparent !important;
+/* 4. Menu Category Buttons Fix */
+/* Make buttons light with dark text in light mode */
+html:not(.dark) .menu-category-btn {
+  background-color: #f3f4f6 !important;
+  color: #1f2937 !important;
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
-/* 4. Smooth out the transition */
+html:not(.dark) .menu-category-btn.active {
+  background-color: #E89EB8 !important; /* Keep Khushi's brand pink */
+  color: white !important;
+}
+
+/* 5. Custom Cake Section Pink Background */
+/* Force the pink background to stay or adapt in light mode */
+html:not(.dark) .custom-cake-section {
+  background-color: #FFF5F7 !important; /* A soft pink for light mode */
+}
+
+/* 6. Transitions */
 * {
   transition: background-color 0.4s ease, color 0.4s ease !important;
 }

@@ -77,9 +77,10 @@ const Menu = ({ onProductSelect }) => {
         >
           Freshly Baked in Thane
         </motion.span>
-        {/* Added dark:text-white to the heading */}
+        
         <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 text-gray-900 dark:text-white transition-colors">Our Menu</h2>
         
+        {/* FIX: Improved button colors for Light Mode visibility */}
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-8">
           {categories.map((cat) => (
             <button
@@ -88,7 +89,7 @@ const Menu = ({ onProductSelect }) => {
               className={`px-5 py-2 sm:px-8 sm:py-3 rounded-full text-[10px] font-black tracking-widest uppercase transition-all duration-300
                 ${activeCategory === cat 
                   ? 'bg-[#E89EB8] text-white shadow-lg shadow-[#E89EB8]/20 scale-105' 
-                  : 'bg-white dark:bg-[#1A1A1A] text-gray-400 dark:text-gray-500 border border-black/5 dark:border-white/5 hover:border-[#E89EB8]/30 hover:text-[#E89EB8]'}`}
+                  : 'bg-gray-100 dark:bg-[#1A1A1A] text-gray-600 dark:text-gray-400 border border-transparent dark:border-white/5 hover:border-[#E89EB8]/30 hover:text-[#E89EB8]'}`}
             >
               {cat}
             </button>
@@ -130,17 +131,18 @@ const Menu = ({ onProductSelect }) => {
                 <p className="text-[#E89EB8] uppercase tracking-[0.3em] text-[9px] font-black mb-2">
                   {product.category}
                 </p>
-                {/* Updated product name color for dark mode */}
+                
                 <h3 className="text-xl sm:text-2xl font-serif font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[#E89EB8] transition-colors">
                   {product.name}
                 </h3>
-                <div className="flex items-center justify-center gap-2">
-                  <div className="h-px w-4 bg-gray-200 dark:bg-white/10"></div>
-                  {/* Updated price color for dark mode */}
-                  <p className="text-lg font-bold text-gray-700 dark:text-gray-300 transition-colors">
+
+                {/* FIX: Centered alignment and improved contrast for Price */}
+                <div className="flex items-center justify-center gap-3">
+                  <div className="h-px w-6 bg-gray-200 dark:bg-white/10"></div>
+                  <p className="text-lg font-bold text-gray-800 dark:text-gray-300 transition-colors">
                     {product.variants.length > 1 ? 'From ' : ''}₹{product.displayPrice}
                   </p>
-                  <div className="h-px w-4 bg-gray-200 dark:bg-white/10"></div>
+                  <div className="h-px w-6 bg-gray-200 dark:bg-white/10"></div>
                 </div>
               </div>
             </motion.div>
