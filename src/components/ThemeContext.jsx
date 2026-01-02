@@ -1,19 +1,18 @@
-import React, { createContext, useContext, useState, useEffect, useLayoutEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
+    // 1. We check if the user MANUALLY set it to dark before
     const saved = localStorage.getItem('theme');
-    // We are ignoring system settings entirely here. 
-    // It only turns dark if the user specifically clicked it in the past.
-    return saved === 'dark';
+    return saved === 'dark'; // This will be FALSE for new users (Light Mode)
   });
 
-  // useLayoutEffect runs BEFORE the paint, so we can stop the dark flash
-  useLayoutEffect(() => {
+  useEffect(() => {
     const root = window.document.documentElement;
     
+    // 2. IMPORTANT: Forcefully remove 'dark' if state is false
     if (isDarkMode) {
       root.classList.add('dark');
       localStorage.setItem('theme', 'dark');
@@ -22,14 +21,6 @@ export const ThemeProvider = ({ children }) => {
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
-
-  // This second effect is a "Safety Guard" 
-  // It ensures that even if something else adds 'dark', we remove it on load if isDarkMode is false
-  useEffect(() => {
-    if (!isDarkMode) {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
 
   const toggleTheme = () => setIsDarkMode(prev => !prev);
 
