@@ -1,23 +1,25 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useLayoutEffect } from 'react';
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    // 1. We check if the user MANUALLY set it to dark before
+    // Only return true if the user manually picked it before
     const saved = localStorage.getItem('theme');
-    return saved === 'dark'; // This will be FALSE for new users (Light Mode)
+    return saved === 'dark'; 
   });
 
-  useEffect(() => {
+  // useLayoutEffect runs BEFORE the page is visible to prevent the "Dark Flash"
+  useLayoutEffect(() => {
     const root = window.document.documentElement;
     
-    // 2. IMPORTANT: Forcefully remove 'dark' if state is false
     if (isDarkMode) {
       root.classList.add('dark');
+      root.style.colorScheme = 'dark'; // Tells browser to use dark system colors
       localStorage.setItem('theme', 'dark');
     } else {
       root.classList.remove('dark');
+      root.style.colorScheme = 'light'; // Tells browser to use light system colors
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);

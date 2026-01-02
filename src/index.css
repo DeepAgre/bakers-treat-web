@@ -1,17 +1,22 @@
 @import "tailwindcss";
 
-/* 1. Global Reset & Transitions */
+/* 1. Force Browser to ignore System Theme */
+:root {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  color: #111827 !important;
+}
+
+/* 2. When Dark Class is present, change the scheme */
+html.dark {
+  color-scheme: dark !important;
+}
+
+/* 3. Global Reset & Transitions */
 * {
-  /* Applying transition only to specific properties to avoid layout jumps */
   transition-property: background-color, border-color, color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 500ms;
-}
-
-/* 2. Force Light Mode Defaults */
-:root {
-  background-color: #ffffff !important;
-  color: #111827 !important;
 }
 
 html, 
@@ -19,26 +24,26 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   position: relative;
-  /* Hard-coding white for the initial load */
+  /* FORCE light background on initial load */
   background-color: #ffffff !important;
   color: #111827 !important;
   -webkit-overflow-scrolling: touch;
 }
 
-/* 3. Dark Mode Specific Overrides */
-/* These only trigger when <html class="dark"> is present */
-.dark,
-.dark body {
+/* 4. Dark Mode Specific Overrides */
+/* We target the body specifically to ensure the whole page flips */
+html.dark body {
   background-color: #0F0F0F !important;
   color: #f9fafb !important;
 }
 
-/* 4. Interactive Elements */
-button, 
-a, 
-input, 
-select,
-.cursor-pointer {
+/* 5. Fix for that "weird area" behind navbar */
+header, nav {
+  background-color: transparent !important;
+}
+
+/* Interactive Elements */
+button, a, input, select, .cursor-pointer {
   cursor: pointer !important;
 }
 
@@ -47,25 +52,20 @@ img {
   height: auto;
 }
 
-/* 5. Custom Scrollbar Logic */
+/* Scrollbar Logic */
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
   background: #e5e7eb;
   border-radius: 99px;
 }
-
-/* Change scrollbar in Dark Mode */
-.dark ::-webkit-scrollbar-thumb {
+html.dark ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
 }
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #E89EB8; /* Khushi's brand pink */
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #E89EB8;
 }

@@ -1,8 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  // THIS LINE IS THE FIX: It tells Tailwind to only use Dark Mode 
-  // when we manually add the "dark" class to the HTML tag.
-  darkMode: 'class', 
+  // Add 'selector' to be extra sure it ignores the system media query
+  darkMode: ['class', '[class="dark"]'], 
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
