@@ -1,23 +1,40 @@
 @import "tailwindcss";
 
-/* Basic Reset to bring the site back */
+/* 1. Global Reset */
 html, body {
-  margin: 0;
-  padding: 0;
   background-color: white !important;
   color: #1a1a1a !important;
-  width: 100%;
-  height: 100%;
 }
 
-/* Very simple dark mode rule */
-.dark body {
+html.dark body {
   background-color: #0F0F0F !important;
   color: #ffffff !important;
 }
 
-/* Ensure the root div is visible */
-#root {
-  width: 100%;
-  min-height: 100vh;
+/* 2. THE FIX: Force all dark sections to follow the theme */
+/* This targets the specific hex code you used (#0A0A0A and #0F0F0F) */
+
+/* When NOT in dark mode, force background to white and text to dark */
+html:not(.dark) section, 
+html:not(.dark) div[class*="bg-[#0"] {
+  background-color: #ffffff !important;
+  color: #1a1a1a !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+
+/* Specific fix for your Hero text visibility */
+html:not(.dark) h1, 
+html:not(.dark) h2, 
+html:not(.dark) p {
+  color: #1a1a1a !important;
+}
+
+/* 3. Keep the Navbar clean */
+header {
+  background: transparent !important;
+}
+
+/* 4. Smooth out the transition */
+* {
+  transition: background-color 0.4s ease, color 0.4s ease !important;
 }
