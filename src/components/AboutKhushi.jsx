@@ -32,7 +32,7 @@ const AboutKhushi = () => {
                 The Visionary
               </p>
               <p className="text-white/50 text-sm mt-2 font-sans">
-                Khushi Manjrekar — Founder, Bakers Treat
+                Khushi Manjrekar — Founder, Delight Bakehouse
               </p>
             </div>
 
@@ -71,7 +71,7 @@ const AboutKhushi = () => {
               Based in the heart of <span className="text-gray-900 dark:text-white font-medium underline decoration-[#E89EB8]/30 underline-offset-4">Thane</span>, Khushi transformed her lifelong passion for art into a world of edible wonders. With a background in design and a perfectionist’s soul, she doesn't just bake—she crafts experiences.
             </p>
             <p className="text-justify">
-              Every creation at <strong className="text-gray-900 dark:text-white">Bakers Treat</strong> is a personal labor of love. By blending premium Belgian chocolate with seasonal artisanal fruits, Khushi ensures that her treats are as sophisticated in flavor as they are in appearance.
+              Every creation at <strong className="text-gray-900 dark:text-white">Delight Bakehouse</strong> is a personal labor of love. By blending premium Belgian chocolate with seasonal artisanal fruits, Khushi ensures that her treats are as sophisticated in flavor as they are in appearance.
             </p>
           </div>
 

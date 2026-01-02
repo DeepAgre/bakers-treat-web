@@ -6,7 +6,7 @@ const hardcodedTestimonials = [
   {
     _id: 'seed-1',
     name: "Ananya Iyer",
-    comment: "The brownies from Bakers Treat are out of this world! So fudgy and rich. Khushi really knows her craft.",
+    comment: "The brownies from Delight Bakehouse are out of this world! So fudgy and rich. Khushi really knows her craft.",
     location: "Thane West",
     rating: 5,
     isVerified: false

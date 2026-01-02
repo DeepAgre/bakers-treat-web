@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { client, urlFor } from '../lib/sanity';
 
@@ -12,7 +12,6 @@ const Menu = ({ onProductSelect }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // UPDATED QUERY: Now specifically fetching the variants array
         const productQuery = `*[_type == "product"]{ 
           ..., 
           "categoryName": category->title,
@@ -27,15 +26,14 @@ const Menu = ({ onProductSelect }) => {
         ]);
 
         const formattedProducts = productData.map(item => {
-          // LOGIC: Find the lowest price among variants to show on the card
           const prices = item.variants?.map(v => v.price) || [0];
           const minPrice = Math.min(...prices);
 
           return {
             id: item._id,
             name: item.name,
-            displayPrice: minPrice, // Lowest price for the "Starting at" label
-            variants: item.variants || [], // Pass all variants to the modal
+            displayPrice: minPrice,
+            variants: item.variants || [],
             img: item.image ? urlFor(item.image).url() : '',
             category: item.categoryName || 'General',
             description: item.description,
@@ -64,13 +62,13 @@ const Menu = ({ onProductSelect }) => {
   }, [activeCategory, products]);
 
   if (loading) return (
-    <div className="py-40 text-center font-serif text-gray-400 animate-pulse">
+    <div className="py-40 text-center font-serif text-gray-400 dark:text-gray-500 animate-pulse">
       Loading Delight Bakehouse Menu...
     </div>
   );
 
   return (
-    <section className="py-20 sm:py-32 px-6 max-w-7xl mx-auto overflow-hidden" id="menu">
+    <section className="py-20 sm:py-32 px-6 max-w-7xl mx-auto overflow-hidden bg-white dark:bg-[#0F0F0F] transition-colors duration-500" id="menu">
       <div className="text-center mb-16 sm:mb-24">
         <motion.span 
           initial={{ opacity: 0 }}
@@ -79,7 +77,8 @@ const Menu = ({ onProductSelect }) => {
         >
           Freshly Baked in Thane
         </motion.span>
-        <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 text-gray-900">Our Menu</h2>
+        {/* Added dark:text-white to the heading */}
+        <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 text-gray-900 dark:text-white transition-colors">Our Menu</h2>
         
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-8">
           {categories.map((cat) => (
@@ -89,7 +88,7 @@ const Menu = ({ onProductSelect }) => {
               className={`px-5 py-2 sm:px-8 sm:py-3 rounded-full text-[10px] font-black tracking-widest uppercase transition-all duration-300
                 ${activeCategory === cat 
                   ? 'bg-[#E89EB8] text-white shadow-lg shadow-[#E89EB8]/20 scale-105' 
-                  : 'bg-white text-gray-400 border border-black/5 hover:border-[#E89EB8]/30 hover:text-[#E89EB8]'}`}
+                  : 'bg-white dark:bg-[#1A1A1A] text-gray-400 dark:text-gray-500 border border-black/5 dark:border-white/5 hover:border-[#E89EB8]/30 hover:text-[#E89EB8]'}`}
             >
               {cat}
             </button>
@@ -110,7 +109,7 @@ const Menu = ({ onProductSelect }) => {
               onClick={() => !product.isSoldOut && onProductSelect(product)}
               className={`group flex flex-col ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
             >
-              <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[3rem] aspect-[4/5] shadow-xl mb-8 bg-gray-50">
+              <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[3rem] aspect-[4/5] shadow-xl mb-8 bg-gray-50 dark:bg-[#151515] transition-colors">
                 <img 
                   src={product.img} 
                   alt={product.name} 
@@ -119,8 +118,8 @@ const Menu = ({ onProductSelect }) => {
                 />
                 
                 {product.isSoldOut && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/10 backdrop-blur-[1px]">
-                    <span className="bg-white/95 text-black font-black px-6 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] shadow-xl">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/10 dark:bg-black/40 backdrop-blur-[1px]">
+                    <span className="bg-white/95 dark:bg-[#1A1A1A] text-black dark:text-white font-black px-6 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] shadow-xl border dark:border-white/10">
                       Sold Out
                     </span>
                   </div>
@@ -131,16 +130,17 @@ const Menu = ({ onProductSelect }) => {
                 <p className="text-[#E89EB8] uppercase tracking-[0.3em] text-[9px] font-black mb-2">
                   {product.category}
                 </p>
-                <h3 className="text-xl sm:text-2xl font-serif font-bold text-gray-900 mb-2 group-hover:text-[#E89EB8] transition-colors">
+                {/* Updated product name color for dark mode */}
+                <h3 className="text-xl sm:text-2xl font-serif font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[#E89EB8] transition-colors">
                   {product.name}
                 </h3>
                 <div className="flex items-center justify-center gap-2">
-                  <div className="h-px w-4 bg-gray-200"></div>
-                  <p className="text-lg font-bold text-gray-700">
-                    {/* UPDATED: Shows "Starting at" for products with multiple sizes */}
+                  <div className="h-px w-4 bg-gray-200 dark:bg-white/10"></div>
+                  {/* Updated price color for dark mode */}
+                  <p className="text-lg font-bold text-gray-700 dark:text-gray-300 transition-colors">
                     {product.variants.length > 1 ? 'From ' : ''}₹{product.displayPrice}
                   </p>
-                  <div className="h-px w-4 bg-gray-200"></div>
+                  <div className="h-px w-4 bg-gray-200 dark:bg-white/10"></div>
                 </div>
               </div>
             </motion.div>

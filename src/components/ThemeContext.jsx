@@ -14,7 +14,7 @@ export const ThemeProvider = ({ children }) => {
     root.classList.add('dark');
     localStorage.setItem('theme', 'dark');
   } else {
-    // This is the crucial part that might be missing or failing
+    // This line is the most important for fixing your current issue!
     root.classList.remove('dark'); 
     localStorage.setItem('theme', 'light');
   }
