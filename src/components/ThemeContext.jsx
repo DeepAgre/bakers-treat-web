@@ -5,22 +5,25 @@ const ThemeContext = createContext();
 export const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const saved = localStorage.getItem('theme');
-    // Default to false (Light Mode) even if the laptop is in Dark Mode
-    return saved === 'dark' ? true : false; 
+    // IRRESPECTIVE of system settings, if there is no saved 'dark' preference, 
+    // we default to Light Mode (false).
+    return saved === 'dark'; 
   });
 
   useEffect(() => {
     const root = window.document.documentElement;
+    
     if (isDarkMode) {
       root.classList.add('dark');
       localStorage.setItem('theme', 'dark');
     } else {
+      // Forcefully remove dark class to ensure Light Mode
       root.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
 
-  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+  const toggleTheme = () => setIsDarkMode(prev => !prev);
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
