@@ -50,12 +50,12 @@ const Testimonials = () => {
 
   return (
     /* UI FIX: Changed Light Mode bg to a softer pink-white so the white cards stand out beautifully */
-    <section className="py-24 bg-[#FFF5F7] dark:bg-[#0A0A0A] transition-colors duration-500" id="reviews">
+    <section className="py-24 bg-[#FFF5F7] dark:bg-[#FFF5F7] transition-colors duration-500" id="reviews">
       <div className="max-w-7xl mx-auto px-6">
         
         <div className="text-center mb-16">
           <h4 className="text-[#E89EB8] font-black uppercase tracking-[0.4em] text-[10px] mb-4">Kind Words</h4>
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white transition-colors duration-500">
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900  transition-colors duration-500">
             From our <span className="text-[#E89EB8]">Bakers Treat</span> family
           </h2>
         </div>
@@ -95,7 +95,7 @@ const Testimonials = () => {
                   ))}
                 </div>
                 
-                <h4 className="font-bold text-gray-900 dark:text-white text-xl transition-colors">{item.name}</h4>
+                <h4 className="font-bold text-gray-900  text-xl transition-colors">{item.name}</h4>
                 <p className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.2em] mt-1.5">
                   {item.location || "Thane Customer"}
                 </p>

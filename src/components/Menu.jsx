@@ -78,7 +78,7 @@ const Menu = ({ onProductSelect }) => {
           Freshly Baked in Thane
         </motion.span>
         
-        <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 text-gray-900 dark:text-white transition-colors">Our Menu</h2>
+        <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 text-gray-900  transition-colors">Our Menu</h2>
         
         {/* Category Filter Buttons */}
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-8">
@@ -121,7 +121,7 @@ const Menu = ({ onProductSelect }) => {
                 
                 {product.isSoldOut && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/10 dark:bg-black/40 backdrop-blur-[1px]">
-                    <span className="bg-white/95 dark:bg-[#1A1A1A] text-black dark:text-white font-black px-6 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] shadow-xl border dark:border-white/10">
+                    <span className="bg-white/95 dark:bg-[#1A1A1A] text-black  font-black px-6 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] shadow-xl border dark:border-white/10">
                       Sold Out
                     </span>
                   </div>
@@ -135,7 +135,7 @@ const Menu = ({ onProductSelect }) => {
                 </p>
                 
                 {/* FIXED: text-gray-900 ensures visibility in Light Mode, group-hover remains for effect */}
-                <h3 className="text-xl sm:text-2xl font-serif font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[#E89EB8] transition-colors">
+                <h3 className="text-xl sm:text-2xl font-serif font-bold text-gray-900  mb-2 group-hover:text-[#E89EB8] transition-colors">
                   {product.name}
                 </h3>
 

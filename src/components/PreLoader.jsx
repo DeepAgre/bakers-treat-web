@@ -16,8 +16,8 @@ const PreLoader = ({ onSkip }) => {
           initial={{ y: 100 }}
           animate={{ y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          /* Changed text-white to text-gray-900 (light mode) and dark:text-white (dark mode) */
-          className="text-gray-900 dark:text-white text-4xl md:text-6xl font-serif tracking-tighter text-center transition-colors duration-500"
+          /* Changed text-white to text-gray-900 (light mode) and  (dark mode) */
+          className="text-gray-900  text-4xl md:text-6xl font-serif tracking-tighter text-center transition-colors duration-500"
         >
           Delight Bakehouse<span className="text-[#E89EB8]">.</span>
         </motion.h1>
@@ -37,10 +37,10 @@ const PreLoader = ({ onSkip }) => {
         className="absolute bottom-10 flex flex-col items-center gap-2"
       >
         {/* Updated both p tags to shift from dark gray to white based on theme */}
-        <p className="text-gray-900 dark:text-white text-[9px] uppercase tracking-[0.4em] transition-colors duration-500">
+        <p className="text-gray-900  text-[9px] uppercase tracking-[0.4em] transition-colors duration-500">
           Thane • Artisan Bakes
         </p>
-        <p className="text-gray-900 dark:text-white text-[8px] uppercase tracking-[0.2em] mt-1 italic transition-colors duration-500">
+        <p className="text-gray-900  text-[8px] uppercase tracking-[0.2em] mt-1 italic transition-colors duration-500">
           By Khushi Manjrekar
         </p>
       </motion.div>

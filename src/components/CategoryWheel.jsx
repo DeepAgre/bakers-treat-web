@@ -26,7 +26,7 @@ const CategoryWheel = ({ activeCategory, onSelect }) => {
         transition={{ type: "spring", stiffness: 50, damping: 20 }}
       >
         {/* Center Hub Decoration */}
-        <div className="w-32 h-32 rounded-full bg-[#0A0A0A] border border-white/5 shadow-inner" />
+        <div className="w-32 h-32 rounded-full bg-[#FFF5F7] border border-white/5 shadow-inner" />
 
         {/* Items */}
         {categories.map((cat, i) => {

@@ -18,7 +18,7 @@ const Footer = () => {
 
   return (
     <footer 
-      className="relative pt-24 pb-12 px-6 overflow-hidden transition-colors duration-500 bg-white dark:bg-[#0A0A0A]"
+      className="relative pt-24 pb-12 px-6 overflow-hidden transition-colors duration-500 bg-white dark:bg-[#FFF5F7]"
     >
       {/* --- DYNAMIC BACKGROUND IMAGE WITH PARALLAX --- */}
       <div 
@@ -39,7 +39,7 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-serif font-bold mb-6 text-gray-900 dark:text-white">
+            <h2 className="text-4xl font-serif font-bold mb-6 text-gray-900 ">
               Delight Bakehouse<span className="text-[#E89EB8]">.</span>
             </h2>
             <p className="text-gray-500 dark:text-gray-400 max-w-sm leading-relaxed mb-10">
@@ -60,7 +60,7 @@ const Footer = () => {
                 href={bakeryInsta}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gray-100 dark:bg-white/5 border border-transparent dark:border-white/10 text-gray-900 dark:text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all"
+                className="bg-gray-100 dark:bg-white/5 border border-transparent dark:border-white/10 text-gray-900  px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all"
               >
                 Visit Instagram
               </a>
@@ -105,17 +105,17 @@ const Footer = () => {
         {/* Bottom Section: Copyright */}
         <div className="pt-12 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col gap-2 text-center md:text-left">
-            <p className="text-gray-400 dark:text-white/20 text-[10px] font-black uppercase tracking-widest">
+            <p className="text-gray-400 /20 text-[10px] font-black uppercase tracking-widest">
               © {currentYear} Bakers Treat • Designed for Khushi Manjrekar
             </p>
           </div>
           
           <div className="flex items-center gap-8">
-             <a href={bakeryInsta} target="_blank" rel="noopener noreferrer" className="text-gray-400 dark:text-white/20 hover:text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.2em] transition-colors">
+             <a href={bakeryInsta} target="_blank" rel="noopener noreferrer" className="text-gray-400 /20 hover:text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.2em] transition-colors">
                Bakery Feed
              </a>
              <span className="w-1 h-1 bg-[#E89EB8] rounded-full opacity-30" />
-             <a href={personalInsta} target="_blank" rel="noopener noreferrer" className="text-gray-400 dark:text-white/20 hover:text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.2em] transition-colors">
+             <a href={personalInsta} target="_blank" rel="noopener noreferrer" className="text-gray-400 /20 hover:text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.2em] transition-colors">
                Owner Profile
              </a>
           </div>

@@ -29,14 +29,14 @@ const Hero = ({ isParentLoading }) => {
           
           <h1 
             style={{ fontFamily: "'Playfair Display', serif" }} 
-            className="text-6xl md:text-8xl leading-[1.05] mb-8 text-gray-900 dark:text-white tracking-tight transition-colors"
+            className="text-6xl md:text-8xl leading-[1.05] mb-8 text-gray-900  tracking-tight transition-colors"
           >
             Delight <br />
             <span className="text-[#E89EB8]">Bakehouse</span>
           </h1>
           
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-md leading-relaxed font-sans transition-colors">
-            Handcrafted luxury chocolates and custom 3D cakes engineered by <span className="font-semibold text-gray-900 dark:text-white transition-colors">Khushi Manjrekar</span>. 
+            Handcrafted luxury chocolates and custom 3D cakes engineered by <span className="font-semibold text-gray-900  transition-colors">Khushi Manjrekar</span>. 
           </p>
           
           <div className="flex flex-wrap gap-5">
@@ -48,7 +48,7 @@ const Hero = ({ isParentLoading }) => {
             </button>
             <button 
               onClick={() => document.getElementById('custom-studio').scrollIntoView({ behavior: 'smooth' })}
-              className="border-2 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-10 py-5 rounded-full font-sans font-black uppercase tracking-widest hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all text-[12px]"
+              className="border-2 border-gray-200 dark:border-white/10 text-gray-900  px-10 py-5 rounded-full font-sans font-black uppercase tracking-widest hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all text-[12px]"
             >
               Custom Orders
             </button>
@@ -78,14 +78,14 @@ const Hero = ({ isParentLoading }) => {
             className="absolute -bottom-6 -right-6 z-20 bg-white dark:bg-[#1A1A1A] p-6 rounded-3xl shadow-2xl border border-gray-100 dark:border-white/5 hidden sm:block"
           >
             <p className="text-[#E89EB8] font-black text-[10px] uppercase tracking-widest mb-1">Thane West</p>
-            <p className="text-gray-900 dark:text-white font-serif font-bold italic">Bakers Treat</p>
+            <p className="text-gray-900  font-serif font-bold italic">Bakers Treat</p>
           </motion.div>
         </motion.div>
       </div>
 
       {/* BACKGROUND TEXT: Adjusted to be almost invisible in Light Mode for clarity */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] dark:opacity-[0.05] select-none pointer-events-none">
-        <h2 style={{ fontFamily: "'Playfair Display', serif" }} className="text-[45vw] font-bold text-gray-300 dark:text-white">DB</h2>
+        <h2 style={{ fontFamily: "'Playfair Display', serif" }} className="text-[45vw] font-bold text-gray-300 ">DB</h2>
       </div>
     </section>
   );

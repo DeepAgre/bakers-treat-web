@@ -62,7 +62,7 @@ const AboutKhushi = () => {
           </div>
           
           {/* UI FIX: Added text-gray-900 for Light Mode visibility */}
-          <h2 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 dark:text-white mb-8 leading-[1.1] transition-colors duration-500">
+          <h2 className="text-4xl md:text-6xl font-serif font-bold text-gray-900  mb-8 leading-[1.1] transition-colors duration-500">
             About Khushi <br className="hidden sm:block" /> 
             Manjrekar<span className="text-[#E89EB8]">.</span>
           </h2>
@@ -70,21 +70,21 @@ const AboutKhushi = () => {
           {/* UI FIX: Adjusted text-gray-600 for softer but readable paragraphs */}
           <div className="space-y-6 text-gray-600 dark:text-gray-400 font-sans leading-relaxed text-[16px] sm:text-lg transition-colors duration-500">
             <p className="text-justify">
-              Based in the heart of <span className="text-gray-900 dark:text-white font-semibold underline decoration-[#E89EB8]/40 underline-offset-4">Thane</span>, Khushi transformed her lifelong passion for art into a world of edible wonders. With a background in design and a perfectionist’s soul, she doesn't just bake—she crafts experiences.
+              Based in the heart of <span className="text-gray-900  font-semibold underline decoration-[#E89EB8]/40 underline-offset-4">Thane</span>, Khushi transformed her lifelong passion for art into a world of edible wonders. With a background in design and a perfectionist’s soul, she doesn't just bake—she crafts experiences.
             </p>
             <p className="text-justify">
-              Every creation at <strong className="text-gray-900 dark:text-white font-bold">Bakers Treat</strong> is a personal labor of love. By blending premium Belgian chocolate with seasonal artisanal fruits, Khushi ensures that her treats are as sophisticated in flavor as they are in appearance.
+              Every creation at <strong className="text-gray-900  font-bold">Bakers Treat</strong> is a personal labor of love. By blending premium Belgian chocolate with seasonal artisanal fruits, Khushi ensures that her treats are as sophisticated in flavor as they are in appearance.
             </p>
           </div>
 
           {/* Stats Section */}
           <div className="grid grid-cols-2 gap-8 mt-12 pt-12 border-t border-gray-100 dark:border-white/10 transition-colors duration-500">
             <div className="group">
-              <p className="text-3xl sm:text-5xl font-serif font-bold text-gray-900 dark:text-white group-hover:text-[#E89EB8] transition-colors duration-300">100+</p>
+              <p className="text-3xl sm:text-5xl font-serif font-bold text-gray-900  group-hover:text-[#E89EB8] transition-colors duration-300">100+</p>
               <p className="text-[10px] uppercase tracking-[0.2em] font-black text-[#E89EB8] mt-2">Cakes Delivered</p>
             </div>
             <div className="group">
-              <p className="text-3xl sm:text-5xl font-serif font-bold text-gray-900 dark:text-white group-hover:text-[#E89EB8] transition-colors duration-300">100%</p>
+              <p className="text-3xl sm:text-5xl font-serif font-bold text-gray-900  group-hover:text-[#E89EB8] transition-colors duration-300">100%</p>
               <p className="text-[10px] uppercase tracking-[0.2em] font-black text-[#E89EB8] mt-2">Custom Designs</p>
             </div>
           </div>

@@ -48,7 +48,7 @@ const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
             {/* Close Button */}
             <button 
               onClick={onClose} 
-              className="absolute top-4 right-4 z-[320] bg-white dark:bg-[#1A1A1A] p-3 rounded-full text-gray-900 dark:text-white shadow-xl border border-gray-100 dark:border-white/10 hover:scale-110 active:scale-90 transition-all"
+              className="absolute top-4 right-4 z-[320] bg-white dark:bg-[#1A1A1A] p-3 rounded-full text-gray-900  shadow-xl border border-gray-100 dark:border-white/10 hover:scale-110 active:scale-90 transition-all"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
@@ -70,7 +70,7 @@ const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
                   {product.category}
                 </span>
                 {/* UI FIX: Contrast-aware Heading */}
-                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-gray-900 dark:text-white mb-4 leading-tight">
+                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-gray-900  mb-4 leading-tight">
                   {product.name}
                 </h2>
                 {/* UI FIX: Contrast-aware Description */}
@@ -104,7 +104,7 @@ const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
               <div className="p-6 sm:p-10 border-t border-gray-100 dark:border-white/5 flex items-center justify-between gap-4 bg-gray-50 dark:bg-[#1A1A1A]/50 transition-colors duration-500">
                 <div>
                   <p className="text-gray-400 dark:text-gray-500 text-[9px] font-black uppercase tracking-widest mb-1">Price</p>
-                  <p className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white leading-none">₹{selectedVariant?.price}</p>
+                  <p className="text-2xl sm:text-3xl font-black text-gray-900  leading-none">₹{selectedVariant?.price}</p>
                 </div>
                 
                 <button

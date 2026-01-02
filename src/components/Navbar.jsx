@@ -66,7 +66,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
                 />
               </div>
               
-              <h1 className="text-[14px] md:text-xl font-serif font-bold tracking-tight text-gray-900 dark:text-white transition-colors duration-300 whitespace-nowrap">
+              <h1 className="text-[14px] md:text-xl font-serif font-bold tracking-tight text-gray-900  transition-colors duration-300 whitespace-nowrap">
                 Bakers Treat
               </h1>
             </motion.button>
@@ -153,7 +153,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
                     key={link.name}
                     href={link.href} 
                     onClick={() => setIsMenuOpen(false)}
-                    className="px-6 py-4 rounded-2xl text-[12px] font-black uppercase tracking-[0.15em] text-gray-800 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                    className="px-6 py-4 rounded-2xl text-[12px] font-black uppercase tracking-[0.15em] text-gray-800  hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                   >
                     {link.name}
                   </a>

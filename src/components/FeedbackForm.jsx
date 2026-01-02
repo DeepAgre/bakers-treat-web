@@ -59,7 +59,7 @@ const FeedbackForm = () => {
             >
               Guestbook
             </motion.span>
-            <h2 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 dark:text-white leading-tight">
+            <h2 className="text-4xl md:text-6xl font-serif font-bold text-gray-900  leading-tight">
               Your sweet words <br /> fuel our oven.
             </h2>
             <p className="text-gray-500 dark:text-gray-400 text-lg max-w-md">
@@ -87,7 +87,7 @@ const FeedbackForm = () => {
                   <input 
                     type="text"
                     placeholder="e.g. Rahul Sharma"
-                    className="w-full bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-[#E89EB8] transition-all text-gray-800 dark:text-white" 
+                    className="w-full bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-[#E89EB8] transition-all text-gray-800 " 
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     required 
@@ -120,7 +120,7 @@ const FeedbackForm = () => {
                   <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1">Message</label>
                   <textarea 
                     placeholder="Share your experience..."
-                    className="w-full bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-white/5 rounded-2xl px-6 py-5 min-h-[120px] outline-none focus:border-[#E89EB8] transition-all text-gray-800 dark:text-white resize-none" 
+                    className="w-full bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-white/5 rounded-2xl px-6 py-5 min-h-[120px] outline-none focus:border-[#E89EB8] transition-all text-gray-800  resize-none" 
                     value={formData.comment}
                     onChange={(e) => setFormData({...formData, comment: e.target.value})}
                     required

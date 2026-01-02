@@ -83,12 +83,12 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             {/* Header */}
             <div className="p-6 border-b border-gray-100 dark:border-white/10 flex justify-between items-center shrink-0 bg-white dark:bg-[#0F0F0F]">
               <div>
-                <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-white">Your Bag</h2>
+                <h2 className="text-2xl font-serif font-bold text-gray-900 ">Your Bag</h2>
                 <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Khushi's Studio</p>
               </div>
               <button 
                 onClick={onClose} 
-                className="p-3 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full text-gray-900 dark:text-white transition-all active:scale-90"
+                className="p-3 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full text-gray-900  transition-all active:scale-90"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
@@ -111,20 +111,20 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                   <div key={item.id} className="flex gap-4 items-center bg-gray-50 dark:bg-[#161616] p-4 rounded-2xl border border-gray-100 dark:border-white/5 transition-all">
                     <img src={item.img} alt={item.name} className="w-20 h-20 rounded-xl object-cover shrink-0 shadow-sm" />
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">{item.name}</h4>
+                      <h4 className="font-bold text-gray-900  text-sm truncate">{item.name}</h4>
                       <p className="text-[#E89EB8] font-black text-sm mb-2">₹{item.price}</p>
                       
                       <div className="flex items-center gap-2">
                         <button 
                           onClick={() => updateQty(item.id, -1)} 
-                          className="w-7 h-7 rounded-lg border border-gray-200 dark:border-white/10 flex items-center justify-center bg-white dark:bg-[#222] text-gray-900 dark:text-white hover:bg-gray-100 transition-colors"
+                          className="w-7 h-7 rounded-lg border border-gray-200 dark:border-white/10 flex items-center justify-center bg-white dark:bg-[#222] text-gray-900  hover:bg-gray-100 transition-colors"
                         >
                           <span className="mt-[-2px]">-</span>
                         </button>
-                        <span className="w-8 text-center font-black text-xs text-gray-900 dark:text-white">{item.qty}</span>
+                        <span className="w-8 text-center font-black text-xs text-gray-900 ">{item.qty}</span>
                         <button 
                           onClick={() => updateQty(item.id, 1)} 
-                          className="w-7 h-7 rounded-lg border border-gray-200 dark:border-white/10 flex items-center justify-center bg-white dark:bg-[#222] text-gray-900 dark:text-white hover:bg-gray-100 transition-colors"
+                          className="w-7 h-7 rounded-lg border border-gray-200 dark:border-white/10 flex items-center justify-center bg-white dark:bg-[#222] text-gray-900  hover:bg-gray-100 transition-colors"
                         >
                           <span className="mt-[-2px]">+</span>
                         </button>
@@ -153,7 +153,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                       min={minDate} 
                       value={deliveryDate}
                       onChange={(e) => setDeliveryDate(e.target.value)}
-                      className="w-full p-3.5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#161616] text-gray-900 dark:text-white font-sans text-sm outline-none focus:ring-2 focus:ring-[#E89EB8]/20 transition-all"
+                      className="w-full p-3.5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#161616] text-gray-900  font-sans text-sm outline-none focus:ring-2 focus:ring-[#E89EB8]/20 transition-all"
                     />
                   </div>
                   <div>
@@ -163,7 +163,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       rows="2"
-                      className="w-full p-3.5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#161616] text-gray-900 dark:text-white font-sans text-sm placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#E89EB8]/20 transition-all"
+                      className="w-full p-3.5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#161616] text-gray-900  font-sans text-sm placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#E89EB8]/20 transition-all"
                     />
                   </div>
                 </div>
@@ -171,7 +171,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                 <div className="pt-2">
                   <div className="flex justify-between items-end mb-1">
                     <span className="text-gray-500 font-medium">Subtotal</span>
-                    <span className="text-3xl font-black text-gray-900 dark:text-white leading-none tracking-tight">₹{total}</span>
+                    <span className="text-3xl font-black text-gray-900  leading-none tracking-tight">₹{total}</span>
                   </div>
                   <p className="text-[10px] text-gray-400 font-bold">
                     *Excludes delivery from Thane West.
@@ -194,7 +194,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                     </button>
                     <button 
                       onClick={() => onClose()} 
-                      className="border-2 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+                      className="border-2 border-gray-200 dark:border-white/10 text-gray-900  py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
                     >
                       Keep Browsing
                     </button>
