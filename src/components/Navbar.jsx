@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from './ThemeContext'; // Importing the 'brain' we created
+import { useTheme } from './ThemeContext'; 
 import logo from '../assets/delight.jpeg';
 
 const Navbar = ({ cartCount, onOpenCart }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { isDarkMode, toggleTheme } = useTheme(); // Using the theme toggle function
+  const { isDarkMode, toggleTheme } = useTheme(); 
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -30,7 +30,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
   };
 
   return (
-    <div className={`sticky ${scrolled ? 'top-0' : 'top-2'} left-0 w-full z-[100] px-4 py-2 pointer-events-none transition-all duration-300`}>
+    <div className={`fixed ${scrolled ? 'top-0' : 'top-2'} left-0 w-full z-[100] px-4 py-2 pointer-events-none transition-all duration-300`}>
       <motion.nav 
         initial={false}
         animate={{
@@ -41,15 +41,13 @@ const Navbar = ({ cartCount, onOpenCart }) => {
         className={`
           max-w-[1400px] mx-auto pointer-events-auto transition-all duration-500
           ${scrolled 
-            ? 'bg-white/90 dark:bg-[#1A1A1A]/90 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)]' 
+            ? 'bg-white/90 dark:bg-[#0F0F0F]/90 shadow-lg' 
             : 'bg-white dark:bg-[#1A1A1A] shadow-sm'} 
           backdrop-blur-xl rounded-[2.5rem] md:rounded-[4rem]
           border border-black/5 dark:border-white/10
           overflow-hidden
         `}
       >
-        <div className="absolute inset-0 rounded-[inherit] border-2 border-[#E89EB8]/5 pointer-events-none" />
-
         <div className="px-5 md:px-12 flex items-center justify-between relative z-10">
           
           {/* 1. LEFT: Logo & Brand */}
@@ -65,10 +63,10 @@ const Navbar = ({ cartCount, onOpenCart }) => {
                   alt="Delight Bakehouse" 
                   className="w-9 h-9 md:w-11 md:h-11 rounded-full object-cover border-2 border-[#E89EB8]/10 group-hover:border-[#E89EB8] transition-all" 
                 />
-                <div className="absolute inset-0 rounded-full bg-[#E89EB8] blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
               </div>
               
-              <h1 className="text-[14px] md:text-xl font-serif font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-[#E89EB8] transition-all duration-300 whitespace-nowrap">
+              {/* Text forced to pure white in dark mode for visibility */}
+              <h1 className="text-[14px] md:text-xl font-serif font-bold tracking-tight text-gray-900 dark:text-white transition-colors duration-300 whitespace-nowrap">
                 Delight Bakehouse
               </h1>
             </motion.button>
@@ -81,7 +79,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
                 <a 
                   key={link.name}
                   href={link.href} 
-                  className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 hover:text-[#E89EB8] dark:hover:text-[#E89EB8] transition-all relative group"
+                  className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-gray-200 hover:text-[#E89EB8] dark:hover:text-[#E89EB8] transition-all relative group"
                 >
                   {link.name}
                   <span className="absolute -bottom-1 left-0 w-0 h-[1.5px] bg-[#E89EB8] transition-all group-hover:w-full" />
@@ -93,17 +91,18 @@ const Navbar = ({ cartCount, onOpenCart }) => {
           {/* 3. RIGHT: Theme Toggle & Bag */}
           <div className="flex-1 flex justify-end items-center gap-3 md:gap-4">
             
-            {/* THEME TOGGLE BUTTON */}
+            {/* THEME TOGGLE BUTTON - Fully Connected */}
             <button 
-              onClick={toggleTheme}
-              className="p-2.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-[#E89EB8] hover:scale-110 active:scale-95 transition-all duration-300"
+              onClick={(e) => {
+                e.preventDefault();
+                toggleTheme();
+              }}
+              className="p-2.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-[#E89EB8] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer"
               aria-label="Toggle Theme"
             >
               {isDarkMode ? (
-                // Sun Icon for Dark Mode
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
               ) : (
-                // Moon Icon for Light Mode
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
               )}
             </button>
@@ -111,7 +110,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
             {/* BAG BUTTON */}
             <button 
               onClick={onOpenCart}
-              className="relative bg-black dark:bg-[#E89EB8] text-white dark:text-black px-4 py-2 md:px-7 md:py-3 rounded-full flex items-center gap-2 md:gap-3 hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-black/10"
+              className="relative bg-black dark:bg-[#E89EB8] text-white dark:text-black px-4 py-2 md:px-7 md:py-3 rounded-full flex items-center gap-2 md:gap-3 hover:opacity-90 transition-all active:scale-95 shadow-lg"
             >
               <div className="relative">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="md:w-[18px] md:h-[18px]">
@@ -124,9 +123,9 @@ const Navbar = ({ cartCount, onOpenCart }) => {
               <span className="text-[10px] md:text-[11px] font-black uppercase tracking-widest hidden sm:inline">Bag</span>
             </button>
 
-            {/* MOBILE TOGGLE */}
+            {/* MOBILE MENU TOGGLE */}
             <button 
-              className="lg:hidden w-10 h-10 flex items-center justify-center bg-[#FAF9F6] dark:bg-white/10 rounded-full active:bg-gray-100"
+              className="lg:hidden w-10 h-10 flex items-center justify-center bg-[#FAF9F6] dark:bg-white/10 rounded-full"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <div className="w-4 h-3 flex flex-col justify-between">
@@ -142,10 +141,10 @@ const Navbar = ({ cartCount, onOpenCart }) => {
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div 
-              initial={{ height: 0 }}
-              animate={{ height: 'auto' }}
-              exit={{ height: 0 }}
-              className="lg:hidden border-t border-black/5 dark:border-white/5 bg-[#FAF9F6]/30 dark:bg-black/30"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="lg:hidden border-t border-black/5 dark:border-white/5 bg-white dark:bg-[#1A1A1A]"
             >
               <div className="flex flex-col p-4 gap-2">
                 {navLinks.map((link) => (
@@ -153,7 +152,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
                     key={link.name}
                     href={link.href} 
                     onClick={() => setIsMenuOpen(false)}
-                    className="px-6 py-4 rounded-2xl bg-white/80 dark:bg-white/5 text-[12px] font-black uppercase tracking-[0.15em] text-gray-800 dark:text-gray-200 border border-black/[0.03] dark:border-white/5"
+                    className="px-6 py-4 rounded-2xl text-[12px] font-black uppercase tracking-[0.15em] text-gray-800 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                   >
                     {link.name}
                   </a>
