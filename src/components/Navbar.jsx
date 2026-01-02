@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from './ThemeContext'; 
+import { useTheme } from './ThemeContext';
 import logo from '../assets/delight.jpeg';
 
 const Navbar = ({ cartCount, onOpenCart }) => {
