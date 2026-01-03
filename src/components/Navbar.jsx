@@ -61,11 +61,11 @@ const Navbar = ({ cartCount, onOpenCart }) => {
           >
             <img 
               src={logo} 
-              alt="Bakers Treat" 
+              alt="Delight Bakehouse" 
               className="w-10 h-10 md:w-11 md:h-11 rounded-full object-cover border-2 border-white/40" 
             />
             <span className="text-xl font-serif font-bold text-white tracking-tight">
-              Bakers Treat<span className="text-black">.</span>
+              Delight Bakehouse<span className="text-black">.</span>
             </span>
           </button>
         </div>
