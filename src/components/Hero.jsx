@@ -2,14 +2,23 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const Hero = ({ isParentLoading }) => {
+  // A premium, slightly moody baking-themed image
+  const bgImage = "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80&w=2000";
+
   return (
-    /* UI FIX: Pure white background with zero dark-mode logic */
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-white px-6 pt-24 sm:pt-0" id="hero">
-      
-      {/* BACKGROUND DECORATION: Soft pink glows for depth */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[10%] right-[10%] w-[35vw] h-[35vw] bg-[#E89EB8]/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[10%] left-[5%] w-[25vw] h-[25vw] bg-[#E89EB8]/5 rounded-full blur-[100px]" />
+    <section 
+      className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-24 lg:pt-0" 
+      id="hero"
+    >
+      {/* 1. BACKGROUND IMAGE & OVERLAY */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src={bgImage} 
+          alt="Baking background" 
+          className="w-full h-full object-cover"
+        />
+        {/* Soft gradient to ensure text visibility regardless of the image brightness */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/40 lg:bg-gradient-to-r lg:from-white lg:via-white/80 lg:to-transparent" />
       </div>
 
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
@@ -35,7 +44,7 @@ const Hero = ({ isParentLoading }) => {
             <span className="text-[#E89EB8]">Treat</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-slate-500 mb-10 max-w-md leading-relaxed font-sans">
+          <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-md leading-relaxed font-sans font-medium">
             Handcrafted luxury chocolates and custom 3D cakes engineered by <span className="font-bold text-slate-900">Khushi Manjrekar</span>. 
           </p>
           
@@ -48,26 +57,26 @@ const Hero = ({ isParentLoading }) => {
             </button>
             <button 
               onClick={() => document.getElementById('custom-studio').scrollIntoView({ behavior: 'smooth' })}
-              className="border-2 border-slate-100 bg-white text-slate-900 px-10 py-5 rounded-full font-sans font-black uppercase tracking-widest hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all shadow-sm text-[12px]"
+              className="border-2 border-white/80 bg-white/40 backdrop-blur-md text-slate-900 px-10 py-5 rounded-full font-sans font-black uppercase tracking-widest hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all shadow-sm text-[12px]"
             >
               Custom Orders
             </button>
           </div>
         </motion.div>
 
-        {/* RIGHT SIDE: Visual Elements */}
+        {/* RIGHT SIDE: Floating Visual Elements */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={!isParentLoading ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="relative" 
+          className="relative hidden lg:block" 
         >
-          {/* Main Image Frame - Clean White border with soft shadow */}
-          <div className="relative z-10 rounded-[2.5rem] sm:rounded-[4rem] overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] border-[8px] sm:border-[12px] border-white">
+          {/* Main Image Frame - Glassmorphism style */}
+          <div className="relative z-10 rounded-[4rem] overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.2)] border-[12px] border-white/60 backdrop-blur-sm">
             <img 
               src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=1000" 
-              alt="Bakers Treat Signature Cake" 
-              className="w-full h-[400px] sm:h-[650px] object-cover hover:scale-105 transition-transform duration-1000"
+              alt="Signature Cake" 
+              className="w-full h-[650px] object-cover hover:scale-105 transition-transform duration-1000"
             />
           </div>
           
@@ -75,7 +84,7 @@ const Hero = ({ isParentLoading }) => {
           <motion.div 
             animate={{ y: [0, -12, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-6 -right-6 z-20 bg-white p-6 rounded-3xl shadow-2xl border border-slate-50 hidden sm:block"
+            className="absolute -bottom-6 -right-6 z-20 bg-white/90 backdrop-blur-xl p-6 rounded-3xl shadow-2xl border border-white/50"
           >
             <p className="text-[#E89EB8] font-black text-[10px] uppercase tracking-widest mb-1">Thane West</p>
             <p className="text-slate-900 font-serif font-bold italic text-lg">Bakers Treat</p>
@@ -83,10 +92,8 @@ const Hero = ({ isParentLoading }) => {
         </motion.div>
       </div>
 
-      {/* BACKGROUND TEXT: Subtle "BT" Initialism */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] select-none pointer-events-none">
-        <h2 style={{ fontFamily: "'Playfair Display', serif" }} className="text-[45vw] font-bold text-slate-900">BT</h2>
-      </div>
+      {/* SUBTLE TEXTURE OVERLAY */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
     </section>
   );
 };
