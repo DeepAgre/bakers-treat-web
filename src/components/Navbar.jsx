@@ -13,11 +13,28 @@ const Navbar = ({ cartCount, onOpenCart }) => {
   }, []);
 
   const navLinks = [
-    { name: 'Our Story', href: '#about' },
-    { name: 'Menu', href: '#menu' },
-    { name: 'Philosophy', href: '#philosophy' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Our Story', href: 'about' },
+    { name: 'Menu', href: 'menu' },
+    { name: 'Philosophy', href: 'philosophy' },
+    { name: 'Contact', href: 'contact' },
   ];
+
+  // Helper function to handle smooth scrolling to IDs
+  const scrollToSection = (e, id) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      const headerOffset = 120; // Adjust this based on your header height
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+    setIsMenuOpen(false); // Close mobile menu after clicking
+  };
 
   const handleLogoClick = (e) => {
     e.preventDefault();
@@ -26,7 +43,6 @@ const Navbar = ({ cartCount, onOpenCart }) => {
   };
 
   return (
-    /* Removed the <header> wrapper here so the Navbar doesn't fight the sticky note */
     <nav 
       className={`w-full transition-all duration-300 z-[100] border-none ${
         scrolled ? 'py-3 shadow-2xl' : 'py-6'
@@ -60,8 +76,9 @@ const Navbar = ({ cartCount, onOpenCart }) => {
           {navLinks.map((link) => (
             <a 
               key={link.name}
-              href={link.href} 
-              className="text-[11px] font-bold uppercase tracking-[0.2em] text-white hover:text-black transition-colors relative group"
+              href={`#${link.href}`}
+              onClick={(e) => scrollToSection(e, link.href)}
+              className="text-[11px] font-bold uppercase tracking-[0.2em] text-white hover:text-black transition-colors relative group cursor-pointer"
             >
               {link.name}
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full" />
@@ -93,6 +110,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
           {/* Mobile Toggle */}
           <button 
             className="lg:hidden flex flex-col gap-1.5"
+            aria-label="Toggle Menu"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             <div className={`h-[2px] bg-white transition-all ${isMenuOpen ? 'w-6 rotate-45 translate-y-2' : 'w-5'}`} />
@@ -116,8 +134,8 @@ const Navbar = ({ cartCount, onOpenCart }) => {
               {navLinks.map((link) => (
                 <a 
                   key={link.name}
-                  href={link.href} 
-                  onClick={() => setIsMenuOpen(false)}
+                  href={`#${link.href}`}
+                  onClick={(e) => scrollToSection(e, link.href)}
                   className="text-lg font-serif font-bold text-white hover:text-black transition-colors"
                 >
                   {link.name}

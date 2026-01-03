@@ -11,17 +11,34 @@ const Footer = () => {
   const bakeryEmail = "Khushimanjrekar08@gmail.com";
 
   const quickLinks = [
-    { name: 'Our Story', href: '#about' },
-    { name: 'Menu', href: '#menu' },
-    { name: 'Reviews', href: '#feedback' },
+    { name: 'Our Story', href: 'about' },
+    { name: 'Menu', href: 'menu' },
+    { name: 'Philosophy', href: 'philosophy' }, // Added to match Navbar
+    { name: 'Reviews', href: 'feedback' },
   ];
+
+  // Helper function for smooth scrolling (Matching Navbar logic)
+  const scrollToSection = (e, id) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      const headerOffset = 120; 
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return (
     <footer 
+      id="contact" // Added ID so the Navbar "Contact" link lands here
       className="relative pt-24 pb-12 px-6 overflow-hidden bg-white border-t border-slate-50"
     >
       {/* --- PREMIUM PARALLAX BACKGROUND --- */}
-      {/* Reduced opacity for a more sophisticated "ghosted" look */}
       <div 
         className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none"
         style={{ 
@@ -81,7 +98,11 @@ const Footer = () => {
               <ul className="space-y-4">
                 {quickLinks.map(link => (
                   <li key={link.name}>
-                    <a href={link.href} className="text-slate-500 hover:text-[#E89EB8] transition-colors text-sm font-semibold">
+                    <a 
+                      href={`#${link.href}`} 
+                      onClick={(e) => scrollToSection(e, link.href)}
+                      className="text-slate-500 hover:text-[#E89EB8] transition-colors text-sm font-semibold cursor-pointer"
+                    >
                       {link.name}
                     </a>
                   </li>
