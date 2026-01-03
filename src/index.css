@@ -1,17 +1,22 @@
+/* 1. CORE IMPORTS */
 @import "tailwindcss";
 
-/* 1. TYPOGRAPHY & CORE BRAND DNA */
+/* Move Google Fonts here to ensure they load before styles apply */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+/* 2. TYPOGRAPHY & BRAND VARIABLES (Tailwind v4) */
 @theme {
   --font-serif: "Playfair Display", serif;
   --font-sans: "Plus Jakarta Sans", sans-serif;
   --color-brand-pink: #E89EB8;
   --color-brand-charcoal: #0F172A;
+  --color-brand-bg: #FFF5F7;
 }
 
-/* 2. GLOBAL RESET */
+/* 3. GLOBAL RESET */
 :root {
   background-color: #ffffff;
-  color: #0F172A; /* Slate 900 */
+  color: #0F172A;
   scroll-behavior: smooth;
 }
 
@@ -20,22 +25,40 @@ body {
   padding: 0;
   width: 100%;
   overflow-x: hidden;
+  /* Anti-aliasing for cleaner text rendering on high-res screens */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* 3. SECTION SPECIFIC STYLING */
+/* 4. LAYOUT & SECTION DEFAULTS */
 section {
   background-color: white;
   width: 100%;
+  position: relative;
 }
 
-/* The soft pink background for the Custom Order/Cake sections */
+/* The signature soft pink background for specific sections */
 .custom-cake-section {
-  background-color: #FFF5F7 !important;
+  background-color: var(--color-brand-bg) !important;
 }
 
-/* 4. PREMIUM SCROLLBAR (Minimalist) */
+/* 5. EDITORIAL ELEMENTS (Menu Pills) */
+.menu-category-btn {
+  /* Using @apply for utility combinations */
+  @apply px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300;
+  background-color: #f8fafc;
+  color: #64748b;
+  border: 1px solid #f1f5f9;
+}
+
+.menu-category-btn.active {
+  background-color: var(--color-brand-charcoal) !important;
+  color: white !important;
+  border-color: var(--color-brand-charcoal);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1);
+}
+
+/* 6. PREMIUM SCROLLBAR & SELECTION */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -50,38 +73,22 @@ section {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #E89EB8;
+  background: var(--color-brand-pink);
 }
 
-/* 5. SELECTION COLOR (The Small Details) */
 ::selection {
   background-color: rgba(232, 158, 184, 0.2);
-  color: #0F172A;
+  color: var(--color-brand-charcoal);
 }
 
-/* 6. BUTTON & INTERACTION RESET */
-/* Ensures Tailwind utility classes are the source of truth */
-button, a {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* 7. MENU CATEGORY PILLS (Editorial Look) */
-.menu-category-btn {
-  @apply px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all;
-  background-color: #f8fafc; /* Slate 50 */
-  color: #64748b; /* Slate 500 */
-  border: 1px solid #f1f5f9;
-}
-
-.menu-category-btn.active {
-  background-color: #0F172A !important;
-  color: white !important;
-  border-color: #0F172A;
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1);
-}
-
-/* 8. PRELOADER FIX */
+/* 7. PRELOADER & TEXT FIXES */
 .preloader-text {
-  color: #0F172A !important;
+  color: var(--color-brand-charcoal) !important;
   font-family: var(--font-serif);
+}
+
+/* Global button reset to allow Tailwind to take full control */
+button {
+  cursor: pointer;
+  outline: none;
 }
