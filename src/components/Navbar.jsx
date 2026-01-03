@@ -23,7 +23,8 @@ const Navbar = ({ cartCount, onOpenCart }) => {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      const headerOffset = 120;
+      // Increased offset (140) to account for BOTH the banner and the navbar height
+      const headerOffset = 140; 
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -43,10 +44,12 @@ const Navbar = ({ cartCount, onOpenCart }) => {
 
   return (
     <nav 
-      className={`w-full transition-all duration-300 z-[100] border-none fixed top-0 left-0 ${
+      className={`w-full transition-all duration-300 z-[100] border-none fixed left-0 ${
         scrolled ? 'py-3 shadow-2xl' : 'py-6'
       }`}
       style={{ 
+        // Logic: Pushes the navbar down exactly 40px to leave room for AnnouncementBanner
+        top: '40px', 
         backgroundColor: scrolled ? 'rgba(232, 158, 184, 0.98)' : '#E89EB8',
         backdropFilter: scrolled ? 'blur(10px)' : 'none'
       }}

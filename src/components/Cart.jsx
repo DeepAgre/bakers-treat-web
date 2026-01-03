@@ -68,7 +68,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             <div className="p-6 border-b border-slate-50 flex justify-between items-center shrink-0 bg-white">
               <div>
                 <h2 className="text-2xl font-serif font-bold text-slate-900">Your Bag</h2>
-                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Bakers Treat Studio</p>
+                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Delight Bakehouse Studio</p>
               </div>
               <button 
                 onClick={onClose} 

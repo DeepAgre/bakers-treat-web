@@ -57,7 +57,7 @@ const PreLoader = ({ onSkip }) => {
           className="flex flex-col items-center"
         >
           <div className="flex overflow-hidden pb-2">
-            {"Bakers Treat".split("").map((char, i) => (
+            {"Delight Bakehouse".split("").map((char, i) => (
               <motion.span
                 key={i}
                 variants={letterVars}
