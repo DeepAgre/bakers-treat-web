@@ -7,7 +7,11 @@ const Hero = ({ isParentLoading }) => {
 
   return (
     <section 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-24 lg:pt-0" 
+      /* UI ADJUSTMENT: 
+        1. Changed pt-24 to pt-40 to account for the new taller Announcement Bar + Navbar.
+        2. min-h-screen ensures the background image fills the whole viewport.
+      */
+      className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-40 lg:pt-32" 
       id="hero"
     >
       {/* 1. BACKGROUND IMAGE & OVERLAY */}
@@ -17,8 +21,12 @@ const Hero = ({ isParentLoading }) => {
           alt="Baking background" 
           className="w-full h-full object-cover"
         />
-        {/* Soft gradient to ensure text visibility regardless of the image brightness */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/40 lg:bg-gradient-to-r lg:from-white lg:via-white/80 lg:to-transparent" />
+        {/* UI ADJUSTMENT: 
+            Increased the white gradient intensity at the top to blend 
+            smoothly with the new solid white Navbar. 
+        */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-transparent lg:bg-gradient-to-r lg:from-white lg:via-white/80 lg:to-transparent" />
+        <div className="absolute inset-0 bg-white/30 lg:hidden" /> {/* Extra mobile readability */}
       </div>
 
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
@@ -57,22 +65,23 @@ const Hero = ({ isParentLoading }) => {
             </button>
             <button 
               onClick={() => document.getElementById('custom-studio').scrollIntoView({ behavior: 'smooth' })}
-              className="border-2 border-white/80 bg-white/40 backdrop-blur-md text-slate-900 px-10 py-5 rounded-full font-sans font-black uppercase tracking-widest hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all shadow-sm text-[12px]"
+              /* Glass effect button looks great against the background image */
+              className="border-2 border-slate-200 bg-white/60 backdrop-blur-md text-slate-900 px-10 py-5 rounded-full font-sans font-black uppercase tracking-widest hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all shadow-sm text-[12px]"
             >
               Custom Orders
             </button>
           </div>
         </motion.div>
 
-        {/* RIGHT SIDE: Floating Visual Elements */}
+        {/* RIGHT SIDE: Visual Elements (Desktop only) */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={!isParentLoading ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 1, ease: "easeOut" }}
           className="relative hidden lg:block" 
         >
-          {/* Main Image Frame - Glassmorphism style */}
-          <div className="relative z-10 rounded-[4rem] overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.2)] border-[12px] border-white/60 backdrop-blur-sm">
+          {/* Main Image Frame */}
+          <div className="relative z-10 rounded-[4rem] overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.2)] border-[12px] border-white">
             <img 
               src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=1000" 
               alt="Signature Cake" 
@@ -84,7 +93,7 @@ const Hero = ({ isParentLoading }) => {
           <motion.div 
             animate={{ y: [0, -12, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-6 -right-6 z-20 bg-white/90 backdrop-blur-xl p-6 rounded-3xl shadow-2xl border border-white/50"
+            className="absolute -bottom-6 -right-6 z-20 bg-white p-6 rounded-3xl shadow-2xl border border-slate-50"
           >
             <p className="text-[#E89EB8] font-black text-[10px] uppercase tracking-widest mb-1">Thane West</p>
             <p className="text-slate-900 font-serif font-bold italic text-lg">Bakers Treat</p>
