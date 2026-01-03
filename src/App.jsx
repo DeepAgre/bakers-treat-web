@@ -16,7 +16,6 @@ import ProductModal from './components/ProductModal';
 import Toast from './components/Toast';
 import PreLoader from './components/PreLoader';
 
-// 1. Create a small sub-component for the Sticky Note to keep App.jsx clean
 const AnnouncementBar = () => (
   <div className="w-full bg-black text-white text-[10px] md:text-[12px] font-black uppercase tracking-[0.4em] py-4 text-center border-none shadow-sm">
     ✨ 24-Hour Notice Required • <span className="text-[#E89EB8]">Handcrafted in Thane</span> ✨
@@ -97,7 +96,29 @@ const BakeryApp = () => {
 
   return (
     <div className="relative w-full min-h-screen bg-white text-slate-900 selection:bg-[#E89EB8]/20">
-      <SmoothScroll>
+      {/* 1. FIX: Move Cart and ProductModal OUTSIDE of SmoothScroll.
+          SmoothScroll targets its children for scroll-jacking. 
+          Overlay components should be outside of it.
+      */}
+      <Cart 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)} 
+        items={cartItems} 
+        total={formattedTotal} 
+        updateQty={updateQty}
+        removeItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
+        onCheckout={handleCheckout}
+      />
+
+      <ProductModal 
+        product={selectedProduct} 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAddToBag={addToCart}
+      />
+
+      {/* 2. FIX: Pass isCartOpen to SmoothScroll if your component supports pausing */}
+      <SmoothScroll isPaused={isCartOpen || isModalOpen}>
         <AnimatePresence mode="wait">
           {isLoading && <PreLoader key="loader" onSkip={handleSkipIntro} />}
         </AnimatePresence>
@@ -105,14 +126,12 @@ const BakeryApp = () => {
         <Toast show={showToast} message="Added to your bag!" />
 
         {!isLoading && (
-          /* FIX: Grouping Sticky Note and Navbar in one fixed header */
           <header className="fixed top-0 left-0 w-full z-[150] flex flex-col items-stretch">
             <AnnouncementBar />
             <Navbar cartCount={cartCount} onOpenCart={() => setIsCartOpen(true)} />
           </header>
         )}
 
-        {/* FIX: Added pt-32 to the main container to prevent Hero from being hidden behind the taller header */}
         <main className={`relative w-full ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
           <Hero isParentLoading={isLoading} />
           
@@ -127,23 +146,6 @@ const BakeryApp = () => {
             <Footer />
           </div>
         </main>
-
-        <Cart 
-          isOpen={isCartOpen} 
-          onClose={() => setIsCartOpen(false)} 
-          items={cartItems} 
-          total={formattedTotal} 
-          updateQty={updateQty}
-          removeItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
-          onCheckout={handleCheckout}
-        />
-
-        <ProductModal 
-          product={selectedProduct} 
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onAddToBag={addToCart}
-        />
       </SmoothScroll>
     </div>
   );
