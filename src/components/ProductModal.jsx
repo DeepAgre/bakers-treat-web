@@ -27,34 +27,33 @@ const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[300] flex items-end sm:items-center justify-center p-0 sm:p-4">
-          {/* Dark Backdrop */}
+          {/* PREMIUM BACKDROP: Soft blur with very subtle tint */}
           <motion.div 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.4 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md"
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
           />
           
           <motion.div 
             initial={{ y: "100%", opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: "100%", opacity: 0 }}
-            transition={{ duration: 0.3, ease: "circOut" }}
-            /* UI FIX: Added dark mode background and border */
-            className="relative bg-white dark:bg-[#121212] w-full max-w-4xl h-[92vh] sm:h-auto sm:max-h-[90vh] sm:rounded-[2.5rem] overflow-hidden flex flex-col md:flex-row shadow-2xl border border-gray-100 dark:border-white/5 transition-colors duration-500"
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="relative bg-white w-full max-w-5xl h-[94vh] sm:h-auto sm:max-h-[85vh] sm:rounded-[3rem] overflow-hidden flex flex-col md:flex-row shadow-[0_30px_100px_rgba(0,0,0,0.2)] border border-white"
           >
-            {/* Close Button */}
+            {/* CLOSE BUTTON: Clean and Floating */}
             <button 
               onClick={onClose} 
-              className="absolute top-4 right-4 z-[320] bg-white dark:bg-[#1A1A1A] p-3 rounded-full text-gray-900  shadow-xl border border-gray-100 dark:border-white/10 hover:scale-110 active:scale-90 transition-all"
+              className="absolute top-6 right-6 z-[320] bg-white p-3 rounded-full text-slate-900 shadow-xl border border-slate-50 hover:scale-110 active:scale-90 transition-all group"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:text-[#E89EB8] transition-colors"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
 
-            {/* 1. IMAGE SECTION */}
-            <div className="w-full md:w-1/2 h-[35%] md:h-auto shrink-0 relative">
+            {/* 1. IMAGE SECTION: Larger and clearer */}
+            <div className="w-full md:w-1/2 h-[40%] md:h-auto shrink-0 relative bg-slate-50">
               <img 
                 src={product.img} 
                 alt={product.name} 
@@ -64,33 +63,35 @@ const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
             </div>
 
             {/* 2. CONTENT SECTION */}
-            <div className="w-full md:w-1/2 flex flex-col h-[65%] md:h-auto bg-white dark:bg-[#121212] transition-colors duration-500">
-              <div className="flex-1 overflow-y-auto p-6 sm:p-10 custom-scrollbar">
-                <span className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.4em] mb-3 block">
-                  {product.category}
-                </span>
-                {/* UI FIX: Contrast-aware Heading */}
-                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-gray-900  mb-4 leading-tight">
+            <div className="w-full md:w-1/2 flex flex-col h-[60%] md:h-auto bg-white">
+              <div className="flex-1 overflow-y-auto p-8 sm:p-12">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="w-8 h-[1px] bg-[#E89EB8]"></span>
+                  <span className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.4em]">
+                    {product.category}
+                  </span>
+                </div>
+
+                <h2 className="text-3xl sm:text-5xl font-serif font-bold text-slate-900 mb-6 leading-tight">
                   {product.name}
                 </h2>
-                {/* UI FIX: Contrast-aware Description */}
-                <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base leading-relaxed mb-8">
+
+                <p className="text-slate-500 text-sm sm:text-base leading-relaxed mb-10 font-sans">
                   {product.description}
                 </p>
 
-                {/* Variant selection buttons */}
-                <div className="mb-4">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4">Select Size / Quantity</h4>
+                {/* Variant selection */}
+                <div className="space-y-6">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Select Options</h4>
                   <div className="flex flex-wrap gap-3">
                     {product.variants?.map((v) => (
                       <button
                         key={v.size}
                         onClick={() => setSelectedVariant(v)}
-                        /* UI FIX: Buttons adapt to theme */
-                        className={`px-6 py-3 rounded-xl border-2 transition-all font-bold text-xs sm:text-sm ${
+                        className={`px-8 py-4 rounded-2xl border-2 transition-all duration-300 font-bold text-xs uppercase tracking-widest ${
                           selectedVariant?.size === v.size 
-                          ? 'border-[#E89EB8] bg-[#E89EB8]/5 text-[#E89EB8]' 
-                          : 'border-gray-100 dark:border-white/5 text-gray-400 dark:text-gray-600 hover:border-[#E89EB8]/30'
+                          ? 'border-[#E89EB8] bg-[#E89EB8]/5 text-[#E89EB8] shadow-inner' 
+                          : 'border-slate-50 bg-slate-50 text-slate-400 hover:border-slate-200'
                         }`}
                       >
                         {v.size}
@@ -100,18 +101,19 @@ const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
                 </div>
               </div>
 
-              {/* 3. FIXED FOOTER */}
-              <div className="p-6 sm:p-10 border-t border-gray-100 dark:border-white/5 flex items-center justify-between gap-4 bg-gray-50 dark:bg-[#1A1A1A]/50 transition-colors duration-500">
-                <div>
-                  <p className="text-gray-400 dark:text-gray-500 text-[9px] font-black uppercase tracking-widest mb-1">Price</p>
-                  <p className="text-2xl sm:text-3xl font-black text-gray-900  leading-none">₹{selectedVariant?.price}</p>
+              {/* 3. FOOTER SECTION: Fixed at bottom */}
+              <div className="p-8 sm:p-10 border-t border-slate-50 flex items-center justify-between gap-6 bg-slate-50/50">
+                <div className="shrink-0">
+                  <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest mb-1">Total Price</p>
+                  <p className="text-3xl font-serif font-bold text-slate-900 tracking-tight">
+                    ₹{selectedVariant?.price}
+                  </p>
                 </div>
                 
                 <button
                   onClick={handleAddClick}
                   disabled={product.isSoldOut || !selectedVariant}
-                  /* UI FIX: High-contrast button for Light/Dark */
-                  className="bg-black dark:bg-[#E89EB8] text-white dark:text-black px-8 py-4 sm:py-5 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:scale-[1.02] active:scale-95 transition-all shadow-xl disabled:bg-gray-200 dark:disabled:bg-white/5 disabled:text-gray-400"
+                  className="flex-1 max-w-[240px] bg-slate-900 text-white py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] hover:bg-[#E89EB8] hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-slate-200 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:scale-100"
                 >
                   {product.isSoldOut ? 'Sold Out' : 'Add to Bag'}
                 </button>

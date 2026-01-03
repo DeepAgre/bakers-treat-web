@@ -40,8 +40,8 @@ const ingredients = [
 
 const Ingredients = () => {
   return (
-    /* Changed bg to adapt to both modes */
-    <section className="bg-white dark:bg-[#FFF5F7] py-24 sm:py-32 px-6 overflow-hidden transition-colors duration-500" id="philosophy">
+    /* UI FIX: Soft blush background to replace dark mode completely */
+    <section className="bg-[#FFF5F7]/50 py-24 sm:py-32 px-6 overflow-hidden" id="philosophy">
       <div className="max-w-7xl mx-auto">
         
         <div className="mb-16 sm:mb-24 text-left">
@@ -52,13 +52,13 @@ const Ingredients = () => {
             transition={{ duration: 0.8 }}
           >
             <h4 className="text-[#E89EB8] font-bold uppercase tracking-[0.4em] text-[10px] mb-6">Our Philosophy</h4>
-            <h2 className="text-gray-900  text-4xl md:text-7xl font-serif max-w-3xl leading-tight">
-              Quality is never an accident<span className="text-[#E89EB8]">.</span>
+            <h2 className="text-slate-900 text-4xl md:text-7xl font-serif max-w-3xl leading-tight">
+              Quality is never <br /> an accident<span className="text-[#E89EB8]">.</span>
             </h2>
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {ingredients.map((item, idx) => (
             <motion.div 
               key={item.id}
@@ -66,41 +66,47 @@ const Ingredients = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1, duration: 0.8 }}
               viewport={{ once: true }}
-              /* Added border for light mode visibility */
-              className="relative group h-[550px] rounded-[2.5rem] overflow-hidden bg-gray-100 dark:bg-[#1A1A1A] shadow-2xl border border-gray-100 dark:border-transparent"
+              /* UI FIX: Premium Card Styling */
+              className="relative group h-[600px] rounded-[3rem] overflow-hidden bg-white shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white"
             >
-              {/* IMAGE AS BACKGROUND */}
+              {/* IMAGE AS BACKGROUND with ultra-smooth slow hover */}
               <div 
-                className="absolute inset-0 w-full h-full transition-all duration-1000 group-hover:scale-110 opacity-70 dark:opacity-60 group-hover:opacity-100"
+                className="absolute inset-0 w-full h-full transition-transform duration-[2000ms] ease-out group-hover:scale-110"
                 style={{ 
                   backgroundImage: `url(${item.img})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat'
                 }}
               />
               
-              {/* Improved Gradient: Stronger at bottom for light mode text readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent dark:from-black dark:via-black/40" />
+              {/* GRADIENT OVERLAY: Interactive darkening on hover */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/20 to-transparent transition-opacity duration-700 opacity-80 group-hover:opacity-90" />
 
-              <div className="absolute inset-0 p-8 flex flex-col justify-end text-left">
-                {/* ID Number - Reduced opacity for cleaner look */}
-                <span className="absolute top-8 left-8 text-white/20 /10 text-7xl font-serif select-none pointer-events-none">
+              {/* CONTENT AREA */}
+              <div className="absolute inset-0 p-10 flex flex-col justify-end text-left">
+                
+                {/* ID Number - Floating background effect */}
+                <span className="absolute top-10 left-10 text-white/10 text-8xl font-serif select-none pointer-events-none group-hover:text-[#E89EB8]/20 transition-colors duration-700">
                   {item.id}
                 </span>
                 
-                <div className="relative z-10">
-                  <h5 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-2">
+                <div className="relative z-10 translate-y-4 group-hover:translate-y-0 transition-transform duration-700 ease-out">
+                  <h5 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.4em] mb-3">
                     {item.subtitle}
                   </h5>
-                  <h3 className="text-white text-2xl font-serif mb-3 group-hover:text-[#E89EB8] transition-colors">
+                  <h3 className="text-white text-3xl font-serif mb-4">
                     {item.title}
                   </h3>
-                  <p className="text-white/80 /60 text-sm leading-relaxed font-light">
+                  
+                  {/* Text reveals/expands slightly on hover */}
+                  <p className="text-white/70 text-sm leading-relaxed font-light opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100 max-w-[220px]">
                     {item.text}
                   </p>
                 </div>
               </div>
+
+              {/* Decorative "Inner Glow" border on hover */}
+              <div className="absolute inset-0 border-[0px] group-hover:border-[1px] border-white/20 transition-all duration-700 rounded-[3rem]" />
             </motion.div>
           ))}
         </div>

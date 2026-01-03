@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { useTheme } from './components/ThemeContext'; 
+// Removed useTheme import as we've standardized the light editorial look
 import SmoothScroll from './components/SmoothScroll';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -24,8 +24,6 @@ const BakeryApp = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); 
   
-  const { isDarkMode } = useTheme(); 
-
   const [cartItems, setCartItems] = useState(() => {
     const saved = localStorage.getItem('bakers_treat_cart');
     return saved ? JSON.parse(saved) : [];
@@ -36,15 +34,15 @@ const BakeryApp = () => {
   }, [cartItems]);
 
   useEffect(() => {
+    // 3 seconds is usually the "sweet spot" for loaders
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 4000);
+    }, 3500);
     return () => clearTimeout(timer);
   }, []);
 
   const handleSkipIntro = () => setIsLoading(false);
 
-  // --- THE MISSING FUNCTIONS START HERE ---
   const handleProductSelect = (product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
@@ -73,27 +71,28 @@ const BakeryApp = () => {
       return item;
     }).filter(item => item.qty > 0));
   };
-  // --- THE MISSING FUNCTIONS END HERE ---
 
   const cartTotal = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
   const formattedTotal = new Intl.NumberFormat('en-IN', {
     style: 'currency', currency: 'INR', maximumFractionDigits: 0
   }).format(cartTotal);
+  
   const cartCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
-  const handleCheckout = (type, deliveryDate, address) => {
+  const handleCheckout = (type) => {
     const khushiNumber = "919136371662"; 
     if (type === 'call') {
       window.location.href = `tel:+${khushiNumber}`;
       return;
     }
     const itemSummary = cartItems.map(i => `• ${i.name} (x${i.qty})`).join('\n');
-    const message = encodeURIComponent(`Order from Delight Bakehouse:\n${itemSummary}`);
+    const message = encodeURIComponent(`Hi Khushi! I'd like to place an order from Bakers Treat:\n\n${itemSummary}\n\nTotal: ${formattedTotal}`);
     window.open(`https://wa.me/${khushiNumber}?text=${message}`, '_blank');
   };
 
   return (
-    <div className={`relative w-full min-h-screen overflow-x-hidden transition-colors duration-500 ${isDarkMode ? 'dark bg-[#0F0F0F] text-white' : 'bg-white text-gray-900'}`}>
+    // Standardized background to white for the entire app
+    <div className="relative w-full min-h-screen bg-white text-slate-900 selection:bg-[#E89EB8]/20">
       <SmoothScroll>
         <AnimatePresence mode="wait">
           {isLoading && <PreLoader key="loader" onSkip={handleSkipIntro} />}
@@ -102,24 +101,30 @@ const BakeryApp = () => {
         <Toast show={showToast} message="Added to your bag!" />
 
         {!isLoading && (
-          <header className="fixed top-0 left-0 w-full z-[120]">
-             <div className="bg-[#1A1A1A] text-white text-[11px] py-3 text-center px-4">
-               24-Hour Notice Required • Handmade with love in Thane
+          <>
+            {/* ANNOUNCEMENT BAR */}
+            <div className="fixed top-0 left-0 w-full z-[130] bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.3em] py-2.5 text-center">
+              24-Hour Notice Required • Handcrafted in Thane
             </div>
+            
             <Navbar cartCount={cartCount} onOpenCart={() => setIsCartOpen(true)} />
-          </header>
+          </>
         )}
 
-        <main className={`relative w-full ${!isLoading ? "pt-24 sm:pt-32" : ""}`}>
+        <main className={`relative w-full ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
+          {/* Hero handles its own internal padding/spacing */}
           <Hero isParentLoading={isLoading} />
-          <CustomOrder />
-          <Ingredients />
-          <AboutKhushi />
-          <Marquee />
-          <Menu onProductSelect={handleProductSelect} />
-          <FeedbackForm />
-          <Testimonials />
-          <Footer />
+          
+          <div className="space-y-0">
+            <Marquee />
+            <Menu onProductSelect={handleProductSelect} />
+            <Ingredients />
+            <CustomOrder />
+            <AboutKhushi />
+            <Testimonials />
+            <FeedbackForm />
+            <Footer />
+          </div>
         </main>
 
         <Cart 

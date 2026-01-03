@@ -15,18 +15,19 @@ const CategoryWheel = ({ activeCategory, onSelect }) => {
   const wheelRotation = activeIndex * -25; // Rotate wheel to bring active item to center
 
   return (
-    // Fixed width container to prevent bleeding
     <div className="relative w-[100px] h-[400px] hidden md:flex items-center z-30">
       
       {/* The Spinning Wheel */}
-      {/* Moved 'left' to -280px to pull it back from the content */}
       <motion.div 
-        className="absolute left-[-280px] w-[500px] h-[500px] rounded-full border border-white/10 flex items-center justify-center bg-[#121212]"
+        /* UI FIX: Background is now a very soft blush-white with a clean border */
+        className="absolute left-[-280px] w-[500px] h-[500px] rounded-full border border-slate-100 flex items-center justify-center bg-[#FFF5F7]/30 shadow-xl"
         animate={{ rotate: wheelRotation }}
         transition={{ type: "spring", stiffness: 50, damping: 20 }}
       >
-        {/* Center Hub Decoration */}
-        <div className="w-32 h-32 rounded-full bg-[#FFF5F7] border border-white/5 shadow-inner" />
+        {/* Center Hub Decoration - Clean & Minimal */}
+        <div className="w-32 h-32 rounded-full bg-white border border-slate-100 shadow-inner flex items-center justify-center">
+           <div className="w-2 h-2 rounded-full bg-[#E89EB8]" />
+        </div>
 
         {/* Items */}
         {categories.map((cat, i) => {
@@ -36,31 +37,28 @@ const CategoryWheel = ({ activeCategory, onSelect }) => {
               onClick={() => onSelect(cat.id)}
               className="absolute h-12 flex items-center justify-start origin-center"
               style={{
-                // 1. Rotate to place on circle
-                // 2. Push out to edge (radius 250px)
-                // 3. Counter-rotate so the ITEM itself stays horizontal relative to the screen
                 transform: `rotate(${i * 25}deg) translate(250px) rotate(${-i * 25}deg)`
               }}
             >
               {/* Icon Circle */}
-              {/* We apply the counter-rotation of the WHEEL here to keep the text upright */}
               <motion.div 
                  className={`flex items-center gap-4 transition-all duration-300`}
-                 animate={{ rotate: -wheelRotation }} // Counter-rotate against the parent wheel spin
+                 animate={{ rotate: -wheelRotation }} 
                  transition={{ type: "spring", stiffness: 50, damping: 20 }}
               >
-                <div className={`p-3 rounded-full border transition-all duration-300 ${
+                {/* UI FIX: Icons use slate-gray and pink instead of dark-gray and black */}
+                <div className={`p-4 rounded-full border-2 transition-all duration-300 ${
                   activeCategory === cat.id 
-                    ? 'bg-[#E89EB8] text-black border-[#E89EB8] scale-125 shadow-[0_0_20px_rgba(232,158,184,0.3)]' 
-                    : 'bg-[#1C1C1C] text-[#A3A3A3] border-white/10 hover:border-white/50'
+                    ? 'bg-[#E89EB8] text-white border-[#E89EB8] scale-125 shadow-[0_10px_20px_rgba(232,158,184,0.3)]' 
+                    : 'bg-white text-slate-400 border-slate-100 hover:border-[#E89EB8]/50 hover:text-slate-600'
                 }`}>
                   {cat.icon}
                 </div>
 
-                {/* Text Label - Now strictly horizontal to the right of icon */}
-                <span className={`text-lg font-serif tracking-wider whitespace-nowrap transition-all duration-300 absolute left-14 ${
+                {/* Text Label - High contrast Slate-900 for Light Mode */}
+                <span className={`text-lg font-serif font-bold tracking-wider whitespace-nowrap transition-all duration-300 absolute left-16 ${
                   activeCategory === cat.id 
-                    ? 'opacity-100 text-white translate-x-0' 
+                    ? 'opacity-100 text-slate-900 translate-x-0' 
                     : 'opacity-0 -translate-x-4 pointer-events-none'
                 }`}>
                   {cat.label}

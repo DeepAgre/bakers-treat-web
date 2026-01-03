@@ -18,11 +18,12 @@ const Footer = () => {
 
   return (
     <footer 
-      className="relative pt-24 pb-12 px-6 overflow-hidden transition-colors duration-500 bg-white dark:bg-[#FFF5F7]"
+      className="relative pt-24 pb-12 px-6 overflow-hidden bg-white border-t border-slate-50"
     >
-      {/* --- DYNAMIC BACKGROUND IMAGE WITH PARALLAX --- */}
+      {/* --- PREMIUM PARALLAX BACKGROUND --- */}
+      {/* Reduced opacity for a more sophisticated "ghosted" look */}
       <div 
-        className="absolute inset-0 z-0 opacity-10 dark:opacity-20 pointer-events-none"
+        className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none"
         style={{ 
           backgroundImage: `url(${cakeGallery})`,
           backgroundSize: 'cover',
@@ -33,16 +34,16 @@ const Footer = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Top Section: Branding & CTA */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 pb-16 border-b border-gray-100 dark:border-white/5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 pb-16 border-b border-slate-100">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-serif font-bold mb-6 text-gray-900 ">
-              Delight Bakehouse<span className="text-[#E89EB8]">.</span>
+            <h2 className="text-4xl font-serif font-bold mb-6 text-slate-900">
+              Bakers Treat<span className="text-[#E89EB8]">.</span>
             </h2>
-            <p className="text-gray-500 dark:text-gray-400 max-w-sm leading-relaxed mb-10">
+            <p className="text-slate-500 max-w-sm leading-relaxed mb-10 font-medium">
               Handcrafting premium, artisanal bakes in the heart of Thane. 
               Every treat by Khushi Manjrekar is a story of quality and passion.
             </p>
@@ -52,7 +53,7 @@ const Footer = () => {
                 href={`https://wa.me/${khushiNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-black dark:bg-[#E89EB8] text-white dark:text-black px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all shadow-lg"
+                className="bg-slate-900 text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-[#E89EB8] hover:scale-105 transition-all shadow-xl shadow-slate-200"
               >
                 Order on WhatsApp
               </a>
@@ -60,7 +61,7 @@ const Footer = () => {
                 href={bakeryInsta}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gray-100 dark:bg-white/5 border border-transparent dark:border-white/10 text-gray-900  px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all"
+                className="bg-slate-50 border border-slate-100 text-slate-900 px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all"
               >
                 Visit Instagram
               </a>
@@ -80,7 +81,7 @@ const Footer = () => {
               <ul className="space-y-4">
                 {quickLinks.map(link => (
                   <li key={link.name}>
-                    <a href={link.href} className="text-gray-500 dark:text-gray-400 hover:text-[#E89EB8] dark:hover:text-white transition-colors text-sm font-medium">
+                    <a href={link.href} className="text-slate-500 hover:text-[#E89EB8] transition-colors text-sm font-semibold">
                       {link.name}
                     </a>
                   </li>
@@ -89,7 +90,7 @@ const Footer = () => {
             </div>
             <div>
               <h4 className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.3em] mb-8">Studio</h4>
-              <div className="text-sm text-gray-500 dark:text-gray-400 space-y-4 leading-relaxed font-medium">
+              <div className="text-sm text-slate-500 space-y-4 leading-relaxed font-semibold">
                 <p>Thane, Maharashtra</p>
                 <a href={`mailto:${bakeryEmail}`} className="block hover:text-[#E89EB8] transition-colors break-all">
                   {bakeryEmail}
@@ -105,18 +106,18 @@ const Footer = () => {
         {/* Bottom Section: Copyright */}
         <div className="pt-12 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col gap-2 text-center md:text-left">
-            <p className="text-gray-400 /20 text-[10px] font-black uppercase tracking-widest">
-              © {currentYear} Bakers Treat • Designed for Khushi Manjrekar
+            <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">
+              © {currentYear} Bakers Treat • Crafted by Khushi Manjrekar
             </p>
           </div>
           
           <div className="flex items-center gap-8">
-             <a href={bakeryInsta} target="_blank" rel="noopener noreferrer" className="text-gray-400 /20 hover:text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.2em] transition-colors">
-               Bakery Feed
+             <a href={bakeryInsta} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.2em] transition-colors">
+                Bakery Feed
              </a>
-             <span className="w-1 h-1 bg-[#E89EB8] rounded-full opacity-30" />
-             <a href={personalInsta} target="_blank" rel="noopener noreferrer" className="text-gray-400 /20 hover:text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.2em] transition-colors">
-               Owner Profile
+             <span className="w-1.5 h-1.5 bg-[#E89EB8] rounded-full opacity-30" />
+             <a href={personalInsta} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.2em] transition-colors">
+                Owner Profile
              </a>
           </div>
         </div>

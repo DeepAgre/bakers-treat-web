@@ -1,43 +1,87 @@
 @import "tailwindcss";
 
-/* 1. Reset & Force Light Mode Base */
-html, body {
-  background-color: white !important;
-  color: #1a1a1a !important;
+/* 1. TYPOGRAPHY & CORE BRAND DNA */
+@theme {
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --color-brand-pink: #E89EB8;
+  --color-brand-charcoal: #0F172A;
 }
 
-/* 2. Fix the "White Sides" by making sections span full width or match theme */
-html:not(.dark) section, 
-html:not(.dark) main {
-  background-color: white !important;
+/* 2. GLOBAL RESET */
+:root {
+  background-color: #ffffff;
+  color: #0F172A; /* Slate 900 */
+  scroll-behavior: smooth;
 }
 
-/* 3. Preloader Text Visibility Fix */
-/* Ensures "Delight Bakehouse" is visible even if the loader background is light */
-html:not(.dark) .preloader-text {
-  color: #1a1a1a !important;
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* 4. Menu Category Buttons Fix */
-/* Make buttons light with dark text in light mode */
-html:not(.dark) .menu-category-btn {
-  background-color: #f3f4f6 !important;
-  color: #1f2937 !important;
-  border: 1px solid rgba(0,0,0,0.05);
+/* 3. SECTION SPECIFIC STYLING */
+section {
+  background-color: white;
+  width: 100%;
 }
 
-html:not(.dark) .menu-category-btn.active {
-  background-color: #E89EB8 !important; /* Keep Khushi's brand pink */
+/* The soft pink background for the Custom Order/Cake sections */
+.custom-cake-section {
+  background-color: #FFF5F7 !important;
+}
+
+/* 4. PREMIUM SCROLLBAR (Minimalist) */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: white;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f1f1f1;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E89EB8;
+}
+
+/* 5. SELECTION COLOR (The Small Details) */
+::selection {
+  background-color: rgba(232, 158, 184, 0.2);
+  color: #0F172A;
+}
+
+/* 6. BUTTON & INTERACTION RESET */
+/* Ensures Tailwind utility classes are the source of truth */
+button, a {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 7. MENU CATEGORY PILLS (Editorial Look) */
+.menu-category-btn {
+  @apply px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all;
+  background-color: #f8fafc; /* Slate 50 */
+  color: #64748b; /* Slate 500 */
+  border: 1px solid #f1f5f9;
+}
+
+.menu-category-btn.active {
+  background-color: #0F172A !important;
   color: white !important;
+  border-color: #0F172A;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1);
 }
 
-/* 5. Custom Cake Section Pink Background */
-/* Force the pink background to stay or adapt in light mode */
-html:not(.dark) .custom-cake-section {
-  background-color: #FFF5F7 !important; /* A soft pink for light mode */
-}
-
-/* 6. Transitions */
-* {
-  transition: background-color 0.4s ease, color 0.4s ease !important;
+/* 8. PRELOADER FIX */
+.preloader-text {
+  color: #0F172A !important;
+  font-family: var(--font-serif);
 }

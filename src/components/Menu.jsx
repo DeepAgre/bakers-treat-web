@@ -62,34 +62,35 @@ const Menu = ({ onProductSelect }) => {
   }, [activeCategory, products]);
 
   if (loading) return (
-    <div className="py-40 text-center font-serif text-gray-400 dark:text-gray-500 animate-pulse">
-      Loading Delight Bakehouse Menu...
+    <div className="py-40 text-center font-serif text-slate-400 animate-pulse bg-white">
+      Preparing the Bakers Treat Menu...
     </div>
   );
 
   return (
-    <section className="py-20 sm:py-32 px-6 max-w-7xl mx-auto overflow-hidden bg-white dark:bg-[#0F0F0F] transition-colors duration-500" id="menu">
+    <section className="py-20 sm:py-32 px-6 max-w-7xl mx-auto bg-white" id="menu">
       <div className="text-center mb-16 sm:mb-24">
         <motion.span 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           className="text-[#E89EB8] uppercase tracking-[0.4em] text-[10px] sm:text-[12px] font-black mb-4 block"
         >
           Freshly Baked in Thane
         </motion.span>
         
-        <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 text-gray-900  transition-colors">Our Menu</h2>
+        <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 text-slate-900">Our Menu</h2>
         
-        {/* Category Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-8">
+        {/* CATEGORY FILTER: Refined pill design */}
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mt-8">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2 sm:px-8 sm:py-3 rounded-full text-[10px] font-black tracking-widest uppercase transition-all duration-300
+              className={`px-6 py-2 sm:px-8 sm:py-3 rounded-full text-[10px] font-black tracking-widest uppercase transition-all duration-500
                 ${activeCategory === cat 
-                  ? 'bg-[#E89EB8] text-white shadow-lg shadow-[#E89EB8]/20 scale-105' 
-                  : 'bg-gray-100 dark:bg-[#1A1A1A] text-gray-600 dark:text-gray-400 border border-transparent dark:border-white/5 hover:border-[#E89EB8]/30 hover:text-[#E89EB8]'}`}
+                  ? 'bg-slate-900 text-white shadow-xl shadow-slate-200 scale-105' 
+                  : 'bg-slate-50 text-slate-500 border border-slate-100 hover:border-[#E89EB8] hover:text-[#E89EB8]'}`}
             >
               {cat}
             </button>
@@ -97,55 +98,59 @@ const Menu = ({ onProductSelect }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-20">
         <AnimatePresence mode='popLayout'>
           {filteredProducts.map((product) => (
             <motion.div 
               layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.5 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               key={product.id}
               onClick={() => !product.isSoldOut && onProductSelect(product)}
               className={`group flex flex-col ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
             >
-              {/* Image Container */}
-              <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[3rem] aspect-[4/5] shadow-xl mb-8 bg-gray-50 dark:bg-[#151515] transition-colors">
+              {/* IMAGE CONTAINER: Smooth overflow hidden */}
+              <div className="relative overflow-hidden rounded-[2.5rem] aspect-[4/5] shadow-[0_20px_40px_rgba(0,0,0,0.08)] mb-8 bg-slate-50 border border-white">
                 <img 
                   src={product.img} 
                   alt={product.name} 
-                  className={`w-full h-full object-cover object-center transition-transform duration-1000 ease-out 
+                  className={`w-full h-full object-cover transition-transform duration-[1500ms] cubic-bezier(0.25, 1, 0.5, 1)
                     ${product.isSoldOut ? 'grayscale opacity-40' : 'group-hover:scale-110'}`} 
                 />
                 
                 {product.isSoldOut && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/10 dark:bg-black/40 backdrop-blur-[1px]">
-                    <span className="bg-white/95 dark:bg-[#1A1A1A] text-black  font-black px-6 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] shadow-xl border dark:border-white/10">
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/40 backdrop-blur-[2px]">
+                    <span className="bg-white text-slate-900 font-black px-6 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] shadow-lg border border-slate-100">
                       Sold Out
                     </span>
                   </div>
                 )}
+
+                {/* Subtle overlay on hover */}
+                {!product.isSoldOut && (
+                  <div className="absolute inset-0 bg-[#E89EB8]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                )}
               </div>
 
-              {/* Product Info */}
+              {/* PRODUCT INFO */}
               <div className="text-center px-4">
-                <p className="text-[#E89EB8] uppercase tracking-[0.3em] text-[9px] font-black mb-2">
+                <p className="text-[#E89EB8] uppercase tracking-[0.3em] text-[9px] font-black mb-3 opacity-80">
                   {product.category}
                 </p>
                 
-                {/* FIXED: text-gray-900 ensures visibility in Light Mode, group-hover remains for effect */}
-                <h3 className="text-xl sm:text-2xl font-serif font-bold text-gray-900  mb-2 group-hover:text-[#E89EB8] transition-colors">
+                <h3 className="text-2xl font-serif font-bold text-slate-900 mb-3 group-hover:text-[#E89EB8] transition-colors duration-500">
                   {product.name}
                 </h3>
 
-                {/* Price Display */}
-                <div className="flex items-center justify-center gap-3">
-                  <div className="h-px w-6 bg-gray-200 dark:bg-white/10"></div>
-                  <p className="text-lg font-bold text-gray-700 dark:text-gray-300 transition-colors">
+                {/* PRICE DISPLAY: Minimalist line divider */}
+                <div className="flex items-center justify-center gap-4">
+                  <div className="h-[1px] w-8 bg-slate-100 group-hover:w-12 group-hover:bg-[#E89EB8]/30 transition-all duration-700"></div>
+                  <p className="text-lg font-bold text-slate-600">
                     {product.variants.length > 1 ? 'From ' : ''}₹{product.displayPrice}
                   </p>
-                  <div className="h-px w-6 bg-gray-200 dark:bg-white/10"></div>
+                  <div className="h-[1px] w-8 bg-slate-100 group-hover:w-12 group-hover:bg-[#E89EB8]/30 transition-all duration-700"></div>
                 </div>
               </div>
             </motion.div>

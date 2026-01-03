@@ -1,13 +1,24 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  // Add 'selector' to be extra sure it ignores the system media query
-  darkMode: ['class', '[class="dark"]'], 
+  // We remove the darkMode line entirely to prevent any 
+  // "accidental" dark mode switching from system preferences.
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        brand: {
+          pink: '#E89EB8',
+          charcoal: '#0F172A',
+        }
+      },
+      fontFamily: {
+        serif: ['Playfair Display', 'serif'],
+        sans: ['Plus Jakarta Sans', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 }
