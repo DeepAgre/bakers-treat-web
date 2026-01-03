@@ -58,7 +58,7 @@ const Footer = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl font-serif font-bold mb-6 text-slate-900">
-              Bakers Treat<span className="text-[#E89EB8]">.</span>
+              Delight Bakehouse<span className="text-[#E89EB8]">.</span>
             </h2>
             <p className="text-slate-500 max-w-sm leading-relaxed mb-10 font-medium">
               Handcrafting premium, artisanal bakes in the heart of Thane. 
@@ -128,7 +128,7 @@ const Footer = () => {
         <div className="pt-12 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col gap-2 text-center md:text-left">
             <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">
-              © {currentYear} Bakers Treat • Crafted by Khushi Manjrekar
+              © {currentYear} Delight Bakehouse • Crafted by Khushi Manjrekar
             </p>
           </div>
           

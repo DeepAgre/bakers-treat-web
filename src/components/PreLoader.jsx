@@ -33,7 +33,7 @@ const PreLoader = ({ onSkip }) => {
           className="flex flex-col items-center"
         >
           <h1 className="text-slate-900 text-4xl md:text-6xl font-serif font-bold tracking-tighter text-center">
-            Bakers Treat<span className="text-[#E89EB8]">.</span>
+            Delight Bakehouse<span className="text-[#E89EB8]">.</span>
           </h1>
           
           {/* Animated Progress Line */}

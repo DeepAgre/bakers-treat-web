@@ -63,7 +63,7 @@ const FeedbackForm = () => {
               Your sweet words <br /> fuel our oven.
             </h2>
             <p className="text-slate-500 text-lg max-w-md">
-              Help Khushi craft the perfect treats. Your feedback helps us grow the Bakers Treat family in Thane.
+              Help Khushi craft the perfect treats. Your feedback helps us grow the Delight Bakehouse family in Thane.
             </p>
             
             <div className="pt-4 flex items-center gap-2 text-[#E89EB8] font-bold text-[10px] uppercase tracking-widest">

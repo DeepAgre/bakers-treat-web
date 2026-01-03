@@ -91,7 +91,7 @@ const BakeryApp = () => {
       return;
     }
     const itemSummary = cartItems.map(i => `• ${i.name} (x${i.qty})`).join('\n');
-    const message = encodeURIComponent(`Hi Khushi! I'd like to place an order from Bakers Treat:\n\n${itemSummary}\n\nTotal: ${formattedTotal}`);
+    const message = encodeURIComponent(`Hi Khushi! I'd like to place an order from Delight Bakehouse:\n\n${itemSummary}\n\nTotal: ${formattedTotal}`);
     window.open(`https://wa.me/${khushiNumber}?text=${message}`, '_blank');
   };
 

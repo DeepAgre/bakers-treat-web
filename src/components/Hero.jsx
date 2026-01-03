@@ -96,7 +96,7 @@ const Hero = ({ isParentLoading }) => {
             className="absolute -bottom-6 -right-6 z-20 bg-white p-6 rounded-3xl shadow-2xl border border-slate-50"
           >
             <p className="text-[#E89EB8] font-black text-[10px] uppercase tracking-widest mb-1">Thane West</p>
-            <p className="text-slate-900 font-serif font-bold italic text-lg">Bakers Treat</p>
+            <p className="text-slate-900 font-serif font-bold italic text-lg">Delight Bakehouse</p>
           </motion.div>
         </motion.div>
       </div>

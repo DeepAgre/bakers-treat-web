@@ -63,7 +63,7 @@ const Menu = ({ onProductSelect }) => {
 
   if (loading) return (
     <div className="py-40 text-center font-serif text-slate-400 animate-pulse bg-white">
-      Preparing the Bakers Treat Menu...
+      Preparing the Delight Bakehouse Menu...
     </div>
   );
 
