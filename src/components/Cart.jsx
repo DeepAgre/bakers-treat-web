@@ -18,19 +18,38 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
   const [deliveryDate, setDeliveryDate] = useState(minDate);
   const [address, setAddress] = useState('');
 
-  // 1. IMPROVED BODY LOCK: Prevents background scroll when cart is open
+  // --- HARDCORE SCROLL LOCK LOGIC ---
   useEffect(() => {
     if (isOpen) {
-      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.overflow = 'hidden';
-      document.body.style.paddingRight = `${scrollBarWidth}px`; // Prevents "jump"
+      // 1. Get the current scroll position
+      const scrollY = window.scrollY;
+      
+      // 2. Lock the body in place
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflowY = 'scroll'; // Keep scrollbar space to prevent layout shift
     } else {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
+      // 3. Get the scroll position back from the "top" property
+      const scrollY = document.body.style.top;
+      
+      // 4. Reset body styles
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflowY = '';
+      
+      // 5. Scroll back to where the user was
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
     }
+
     return () => {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflowY = '';
     };
   }, [isOpen]);
 
@@ -54,7 +73,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             transition={{ type: 'spring', damping: 28, stiffness: 220 }}
             className="fixed right-0 top-0 h-screen w-full max-w-md bg-white z-[201] shadow-2xl flex flex-col border-l border-slate-100"
           >
-            {/* Header: Fixed/Shrink-0 */}
+            {/* Header */}
             <div className="p-6 border-b border-slate-50 flex justify-between items-center shrink-0 bg-white">
               <div>
                 <h2 className="text-2xl font-serif font-bold text-slate-900 leading-tight">Your Bag</h2>
@@ -68,14 +87,11 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               </button>
             </div>
 
-            {/* Scrollable Items Area */}
+            {/* Scrollable Items - The internal scroll area */}
             <div 
               ref={scrollRef}
               className="flex-1 overflow-y-auto p-6 space-y-4 bg-white scroll-smooth"
-              style={{ 
-                overscrollBehavior: 'contain', // 2. FIX: Prevents background scroll chaining
-                WebkitOverflowScrolling: 'touch' // Smooth mobile scroll
-              }}
+              style={{ WebkitOverflowScrolling: 'touch' }}
             >
               {items.length === 0 ? (
                 <div className="text-center py-32">
@@ -120,7 +136,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               )}
             </div>
 
-            {/* Footer: Fixed/Shrink-0 */}
+            {/* Footer */}
             {items.length > 0 && (
               <div className="p-6 bg-white border-t border-slate-100 space-y-5 shrink-0 shadow-[0_-15px_30px_rgba(0,0,0,0.02)]">
                 <div className="space-y-4">
