@@ -1,21 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout }) => {
+  // Logic to ensure date is always tomorrow or later
   const getTomorrowDate = () => {
     const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-    return tomorrow.toISOString().split('T')[0];
+    today.setDate(today.getDate() + 1);
+    return today.toISOString().split('T')[0];
   };
 
   const [deliveryDate, setDeliveryDate] = useState(getTomorrowDate());
   const [address, setAddress] = useState('');
 
-  // FIX: Double Rupee Issue
   const cleanPrice = (val) => {
     if (!val) return "0";
     return val.toString().replace(/₹/g, '').trim();
+  };
+
+  // Helper to trigger date picker when clicking the whole field
+  const handleDateClick = (e) => {
+    try {
+      e.target.showPicker();
+    } catch (err) {
+      // Fallback for older browsers
+    }
   };
 
   return (
@@ -41,16 +49,16 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
               <div>
                 <h2 className="text-2xl font-serif font-bold text-slate-900">Your Bag</h2>
-                <p className="text-[10px] text-[#E89EB8] uppercase tracking-[0.3em] font-black italic">Delight Bakehouse by Khushi</p>
+                <p className="text-[10px] text-[#E89EB8] uppercase tracking-[0.3em] font-black italic">Delight Bakehouse Studio</p>
               </div>
               <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-slate-100 rounded-full transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
 
-            {/* THE SCROLLABLE SECTION */}
+            {/* Scrollable Section */}
             <div 
-              data-lenis-prevent // CRITICAL FIX: Tells Lenis to let this div scroll
+              data-lenis-prevent
               className="flex-1 overflow-y-auto p-6 space-y-4 bg-white"
               style={{ overscrollBehavior: 'contain' }}
             >
@@ -81,29 +89,59 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             {items.length > 0 && (
               <div className="p-6 bg-white border-t border-slate-100 shrink-0 shadow-[0_-15px_30px_rgba(0,0,0,0.02)]">
                 <div className="space-y-4 mb-6">
-                  <input 
-                    type="date" min={getTomorrowDate()} value={deliveryDate}
-                    onChange={(e) => setDeliveryDate(e.target.value)}
-                    className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 text-sm outline-none"
-                  />
-                  <textarea 
-                    placeholder="Delivery Area in Thane..." value={address}
-                    onChange={(e) => setAddress(e.target.value)} rows="2"
-                    className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 text-sm outline-none resize-none"
-                  />
+                  <div>
+                    <label className="text-[10px] uppercase font-black tracking-widest text-slate-400 mb-2 block">Requested Delivery Date</label>
+                    <input 
+                      type="date" 
+                      min={getTomorrowDate()} 
+                      value={deliveryDate}
+                      onClick={handleDateClick}
+                      onChange={(e) => setDeliveryDate(e.target.value)}
+                      className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 text-sm outline-none cursor-pointer focus:border-[#E89EB8] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-black tracking-widest text-slate-400 mb-2 block">Delivery Area in Thane</label>
+                    <textarea 
+                      placeholder="e.g. Hiranandani Estate, Majiwada..." 
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)} 
+                      rows="2"
+                      className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 text-sm outline-none resize-none focus:border-[#E89EB8] transition-colors"
+                    />
+                  </div>
                 </div>
+
                 <div className="flex justify-between items-end mb-6">
-                  <span className="text-slate-500 font-medium">Total Amount</span>
+                  <span className="text-slate-500 font-medium">Estimated Total</span>
                   <span className="text-3xl font-black text-slate-900 leading-none">
                     ₹{cleanPrice(total)}
                   </span>
                 </div>
-                <button
-                  onClick={() => onCheckout('whatsapp', deliveryDate, address)}
-                  className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all text-xs"
-                >
-                  Send Order to WhatsApp
-                </button>
+
+                <div className="space-y-3">
+                  <button
+                    onClick={() => onCheckout('whatsapp', deliveryDate, address)}
+                    className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:brightness-105 active:scale-[0.98] transition-all text-xs shadow-lg shadow-green-100"
+                  >
+                    Send Order to WhatsApp
+                  </button>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => onCheckout('call')}
+                      className="bg-slate-900 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-800 transition-colors"
+                    >
+                      Direct Call
+                    </button>
+                    <button
+                      onClick={onClose}
+                      className="border border-slate-200 text-slate-500 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-50 transition-colors"
+                    >
+                      Keep Browsing
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
           </motion.div>
