@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-// Removed useTheme import as we've standardized the light editorial look
 import SmoothScroll from './components/SmoothScroll';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -16,6 +15,13 @@ import Cart from './components/Cart';
 import ProductModal from './components/ProductModal';
 import Toast from './components/Toast';
 import PreLoader from './components/PreLoader';
+
+// 1. Create a small sub-component for the Sticky Note to keep App.jsx clean
+const AnnouncementBar = () => (
+  <div className="w-full bg-black text-white text-[10px] md:text-[12px] font-black uppercase tracking-[0.4em] py-4 text-center border-none shadow-sm">
+    ✨ 24-Hour Notice Required • <span className="text-[#E89EB8]">Handcrafted in Thane</span> ✨
+  </div>
+);
 
 const BakeryApp = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +40,6 @@ const BakeryApp = () => {
   }, [cartItems]);
 
   useEffect(() => {
-    // 3 seconds is usually the "sweet spot" for loaders
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 3500);
@@ -91,7 +96,6 @@ const BakeryApp = () => {
   };
 
   return (
-    // Standardized background to white for the entire app
     <div className="relative w-full min-h-screen bg-white text-slate-900 selection:bg-[#E89EB8]/20">
       <SmoothScroll>
         <AnimatePresence mode="wait">
@@ -101,18 +105,15 @@ const BakeryApp = () => {
         <Toast show={showToast} message="Added to your bag!" />
 
         {!isLoading && (
-          <>
-            {/* ANNOUNCEMENT BAR */}
-            <div className="fixed top-0 left-0 w-full z-[130] bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.3em] py-2.5 text-center">
-              24-Hour Notice Required • Handcrafted in Thane
-            </div>
-            
+          /* FIX: Grouping Sticky Note and Navbar in one fixed header */
+          <header className="fixed top-0 left-0 w-full z-[150] flex flex-col items-stretch">
+            <AnnouncementBar />
             <Navbar cartCount={cartCount} onOpenCart={() => setIsCartOpen(true)} />
-          </>
+          </header>
         )}
 
-        <main className={`relative w-full ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
-          {/* Hero handles its own internal padding/spacing */}
+        {/* FIX: Added pt-32 to the main container to prevent Hero from being hidden behind the taller header */}
+        <main className={`relative w-full pt-32 md:pt-40 ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
           <Hero isParentLoading={isLoading} />
           
           <div className="space-y-0">
