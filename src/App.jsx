@@ -113,7 +113,7 @@ const BakeryApp = () => {
         )}
 
         {/* FIX: Added pt-32 to the main container to prevent Hero from being hidden behind the taller header */}
-        <main className={`relative w-full pt-32 md:pt-40 ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
+        <main className={`relative w-full ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
           <Hero isParentLoading={isLoading} />
           
           <div className="space-y-0">
