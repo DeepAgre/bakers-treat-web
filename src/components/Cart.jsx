@@ -18,7 +18,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
   const [deliveryDate, setDeliveryDate] = useState(minDate);
   const [address, setAddress] = useState('');
 
-  // Scroll Lock logic remains to ensure a smooth UI experience
   useEffect(() => {
     if (isOpen) {
       document.documentElement.style.overflow = 'hidden';
@@ -51,7 +50,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop - Subtle and clean */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -60,7 +58,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             className="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-[200] cursor-pointer"
           />
 
-          {/* Bag Panel */}
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
@@ -68,11 +65,10 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             transition={{ type: 'spring', damping: 28, stiffness: 220 }}
             className="fixed right-0 top-0 h-screen w-full max-w-md bg-white z-[201] shadow-[-20px_0_60px_rgba(0,0,0,0.05)] flex flex-col border-l border-slate-100"
           >
-            {/* Header */}
             <div className="p-6 border-b border-slate-50 flex justify-between items-center shrink-0 bg-white">
               <div>
                 <h2 className="text-2xl font-serif font-bold text-slate-900">Your Bag</h2>
-                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Delight Bakehouse Studio</p>
+                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Bakers Treat Studio</p>
               </div>
               <button 
                 onClick={onClose} 
@@ -82,7 +78,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               </button>
             </div>
 
-            {/* PRODUCT LIST */}
             <div 
               ref={scrollRef}
               className="flex-1 overflow-y-auto p-6 space-y-4 bg-white scroll-smooth"
@@ -100,7 +95,8 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                     <img src={item.img} alt={item.name} className="w-20 h-20 rounded-xl object-cover shrink-0 shadow-sm" />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-bold text-slate-900 text-sm truncate">{item.name}</h4>
-                      <p className="text-[#E89EB8] font-black text-sm mb-2">₹{item.price}</p>
+                      {/* FIXED: Removed extra ₹ from item price */}
+                      <p className="text-[#E89EB8] font-black text-sm mb-2">₹{item.price.toString().replace('₹', '')}</p>
                       
                       <div className="flex items-center gap-2">
                         <button 
@@ -130,7 +126,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               )}
             </div>
 
-            {/* Checkout Section */}
             {items.length > 0 && (
               <div className="p-6 bg-white border-t border-slate-100 space-y-5 shrink-0 shadow-[0_-15px_30px_rgba(0,0,0,0.02)]">
                 <div className="space-y-4">
@@ -159,7 +154,10 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                 <div className="pt-2">
                   <div className="flex justify-between items-end mb-1">
                     <span className="text-slate-500 font-medium">Estimated Total</span>
-                    <span className="text-3xl font-black text-slate-900 leading-none tracking-tight">₹{total}</span>
+                    {/* FIXED: Removed hardcoded ₹ and used logic to ensure only one symbol exists */}
+                    <span className="text-3xl font-black text-slate-900 leading-none tracking-tight">
+                      ₹{total.toString().replace('₹', '')}
+                    </span>
                   </div>
                   <p className="text-[10px] text-slate-400 font-bold">
                     *Excludes delivery charges from Thane.
