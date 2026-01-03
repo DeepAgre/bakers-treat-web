@@ -19,12 +19,11 @@ const Navbar = ({ cartCount, onOpenCart }) => {
     { name: 'Contact', href: 'contact' },
   ];
 
-  // Helper function to handle smooth scrolling to IDs
   const scrollToSection = (e, id) => {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      const headerOffset = 120; // Adjust this based on your header height
+      const headerOffset = 120;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -33,7 +32,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
         behavior: 'smooth'
       });
     }
-    setIsMenuOpen(false); // Close mobile menu after clicking
+    setIsMenuOpen(false);
   };
 
   const handleLogoClick = (e) => {
@@ -44,7 +43,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
 
   return (
     <nav 
-      className={`w-full transition-all duration-300 z-[100] border-none ${
+      className={`w-full transition-all duration-300 z-[100] border-none fixed top-0 left-0 ${
         scrolled ? 'py-3 shadow-2xl' : 'py-6'
       }`}
       style={{ 
@@ -62,11 +61,11 @@ const Navbar = ({ cartCount, onOpenCart }) => {
           >
             <img 
               src={logo} 
-              alt="Delight Bakehouse" 
+              alt="Bakers Treat" 
               className="w-10 h-10 md:w-11 md:h-11 rounded-full object-cover border-2 border-white/40" 
             />
             <span className="text-xl font-serif font-bold text-white tracking-tight">
-              Delight Bakehouse<span className="text-black">.</span>
+              Bakers Treat<span className="text-black">.</span>
             </span>
           </button>
         </div>
@@ -86,30 +85,38 @@ const Navbar = ({ cartCount, onOpenCart }) => {
           ))}
         </div>
 
-        {/* RIGHT: Actions */}
-        <div className="flex-1 flex justify-end items-center gap-6">
-          <button 
+        {/* RIGHT: Premium Bag Button */}
+        <div className="flex-1 flex justify-end items-center gap-4">
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={onOpenCart}
-            className="relative p-2 text-white hover:text-black transition-colors group flex items-center"
+            className="relative bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-full flex items-center gap-3 transition-all shadow-lg group"
           >
-            <span className="hidden sm:inline-block text-[11px] font-black uppercase tracking-widest mr-2 text-white">Bag</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
-            </svg>
-            {cartCount > 0 && (
-              <motion.span 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="absolute -top-1 -right-1 bg-black text-white text-[9px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-sm"
-              >
-                {cartCount}
-              </motion.span>
-            )}
-          </button>
+            <span className="text-[10px] font-black uppercase tracking-[0.15em]">Bag</span>
+            <div className="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+              </svg>
+              
+              <AnimatePresence>
+                {cartCount > 0 && (
+                  <motion.span 
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    className="absolute -top-2 -right-2 bg-[#E89EB8] text-black text-[9px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-slate-900"
+                  >
+                    {cartCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.button>
 
           {/* Mobile Toggle */}
           <button 
-            className="lg:hidden flex flex-col gap-1.5"
+            className="lg:hidden flex flex-col gap-1.5 p-2"
             aria-label="Toggle Menu"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
