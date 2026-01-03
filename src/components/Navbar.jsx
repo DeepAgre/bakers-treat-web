@@ -26,22 +26,26 @@ const Navbar = ({ cartCount, onOpenCart }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-[100] transition-all duration-300">
-      {/* 1. LARGER, DARKER ANNOUNCEMENT BANNER */}
-      <div className="bg-black py-4 px-4 text-center border-b border-white/10">
-        <p className="text-[11px] md:text-[13px] font-black uppercase tracking-[0.4em] text-white">
-          ✨ 24-Hour Notice Required • <span className="text-[#E89EB8]">Handcrafted in Thane</span> ✨
+    <header className="fixed top-0 left-0 w-full z-[100] transition-all duration-300 m-0 p-0 border-none">
+      {/* 1. DARKER, BIGGER ANNOUNCEMENT BANNER (Pure Black) */}
+      <div 
+        className="py-4 px-4 text-center m-0 w-full"
+        style={{ backgroundColor: '#000000' }}
+      >
+        <p className="text-[11px] md:text-[13px] font-black uppercase tracking-[0.4em] text-white m-0">
+          ✨ 24-Hour Notice Required • <span style={{ color: '#E89EB8' }}>Handcrafted in Thane</span> ✨
         </p>
       </div>
 
-      {/* 2. PINK THEMED NAV */}
+      {/* 2. THEMED NAV (Explicitly Pink) */}
       <nav 
-        /* UI FIX: Changed bg-white to bg-[#E89EB8] to match your theme */
-        className={`w-full transition-all duration-300 border-b border-white/20 ${
-          scrolled 
-            ? 'bg-[#E89EB8]/95 backdrop-blur-md py-3 shadow-lg' 
-            : 'bg-[#E89EB8] py-5'
+        className={`w-full transition-all duration-300 border-b border-white/10 ${
+          scrolled ? 'py-3 shadow-xl' : 'py-5'
         }`}
+        style={{ 
+          backgroundColor: scrolled ? 'rgba(232, 158, 184, 0.98)' : '#E89EB8',
+          backdropFilter: scrolled ? 'blur(10px)' : 'none'
+        }}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
           
@@ -54,7 +58,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
               <img 
                 src={logo} 
                 alt="Bakers Treat" 
-                className="w-10 h-10 md:w-11 md:h-11 rounded-full object-cover border-2 border-white/50" 
+                className="w-10 h-10 md:w-11 md:h-11 rounded-full object-cover border-2 border-white/40" 
               />
               <span className="text-xl font-serif font-bold text-white tracking-tight">
                 Bakers Treat<span className="text-black">.</span>
@@ -68,7 +72,6 @@ const Navbar = ({ cartCount, onOpenCart }) => {
               <a 
                 key={link.name}
                 href={link.href} 
-                /* Text changed to white for visibility on pink */
                 className="text-[11px] font-bold uppercase tracking-[0.2em] text-white hover:text-black transition-colors relative group"
               >
                 {link.name}
@@ -81,10 +84,10 @@ const Navbar = ({ cartCount, onOpenCart }) => {
           <div className="flex-1 flex justify-end items-center gap-6">
             <button 
               onClick={onOpenCart}
-              className="relative p-2 text-white hover:text-black transition-colors group"
+              className="relative p-2 text-white hover:text-black transition-colors group flex items-center"
             >
               <span className="hidden sm:inline-block text-[11px] font-black uppercase tracking-widest mr-2">Bag</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="inline-block">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
               </svg>
               {cartCount > 0 && (
@@ -117,7 +120,8 @@ const Navbar = ({ cartCount, onOpenCart }) => {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="lg:hidden bg-[#E89EB8] border-t border-white/10 overflow-hidden"
+              className="lg:hidden border-t border-white/10 overflow-hidden"
+              style={{ backgroundColor: '#E89EB8' }}
             >
               <div className="flex flex-col p-8 gap-6">
                 {navLinks.map((link) => (
@@ -125,7 +129,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
                     key={link.name}
                     href={link.href} 
                     onClick={() => setIsMenuOpen(false)}
-                    className="text-lg font-serif font-bold text-white hover:text-black"
+                    className="text-lg font-serif font-bold text-white"
                   >
                     {link.name}
                   </a>

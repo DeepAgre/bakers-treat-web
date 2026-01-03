@@ -31,11 +31,7 @@ body {
 }
 
 /* 4. LAYOUT & SECTION DEFAULTS */
-section {
-  background-color: white;
-  width: 100%;
-  position: relative;
-}
+
 
 /* The signature soft pink background for specific sections */
 .custom-cake-section {
