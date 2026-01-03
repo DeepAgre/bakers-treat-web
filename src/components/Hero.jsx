@@ -48,8 +48,8 @@ const Hero = ({ isParentLoading }) => {
             style={{ fontFamily: "'Playfair Display', serif" }} 
             className="text-6xl md:text-8xl leading-[1.05] mb-8 text-slate-900 tracking-tight"
           >
-            Bakers <br />
-            <span className="text-[#E89EB8]">Treat</span>
+            Delight <br />
+            <span className="text-[#E89EB8]">Bakehouse</span>
           </h1>
           
           <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-md leading-relaxed font-sans font-medium">
