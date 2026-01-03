@@ -26,21 +26,21 @@ const Navbar = ({ cartCount, onOpenCart }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-[100] transition-all duration-300 m-0 p-0 border-none">
-      {/* 1. DARKER, BIGGER ANNOUNCEMENT BANNER (Pure Black) */}
+    <header className="fixed top-0 left-0 w-full z-[100] flex flex-col items-stretch border-none outline-none">
+      {/* 1. ANNOUNCEMENT BANNER: Increased size & bold styling */}
       <div 
-        className="py-4 px-4 text-center m-0 w-full"
+        className="w-full py-5 px-4 text-center m-0 border-none flex items-center justify-center"
         style={{ backgroundColor: '#000000' }}
       >
-        <p className="text-[11px] md:text-[13px] font-black uppercase tracking-[0.4em] text-white m-0">
+        <p className="text-[12px] md:text-[14px] font-black uppercase tracking-[0.5em] text-white m-0 leading-none">
           ✨ 24-Hour Notice Required • <span style={{ color: '#E89EB8' }}>Handcrafted in Thane</span> ✨
         </p>
       </div>
 
-      {/* 2. THEMED NAV (Explicitly Pink) */}
+      {/* 2. THEMED NAV: Pinned directly below with no gap */}
       <nav 
-        className={`w-full transition-all duration-300 border-b border-white/10 ${
-          scrolled ? 'py-3 shadow-xl' : 'py-5'
+        className={`w-full transition-all duration-300 m-0 ${
+          scrolled ? 'py-3 shadow-2xl' : 'py-6'
         }`}
         style={{ 
           backgroundColor: scrolled ? 'rgba(232, 158, 184, 0.98)' : '#E89EB8',

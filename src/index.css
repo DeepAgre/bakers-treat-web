@@ -1,10 +1,8 @@
 /* 1. CORE IMPORTS */
 @import "tailwindcss";
-
-/* Move Google Fonts here to ensure they load before styles apply */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
 
-/* 2. TYPOGRAPHY & BRAND VARIABLES (Tailwind v4) */
+/* 2. TYPOGRAPHY & BRAND VARIABLES */
 @theme {
   --font-serif: "Playfair Display", serif;
   --font-sans: "Plus Jakarta Sans", sans-serif;
@@ -13,7 +11,13 @@
   --color-brand-bg: #FFF5F7;
 }
 
-/* 3. GLOBAL RESET */
+/* 3. CRITICAL GLOBAL RESET - FIXES GAPS & BOX SIZING */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* This prevents the "extra bar" issue */
+}
+
 :root {
   background-color: #ffffff;
   color: #0F172A;
@@ -21,26 +25,19 @@
 }
 
 body {
-  margin: 0;
-  padding: 0;
   width: 100%;
   overflow-x: hidden;
-  /* Anti-aliasing for cleaner text rendering on high-res screens */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* 4. LAYOUT & SECTION DEFAULTS */
-
-
-/* The signature soft pink background for specific sections */
 .custom-cake-section {
   background-color: var(--color-brand-bg) !important;
 }
 
 /* 5. EDITORIAL ELEMENTS (Menu Pills) */
 .menu-category-btn {
-  /* Using @apply for utility combinations */
   @apply px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300;
   background-color: #f8fafc;
   color: #64748b;
@@ -55,35 +52,18 @@ body {
 }
 
 /* 6. PREMIUM SCROLLBAR & SELECTION */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: white;
-}
-
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: white; }
 ::-webkit-scrollbar-thumb {
   background: #f1f1f1;
   border-radius: 20px;
 }
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-brand-pink);
-}
-
+::-webkit-scrollbar-thumb:hover { background: var(--color-brand-pink); }
 ::selection {
   background-color: rgba(232, 158, 184, 0.2);
   color: var(--color-brand-charcoal);
 }
 
-/* 7. PRELOADER & TEXT FIXES */
-.preloader-text {
-  color: var(--color-brand-charcoal) !important;
-  font-family: var(--font-serif);
-}
-
-/* Global button reset to allow Tailwind to take full control */
 button {
   cursor: pointer;
   outline: none;
