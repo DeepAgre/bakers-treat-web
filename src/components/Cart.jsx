@@ -18,44 +18,33 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
   const [deliveryDate, setDeliveryDate] = useState(minDate);
   const [address, setAddress] = useState('');
 
+  // 1. IMPROVED BODY LOCK: Prevents background scroll when cart is open
   useEffect(() => {
     if (isOpen) {
-      document.documentElement.style.overflow = 'hidden';
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollBarWidth}px`; // Prevents "jump"
     } else {
-      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     }
     return () => {
-      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     };
-  }, [isOpen]);
-
-  useEffect(() => {
-    const handleWheel = (e) => {
-      if (!isOpen) return;
-      const el = scrollRef.current;
-      if (!el) return;
-      const isInsideCart = el.contains(e.target);
-      if (isInsideCart) {
-        e.stopPropagation();
-      }
-    };
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    return () => window.removeEventListener('wheel', handleWheel);
   }, [isOpen]);
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-[200] cursor-pointer"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] cursor-pointer"
           />
 
           <motion.div
@@ -63,11 +52,12 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-            className="fixed right-0 top-0 h-screen w-full max-w-md bg-white z-[201] shadow-[-20px_0_60px_rgba(0,0,0,0.05)] flex flex-col border-l border-slate-100"
+            className="fixed right-0 top-0 h-screen w-full max-w-md bg-white z-[201] shadow-2xl flex flex-col border-l border-slate-100"
           >
+            {/* Header: Fixed/Shrink-0 */}
             <div className="p-6 border-b border-slate-50 flex justify-between items-center shrink-0 bg-white">
               <div>
-                <h2 className="text-2xl font-serif font-bold text-slate-900">Your Bag</h2>
+                <h2 className="text-2xl font-serif font-bold text-slate-900 leading-tight">Your Bag</h2>
                 <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Delight Bakehouse Studio</p>
               </div>
               <button 
@@ -78,9 +68,14 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               </button>
             </div>
 
+            {/* Scrollable Items Area */}
             <div 
               ref={scrollRef}
               className="flex-1 overflow-y-auto p-6 space-y-4 bg-white scroll-smooth"
+              style={{ 
+                overscrollBehavior: 'contain', // 2. FIX: Prevents background scroll chaining
+                WebkitOverflowScrolling: 'touch' // Smooth mobile scroll
+              }}
             >
               {items.length === 0 ? (
                 <div className="text-center py-32">
@@ -95,7 +90,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                     <img src={item.img} alt={item.name} className="w-20 h-20 rounded-xl object-cover shrink-0 shadow-sm" />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-bold text-slate-900 text-sm truncate">{item.name}</h4>
-                      {/* FIXED: Removed extra ₹ from item price */}
                       <p className="text-[#E89EB8] font-black text-sm mb-2">₹{item.price.toString().replace('₹', '')}</p>
                       
                       <div className="flex items-center gap-2">
@@ -126,6 +120,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               )}
             </div>
 
+            {/* Footer: Fixed/Shrink-0 */}
             {items.length > 0 && (
               <div className="p-6 bg-white border-t border-slate-100 space-y-5 shrink-0 shadow-[0_-15px_30px_rgba(0,0,0,0.02)]">
                 <div className="space-y-4">
@@ -154,7 +149,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                 <div className="pt-2">
                   <div className="flex justify-between items-end mb-1">
                     <span className="text-slate-500 font-medium">Estimated Total</span>
-                    {/* FIXED: Removed hardcoded ₹ and used logic to ensure only one symbol exists */}
                     <span className="text-3xl font-black text-slate-900 leading-none tracking-tight">
                       ₹{total.toString().replace('₹', '')}
                     </span>
