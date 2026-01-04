@@ -1,167 +1,155 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import SmoothScroll from './components/SmoothScroll';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import CustomOrder from './components/CustomOrder'; 
+import Ingredients from './components/Ingredients';
+import AboutKhushi from './components/AboutKhushi'; 
+import Marquee from './components/Marquee';
+import Menu from './components/Menu';
+import Testimonials from './components/Testimonials';
+import FeedbackForm from './components/FeedbackForm'; 
+import Footer from './components/Footer';
+import Cart from './components/Cart';
+import ProductModal from './components/ProductModal';
+import Toast from './components/Toast';
+import PreLoader from './components/PreLoader';
+import AnnouncementBanner from './components/AnnouncementBanner';
 
-const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout }) => {
-  const [deliveryDate, setDeliveryDate] = useState(() => {
-    const today = new Date();
-    today.setDate(today.getDate() + 1);
-    return today.toISOString().split('T')[0];
-  });
+const BakeryApp = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); 
   
-  const [address, setAddress] = useState('');
-  const [showError, setShowError] = useState(false);
+  const [cartItems, setCartItems] = useState(() => {
+    const saved = localStorage.getItem('bakers_treat_cart');
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  // Enabled with at least 1 character
-  const isAddressValid = address.trim().length >= 1;
+  useEffect(() => {
+    localStorage.setItem('bakers_treat_cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
-  const handleCheckout = () => {
-    if (!isAddressValid) {
-      setShowError(true);
-      setTimeout(() => setShowError(false), 3000);
-      return;
-    }
-    onCheckout('whatsapp', deliveryDate, address);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleSkipIntro = () => setIsLoading(false);
+
+  const handleProductSelect = (product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
   };
 
-  const cleanPrice = (val) => {
-    if (!val) return "0";
-    return val.toString().replace(/₹/g, '').trim();
+  const addToCart = (productWithVariant) => {
+    setCartItems(prev => {
+      const existing = prev.find(item => item.id === productWithVariant.id);
+      if (existing) {
+        return prev.map(item => 
+          item.id === productWithVariant.id ? { ...item, qty: item.qty + 1 } : item
+        );
+      }
+      return [...prev, { ...productWithVariant, qty: 1 }];
+    });
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
+
+  const updateQty = (id, change) => {
+    setCartItems(prev => prev.map(item => {
+      if (item.id === id) {
+        const newQty = Math.max(0, item.qty + change);
+        return { ...item, qty: newQty };
+      }
+      return item;
+    }).filter(item => item.qty > 0));
+  };
+
+  const cartTotal = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
+  const formattedTotal = new Intl.NumberFormat('en-IN', {
+    style: 'currency', currency: 'INR', maximumFractionDigits: 0
+  }).format(cartTotal);
+  
+  const cartCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
+
+  const handleCheckout = (type, deliveryDate, address) => {
+    const khushiNumber = "919136371662"; 
+    if (type === 'call') {
+      window.location.href = `tel:+${khushiNumber}`;
+      return;
+    }
+    const itemSummary = cartItems.map(i => `• ${i.name} (x${i.qty})`).join('\n');
+    const message = encodeURIComponent(
+      `Hi Khushi! I'd like to place an order from Delight Bakehouse:\n\n` +
+      `Items:\n${itemSummary}\n\n` +
+      `Delivery Date: ${deliveryDate}\n` +
+      `Address: ${address}\n\n` +
+      `Total: ${formattedTotal}`
+    );
+    window.open(`https://wa.me/${khushiNumber}?text=${message}`, '_blank');
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[10000]"
-          />
+    <div className="relative w-full min-h-screen bg-white text-slate-900 selection:bg-[#E89EB8]/20">
+      
+      {/* CRITICAL FIX: 
+          Moved Cart and ProductModal OUTSIDE of SmoothScroll.
+          This prevents the scroll library from locking their internal scrolling.
+      */}
+      <Cart 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)} 
+        items={cartItems} 
+        total={formattedTotal} 
+        updateQty={updateQty}
+        removeItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
+        onCheckout={handleCheckout}
+      />
 
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            /* Added h-[100dvh] for mobile browser support */
-            className="fixed right-0 top-0 h-[100dvh] w-full max-w-md bg-white z-[10001] shadow-2xl flex flex-col overflow-hidden"
-          >
-            {/* FIXED HEADER */}
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
-              <div>
-                <h2 className="text-2xl font-serif font-bold text-slate-900">Your Bag</h2>
-                <p className="text-[10px] text-[#E89EB8] uppercase tracking-[0.3em] font-black italic">Delight Bakehouse Studio</p>
-              </div>
-              <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-slate-100 rounded-full transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              </button>
-            </div>
+      <ProductModal 
+        product={selectedProduct} 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAddToBag={addToCart}
+      />
 
-            {/* SCROLLABLE PRODUCT LIST 
-                Added 'data-lenis-prevent' to stop SmoothScroll from hijacking this area
-            */}
-            <div 
-              data-lenis-prevent
-              className="flex-1 overflow-y-auto overflow-x-hidden bg-white touch-auto" 
-              style={{ 
-                WebkitOverflowScrolling: 'touch',
-                overscrollBehavior: 'contain'
-              }}
-            >
-              <div className="p-6 space-y-4">
-                {items.length === 0 ? (
-                  <div className="text-center py-24 text-slate-400">Your bag is empty.</div>
-                ) : (
-                  items.map((item) => (
-                    <div key={item.id} className="flex gap-4 items-center bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
-                      <img src={item.img} alt={item.name} className="w-16 h-16 rounded-xl object-cover shrink-0 shadow-sm" />
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-slate-900 text-sm truncate">{item.name}</h4>
-                        <p className="text-[#E89EB8] font-black text-sm">₹{cleanPrice(item.price)}</p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <button onClick={() => updateQty(item.id, -1)} className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white hover:bg-[#E89EB8] hover:text-white transition-all">-</button>
-                          <span className="w-8 text-center font-black text-xs">{item.qty}</span>
-                          <button onClick={() => updateQty(item.id, 1)} className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white hover:bg-[#E89EB8] hover:text-white transition-all">+</button>
-                        </div>
-                      </div>
-                      <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-red-500 p-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
+      <SmoothScroll isPaused={isCartOpen || isModalOpen}>
+        <AnimatePresence mode="wait">
+          {isLoading && <PreLoader key="loader" onSkip={handleSkipIntro} />}
+        </AnimatePresence>
 
-            {/* FIXED FOOTER (Delivery + Total + Buttons) */}
-            {items.length > 0 && (
-              <div className="p-6 bg-white border-t border-slate-100 shrink-0 shadow-[0_-15px_30px_rgba(0,0,0,0.08)] pb-safe">
-                <div className="space-y-4 mb-6">
-                  <div className="grid grid-cols-1 gap-4">
-                    <div>
-                      <label className="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-1.5 block">Delivery Date</label>
-                      <input 
-                        type="date" 
-                        min={new Date(Date.now() + 86400000).toISOString().split('T')[0]} 
-                        value={deliveryDate}
-                        onChange={(e) => setDeliveryDate(e.target.value)}
-                        className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none focus:border-[#E89EB8] transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className={`text-[9px] uppercase font-black tracking-widest mb-1.5 block transition-colors ${showError ? 'text-red-500' : 'text-slate-400'}`}>
-                        {showError ? 'Please provide a delivery address' : 'Delivery Area in Thane'}
-                      </label>
-                      <textarea 
-                        placeholder="e.g. Hiranandani Estate, Majiwada..." 
-                        value={address}
-                        onChange={(e) => {
-                          setAddress(e.target.value);
-                          if(showError) setShowError(false);
-                        }} 
-                        rows="2"
-                        className={`w-full p-3 rounded-xl border bg-slate-50 text-xs outline-none resize-none transition-all ${showError ? 'border-red-300 ring-2 ring-red-50' : 'border-slate-200 focus:border-[#E89EB8]'}`}
-                      />
-                    </div>
-                  </div>
-                </div>
+        <Toast show={showToast} message="Added to your bag!" />
 
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-slate-500 font-medium text-sm">Estimated Total</span>
-                  <span className="text-2xl font-black text-slate-900 leading-none">₹{cleanPrice(total)}</span>
-                </div>
+        {!isLoading && (
+          <header className="fixed top-0 left-0 w-full z-[150] flex flex-col items-stretch shadow-sm">
+            <AnnouncementBanner />
+            <Navbar cartCount={cartCount} onOpenCart={() => setIsCartOpen(true)} />
+          </header>
+        )}
 
-                <div className="space-y-3">
-                  <motion.div
-                    animate={showError ? { x: [-4, 4, -4, 4, 0] } : {}}
-                    transition={{ duration: 0.4 }}
-                  >
-                    <button
-                      onClick={handleCheckout}
-                      className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest transition-all text-xs shadow-lg 
-                        ${isAddressValid 
-                          ? 'bg-[#25D366] text-white hover:brightness-105 active:scale-[0.98]' 
-                          : 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none'
-                        }`}
-                    >
-                      {isAddressValid ? 'Send Order to WhatsApp' : 'Enter Address to Order'}
-                    </button>
-                  </motion.div>
-                  
-                  <div className="grid grid-cols-2 gap-3">
-                    <button onClick={() => onCheckout('call')} className="bg-slate-900 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-800 transition-colors">Direct Call</button>
-                    <button onClick={onClose} className="border border-slate-200 text-slate-500 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-50 transition-colors">Keep Browsing</button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+        <main className={`relative w-full pt-[110px] md:pt-[120px] ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
+          <Hero isParentLoading={isLoading} />
+          
+          <div className="space-y-0">
+            <Marquee />
+            <Menu onProductSelect={handleProductSelect} />
+            <Ingredients />
+            <CustomOrder />
+            <AboutKhushi />
+            <Testimonials />
+            <FeedbackForm />
+            <Footer />
+          </div>
+        </main>
+      </SmoothScroll>
+    </div>
   );
 };
 
-export default Cart;
+export default BakeryApp;
