@@ -63,8 +63,8 @@ const Hero = ({ isParentLoading }) => {
             style={{ fontFamily: "'Playfair Display', serif" }} 
             className="text-6xl md:text-9xl leading-[1] mb-6 lg:mb-8 text-slate-900 tracking-tight"
           >
-            Bakers <br />
-            <span className="text-slate-800 italic">Treat</span>
+            Delight <br />
+            <span className="text-slate-800 italic">Bakehouse</span>
           </h1>
           
           <p className="text-base md:text-xl text-slate-700 mb-8 lg:mb-10 max-w-sm lg:max-w-md leading-relaxed font-sans font-medium">
@@ -125,7 +125,7 @@ const Hero = ({ isParentLoading }) => {
                 <div className="space-y-6 pt-4 border-t border-slate-200/50">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-white p-1">
-                       <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-white text-[10px] font-black">BT</div>
+                       <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-white text-[10px] font-black">DB</div>
                     </div>
                     <div>
                       <p className="text-sm font-bold text-slate-900">Khushi Manjrekar</p>
