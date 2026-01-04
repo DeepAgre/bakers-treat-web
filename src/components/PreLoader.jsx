@@ -53,7 +53,7 @@ const PreLoader = () => {
             transition={{ duration: 0.8, ease: [0.2, 1, 0.3, 1] }}
             className="text-5xl md:text-8xl font-serif font-black text-slate-900 tracking-tighter"
           >
-            Delight<span className="text-[#E89EB8]">.</span>
+            Delight Bakehouse<span className="text-[#E89EB8]">.</span>
           </motion.h1>
         </div>
 
