@@ -98,10 +98,7 @@ const BakeryApp = () => {
   return (
     <div className="relative w-full min-h-screen bg-white text-slate-900 selection:bg-[#E89EB8]/20">
       
-      {/* CRITICAL FIX: 
-          Moved Cart and ProductModal OUTSIDE of SmoothScroll.
-          This prevents the scroll library from locking their internal scrolling.
-      */}
+      {/* MODALS & OVERLAYS (Outside SmoothScroll for better scrolling performance) */}
       <Cart 
         isOpen={isCartOpen} 
         onClose={() => setIsCartOpen(false)} 
@@ -134,16 +131,33 @@ const BakeryApp = () => {
         )}
 
         <main className={`relative w-full pt-[110px] md:pt-[120px] ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
+          
+          {/* 1. HERO PAGE */}
           <Hero isParentLoading={isLoading} />
           
           <div className="space-y-0">
+            {/* Transition Marquee */}
             <Marquee />
-            <Menu onProductSelect={handleProductSelect} />
-            <Ingredients />
-            <CustomOrder />
+
+            {/* 2. ABOUT KHUSHI SECTION */}
             <AboutKhushi />
+
+            {/* 3. INGREDIENTS SECTION */}
+            <Ingredients />
+
+            {/* 4. CUSTOM ORDER SECTION */}
+            <CustomOrder />
+
+            {/* 5. MENU SECTION */}
+            <Menu onProductSelect={handleProductSelect} />
+
+            {/* 6. REVIEWS (TESTIMONIALS) SECTION */}
             <Testimonials />
+
+            {/* 7. FEEDBACK FORM */}
             <FeedbackForm />
+
+            {/* 8. FOOTER */}
             <Footer />
           </div>
         </main>
