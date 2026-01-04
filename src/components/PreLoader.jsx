@@ -83,7 +83,7 @@ const PreLoader = () => {
           transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
           className="text-4xl mb-2"
         >
-          🎀
+          
         </motion.div>
 
         {/* Brand Name */}
