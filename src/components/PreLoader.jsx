@@ -1,114 +1,110 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const PreLoader = ({ onSkip }) => {
-  // Animation for each individual letter for a "luxury reveal"
-  const containerVars = {
-    animate: {
-      transition: {
-        staggerChildren: 0.05
-      }
-    }
-  };
+const PreLoader = () => {
+  const [progress, setProgress] = useState(0);
 
-  const letterVars = {
-    initial: { y: 40, opacity: 0 },
-    animate: { 
-      y: 0, 
-      opacity: 1, 
-      transition: { duration: 0.8, ease: [0.2, 1, 0.3, 1] } 
-    }
-  };
+  // Smooth counter animation for the progress
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(timer);
+          return 100;
+        }
+        return prev + 1;
+      });
+    }, 25); // Fast, snappy progress
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <motion.div
       initial={{ y: 0 }}
-      exit={{ y: '-100%' }}
-      transition={{ duration: 1, ease: [0.9, 0, 0.1, 1] }}
-      onClick={onSkip}
-      className="fixed inset-0 z-[200] bg-[#110C0D] flex items-center justify-center flex-col cursor-wait overflow-hidden"
+      exit={{ 
+        y: "-100vh",
+        transition: { duration: 0.8, ease: [0.85, 0, 0.15, 1] } 
+      }}
+      className="fixed inset-0 z-[500] bg-[#FFF5F7] flex items-center justify-center overflow-hidden"
     >
-      {/* 1. Cinematic Grain Overlay - Makes the color feel "textured" and cool */}
-      <div className="absolute inset-0 opacity-[0.15] pointer-events-none mix-blend-overlay">
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-          <filter id="noiseFilter">
-            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-          </filter>
-          <rect width="100%" height="100%" filter="url(#noiseFilter)" />
-        </svg>
+      {/* --- BACKGROUND ACCENTS (Optimized - No Lag) --- */}
+      <div className="absolute inset-0 z-0">
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.1, 1],
+            opacity: [0.3, 0.5, 0.3] 
+          }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-[10%] -right-[10%] w-[50vw] h-[50vw] bg-[#E89EB8]/20 blur-[100px] rounded-full"
+        />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center text-[20vw] font-serif font-black text-[#E89EB8]/5 select-none tracking-tighter">
+          BAKERY
+        </div>
       </div>
 
-      {/* 2. Floating Ambient Glow */}
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.2, 1],
-          opacity: [0.08, 0.12, 0.08] 
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute w-[60vw] h-[60vw] bg-[#E89EB8] rounded-full blur-[120px] pointer-events-none"
-      />
+      {/* --- MAIN CONTENT --- */}
+      <div className="relative z-10 flex flex-col items-center">
+        
+        {/* Modern Minimal Logo Reveal */}
+        <div className="overflow-hidden mb-4">
+          <motion.h1
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.8, ease: [0.2, 1, 0.3, 1] }}
+            className="text-5xl md:text-8xl font-serif font-black text-slate-900 tracking-tighter"
+          >
+            Delight<span className="text-[#E89EB8]">.</span>
+          </motion.h1>
+        </div>
 
-      {/* 3. Main Branding Reveal */}
-      <div className="relative z-10">
-        <motion.div
-          variants={containerVars}
-          initial="initial"
-          animate="animate"
-          className="flex flex-col items-center"
-        >
-          <div className="flex overflow-hidden pb-2">
-            {"Delight Bakehouse".split("").map((char, i) => (
-              <motion.span
-                key={i}
-                variants={letterVars}
-                className={`text-white text-4xl md:text-7xl font-serif font-bold tracking-tight ${char === " " ? "mr-4" : ""}`}
-              >
-                {char}
-              </motion.span>
-            ))}
-            <motion.span variants={letterVars} className="text-[#E89EB8] text-4xl md:text-7xl font-serif font-bold">.</motion.span>
-          </div>
-          
-          {/* Minimalist Loading Bar */}
-          <div className="relative w-32 md:w-48 h-[1px] mt-4 overflow-hidden">
-            <div className="absolute inset-0 bg-white/10" />
-            <motion.div 
-              initial={{ x: "-100%" }}
-              animate={{ x: "100%" }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 bg-[#E89EB8] shadow-[0_0_8px_#E89EB8]"
-            />
-          </div>
-        </motion.div>
+        {/* The "Gen-Z" Counter Style */}
+        <div className="flex flex-col items-center gap-2">
+           <motion.div 
+             initial={{ width: 0 }}
+             animate={{ width: "200px" }}
+             transition={{ duration: 1, delay: 0.2 }}
+             className="h-[2px] bg-slate-900/5 relative overflow-hidden"
+           >
+             <motion.div 
+               className="absolute top-0 left-0 h-full bg-[#E89EB8]"
+               style={{ width: `${progress}%` }}
+             />
+           </motion.div>
+           
+           <div className="flex justify-between w-[200px] mt-2">
+             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+               Loading Studio
+             </span>
+             <span className="text-[10px] font-black font-mono text-[#E89EB8]">
+               {progress}%
+             </span>
+           </div>
+        </div>
       </div>
-      
-      {/* 4. Footer Info */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 1 }}
-        className="absolute bottom-16 flex flex-col items-center gap-6"
-      >
-        <div className="flex flex-col items-center">
-          <p className="text-white/40 text-[9px] uppercase tracking-[0.6em] mb-2 font-medium">
-            Thane West
-          </p>
-          <div className="h-[30px] w-[1px] bg-gradient-to-b from-white/20 to-transparent" />
+
+      {/* --- BOTTOM BRANDS --- */}
+      <div className="absolute bottom-12 left-12 right-12 flex justify-between items-end">
+        <div className="space-y-1">
+          <p className="text-slate-900 font-bold text-xs tracking-tighter">Delight Bakehouse</p>
+          <p className="text-slate-400 text-[9px] uppercase tracking-[0.2em]">Thane, MH</p>
         </div>
         
-        <p className="text-[#E89EB8]/80 text-[10px] uppercase tracking-[0.4em] font-bold">
-          Khushi Manjrekar
-        </p>
-      </motion.div>
+        <div className="text-right">
+          <p className="text-slate-400 text-[9px] uppercase tracking-[0.2em] mb-1">Creative Director</p>
+          <p className="text-slate-900 font-bold text-xs tracking-tighter uppercase">Khushi Manjrekar</p>
+        </div>
+      </div>
 
-      {/* Subtle Interaction Prompt */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.3, 0] }}
-        transition={{ delay: 3, duration: 2, repeat: Infinity }}
-        className="absolute bottom-6 text-white text-[7px] uppercase tracking-[0.5em]"
+      {/* Floating Sparkle for Visual Pop */}
+      <motion.div
+        animate={{ 
+          rotate: 360,
+          scale: [1, 1.2, 1]
+        }}
+        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+        className="absolute top-12 left-12 text-2xl"
       >
-        Enter Studio
+        ✨
       </motion.div>
     </motion.div>
   );
