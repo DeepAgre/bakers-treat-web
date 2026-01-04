@@ -98,7 +98,7 @@ const FeedbackForm = () => {
             
             <div className="flex flex-wrap gap-4 pt-6">
                <div className="px-6 py-3 bg-white rounded-full shadow-sm border border-[#E89EB8]/10 text-slate-500 text-sm font-bold">
-                 #BakersTreatFamily
+                 #DelightBakehouseFamily
                </div>
                <div className="px-6 py-3 bg-white rounded-full shadow-sm border border-[#E89EB8]/10 text-slate-500 text-sm font-bold">
                  #ThaneBakes
