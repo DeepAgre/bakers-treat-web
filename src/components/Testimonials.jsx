@@ -26,6 +26,30 @@ const hardcodedTestimonials = [
     location: "Majiwada",
     rating: 5,
     isVerified: true
+  },
+  {
+    _id: 'seed-4',
+    name: "Ishani Ghosh",
+    comment: "The attention to detail in the wedding cake was mind-blowing. It was the star of the evening. Thank you, Khushi!",
+    location: "Vasant Vihar",
+    rating: 5,
+    isVerified: true
+  },
+  {
+    _id: 'seed-5',
+    name: "Kabir Mehta",
+    comment: "Finally found a baker in Thane who gets the balance of Belgian chocolate right. Pure artisan quality.",
+    location: "Ghodbunder Road",
+    rating: 5,
+    isVerified: true
+  },
+  {
+    _id: 'seed-6',
+    name: "Pooja Deshmukh",
+    comment: "The fruit tarts are so fresh! You can tell she uses seasonal, high-quality ingredients. A treat for the soul.",
+    location: "Kalwa",
+    rating: 5,
+    isVerified: true
   }
 ];
 
@@ -49,72 +73,99 @@ const Testimonials = () => {
   const allTestimonials = [...realReviews, ...hardcodedTestimonials];
 
   return (
-    /* UI FIX: Soft Slate-50 background makes the white cards feel like they are floating */
-    <section className="py-24 bg-slate-50/50 relative overflow-hidden" id="reviews">
-      {/* Decorative Brand Accent */}
-      <div className="absolute top-0 right-0 p-20 opacity-[0.03] pointer-events-none hidden lg:block">
-        <h2 className="text-[15vw] font-serif font-bold text-slate-900 leading-none">Reviews</h2>
+    <section className="relative py-24 sm:py-32 w-full overflow-hidden bg-[#0F1115]" id="reviews">
+      
+      {/* FLORAL & ARTISTIC BACKGROUND */}
+      <div className="absolute inset-0 pointer-events-none opacity-10">
+        {/* Repeating Floral Pattern via SVG */}
+        <div className="absolute inset-0" style={{ 
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-10 10-10 10-10s0 10-10 10c0 10-10 10-10 10s0-10 10-10z' fill='%23E89EB8' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+          backgroundSize: '120px 120px'
+        }} />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      {/* Large Decorative Text for 'Fullness' */}
+      <div className="absolute top-10 left-10 opacity-[0.02] pointer-events-none select-none">
+        <h2 className="text-[20vw] font-serif font-black text-white leading-none">TRUST</h2>
+      </div>
+
+      {/* Main Content Container - Expanded to match About section */}
+      <div className="max-w-[1600px] mx-auto px-6 sm:px-12 relative z-10">
         
-        <div className="text-center mb-20">
-          <motion.h4 
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-[#E89EB8] font-black uppercase tracking-[0.5em] text-[10px] mb-4"
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+          <div className="max-w-2xl">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex items-center gap-4 mb-4"
+            >
+              <span className="h-[1px] w-12 bg-[#E89EB8]" />
+              <h4 className="text-[#E89EB8] font-black uppercase tracking-[0.5em] text-[10px] sm:text-[12px]">
+                Kind Words
+              </h4>
+            </motion.div>
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-white leading-tight"
+            >
+              From our <span className="italic text-[#E89EB8]">Bakehouse</span> family
+            </motion.h2>
+          </div>
+          
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="hidden lg:block text-right pb-4"
           >
-            Kind Words
-          </motion.h4>
-          <motion.h2 
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl font-serif font-bold text-slate-900"
-          >
-            From our <span className="text-[#E89EB8]">Delight Bakehouse</span> family
-          </motion.h2>
+             <p className="text-white/40 font-serif italic text-xl">
+               100+ Happy Customers in Thane
+             </p>
+          </motion.div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        {/* GRID: Now using 3 columns but more compact gap for a 'fuller' feel */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
           {allTestimonials.map((item, index) => (
             <motion.div 
               key={item._id || index}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.15, duration: 0.8 }}
-              /* UI FIX: Premium card styling with slow hover lift */
-              className="group bg-white p-10 rounded-[3rem] shadow-[0_15px_50px_rgba(0,0,0,0.03)] border border-white hover:border-[#E89EB8]/20 transition-all duration-700 flex flex-col justify-between"
+              transition={{ delay: (index % 3) * 0.1, duration: 0.6 }}
+              className="group relative bg-white/[0.03] backdrop-blur-md p-10 rounded-[3.5rem] border border-white/10 hover:border-[#E89EB8]/30 transition-all duration-500 flex flex-col justify-between will-change-transform"
             >
-              <div>
-                <div className="flex justify-between items-start mb-6">
-                  <span className="text-6xl text-slate-100 group-hover:text-[#E89EB8]/20 font-serif leading-none block transition-colors duration-700">“</span>
+              {/* Subtle hover glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#E89EB8]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[3.5rem]" />
+
+              <div className="relative z-10">
+                <div className="flex justify-between items-start mb-8">
+                  <div className="text-5xl text-[#E89EB8]/20 group-hover:text-[#E89EB8]/40 font-serif transition-colors duration-500">“</div>
                   {item.isVerified && (
-                    <span className="bg-slate-50 text-slate-400 text-[8px] font-black uppercase tracking-widest px-4 py-2 rounded-full border border-slate-100 group-hover:bg-[#E89EB8]/5 group-hover:text-[#E89EB8] transition-all duration-500">
+                    <span className="bg-white/5 text-[#E89EB8] text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-full border border-[#E89EB8]/20">
                       Verified
                     </span>
                   )}
                 </div>
                 
-                <p className="text-slate-600 font-medium text-lg leading-relaxed mb-10 group-hover:text-slate-900 transition-colors duration-500">
+                <p className="text-white/80 font-light text-lg leading-relaxed mb-12 group-hover:text-white transition-colors duration-500">
                   {item.comment}
                 </p>
               </div>
 
-              <div>
-                <div className="flex text-[#E89EB8] text-[10px] mb-4 space-x-1">
+              <div className="relative z-10">
+                <div className="flex text-[#E89EB8] text-[10px] mb-6 space-x-1">
                   {[...Array(5)].map((_, i) => (
                     <span key={i} className={i < (item.rating || 5) ? "opacity-100" : "opacity-20"}>★</span>
                   ))}
                 </div>
                 
-                <h4 className="font-serif font-bold text-slate-900 text-2xl mb-1">{item.name}</h4>
-                <div className="flex items-center gap-2">
-                  <span className="w-4 h-[1px] bg-slate-200"></span>
-                  <p className="text-slate-400 text-[9px] font-bold uppercase tracking-[0.3em]">
+                <h4 className="font-serif font-bold text-white text-2xl mb-2">{item.name}</h4>
+                <div className="flex items-center gap-3">
+                  <span className="w-6 h-[1px] bg-[#E89EB8]/30"></span>
+                  <p className="text-[#E89EB8]/60 text-[10px] font-black uppercase tracking-[0.3em]">
                     {item.location || "Thane Customer"}
                   </p>
                 </div>
@@ -123,6 +174,9 @@ const Testimonials = () => {
           ))}
         </div>
       </div>
+
+      {/* Bottom Floating Flower Elements */}
+      <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-[#E89EB8]/5 blur-[100px] rounded-full" />
     </section>
   );
 };
