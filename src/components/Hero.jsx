@@ -8,25 +8,28 @@ const Hero = ({ isParentLoading }) => {
   return (
     <section 
       /* UI ADJUSTMENT: 
-        1. Changed pt-24 to pt-40 to account for the new taller Announcement Bar + Navbar.
-        2. min-h-screen ensures the background image fills the whole viewport.
+        1. Increased top padding (pt-48) to give the new taller Header lots of breathing room.
+        2. Added bg-white as a fallback to ensure text contrast during image load.
       */
-      className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-40 lg:pt-32" 
+      className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-48 pb-20 lg:pt-32 bg-white" 
       id="hero"
     >
-      {/* 1. BACKGROUND IMAGE & OVERLAY */}
+      {/* 1. BACKGROUND IMAGE & OVERLAYS */}
       <div className="absolute inset-0 z-0">
         <img 
           src={bgImage} 
           alt="Baking background" 
           className="w-full h-full object-cover"
         />
+        
         {/* UI ADJUSTMENT: 
-            Increased the white gradient intensity at the top to blend 
-            smoothly with the new solid white Navbar. 
+            Enhanced the gradients. On mobile, we now use a stronger white-to-transparent 
+            fade from the top and left to keep the text area "clean".
         */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-transparent lg:bg-gradient-to-r lg:from-white lg:via-white/80 lg:to-transparent" />
-        <div className="absolute inset-0 bg-white/30 lg:hidden" /> {/* Extra mobile readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/40 to-transparent lg:bg-gradient-to-r lg:from-white lg:via-white/90 lg:to-transparent" />
+        
+        {/* Mobile-only overlay to ensure the "Bakers Treat" text stands out from the background highlights */}
+        <div className="absolute inset-0 bg-white/40 lg:hidden pointer-events-none" /> 
       </div>
 
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
@@ -38,22 +41,25 @@ const Hero = ({ isParentLoading }) => {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <div className="flex items-center gap-3 mb-6">
-            <span className="w-12 h-[1px] bg-[#E89EB8]"></span>
-            <span className="uppercase tracking-[0.5em] text-[10px] font-black text-[#E89EB8] font-sans">
+            <span className="w-12 h-[2px] bg-[#E89EB8]"></span>
+            <span className="uppercase tracking-[0.5em] text-[10px] md:text-[12px] font-black text-[#E89EB8] font-sans">
               Thane's Premier Custom Studio
             </span>
           </div>
           
           <h1 
-            style={{ fontFamily: "'Playfair Display', serif" }} 
+            style={{ 
+              fontFamily: "'Playfair Display', serif",
+              textShadow: "0 2px 10px rgba(255,255,255,0.5)" 
+            }} 
             className="text-6xl md:text-8xl leading-[1.05] mb-8 text-slate-900 tracking-tight"
           >
-            Delight <br />
-            <span className="text-[#E89EB8]">Bakehouse</span>
+            Bakers <br />
+            <span className="text-slate-800">Treat</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-md leading-relaxed font-sans font-medium">
-            Handcrafted luxury chocolates and custom 3D cakes engineered by <span className="font-bold text-slate-900">Khushi Manjrekar</span>. 
+          <p className="text-lg md:text-xl text-slate-700 mb-10 max-w-md leading-relaxed font-sans font-medium">
+            Handcrafted luxury chocolates and custom 3D cakes engineered by <span className="font-bold text-slate-900 underline decoration-[#E89EB8] decoration-2 underline-offset-4">Khushi Manjrekar</span>. 
           </p>
           
           <div className="flex flex-wrap gap-5">
@@ -65,8 +71,7 @@ const Hero = ({ isParentLoading }) => {
             </button>
             <button 
               onClick={() => document.getElementById('custom-studio').scrollIntoView({ behavior: 'smooth' })}
-              /* Glass effect button looks great against the background image */
-              className="border-2 border-slate-200 bg-white/60 backdrop-blur-md text-slate-900 px-10 py-5 rounded-full font-sans font-black uppercase tracking-widest hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all shadow-sm text-[12px]"
+              className="border-2 border-slate-200 bg-white/80 backdrop-blur-md text-slate-900 px-10 py-5 rounded-full font-sans font-black uppercase tracking-widest hover:border-[#E89EB8] hover:text-[#E89EB8] transition-all shadow-sm text-[12px]"
             >
               Custom Orders
             </button>
@@ -85,7 +90,7 @@ const Hero = ({ isParentLoading }) => {
             <img 
               src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=1000" 
               alt="Signature Cake" 
-              className="w-full h-[650px] object-cover hover:scale-105 transition-transform duration-1000"
+              className="w-full h-[600px] object-cover hover:scale-105 transition-transform duration-1000"
             />
           </div>
           
@@ -96,7 +101,7 @@ const Hero = ({ isParentLoading }) => {
             className="absolute -bottom-6 -right-6 z-20 bg-white p-6 rounded-3xl shadow-2xl border border-slate-50"
           >
             <p className="text-[#E89EB8] font-black text-[10px] uppercase tracking-widest mb-1">Thane West</p>
-            <p className="text-slate-900 font-serif font-bold italic text-lg">Delight Bakehouse</p>
+            <p className="text-slate-900 font-serif font-bold italic text-lg">Bakers Treat</p>
           </motion.div>
         </motion.div>
       </div>
