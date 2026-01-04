@@ -11,7 +11,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
   const [address, setAddress] = useState('');
   const [showError, setShowError] = useState(false);
 
-  // Updated: Now valid with at least 1 character
+  // Enabled as soon as 1 character is typed
   const isAddressValid = address.trim().length >= 1;
 
   const handleCheckout = () => {
@@ -49,7 +49,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-[100dvh] w-full max-w-md bg-white z-[9999] shadow-2xl flex flex-col overflow-hidden"
+            className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-[9999] shadow-2xl flex flex-col"
           >
             {/* FIXED HEADER */}
             <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
@@ -62,20 +62,13 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               </button>
             </div>
 
-            {/* SCROLLABLE PRODUCT LIST */}
-            {/* Added h-full and pointer-events-auto to ensure scroll capturing */}
-            <div 
-              className="flex-1 overflow-y-auto overflow-x-hidden p-6 space-y-4 bg-white custom-scrollbar" 
-              style={{ 
-                WebkitOverflowScrolling: 'touch',
-                scrollbarWidth: 'thin'
-              }}
-            >
-              {items.length === 0 ? (
-                <div className="text-center py-24 text-slate-400">Your bag is empty.</div>
-              ) : (
-                <div className="flex flex-col gap-4">
-                   {items.map((item) => (
+            {/* SCROLLABLE SECTION - Fixed with min-h-0 and overflow-y-auto */}
+            <div className="flex-1 min-h-0 w-full overflow-y-auto bg-white" style={{ overscrollBehavior: 'contain' }}>
+              <div className="p-6 space-y-4">
+                {items.length === 0 ? (
+                  <div className="text-center py-24 text-slate-400">Your bag is empty.</div>
+                ) : (
+                  items.map((item) => (
                     <div key={item.id} className="flex gap-4 items-center bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
                       <img src={item.img} alt={item.name} className="w-16 h-16 rounded-xl object-cover shrink-0 shadow-sm" />
                       <div className="flex-1 min-w-0">
@@ -91,42 +84,40 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                       </button>
                     </div>
-                  ))}
-                </div>
-              )}
+                  ))
+                )}
+              </div>
             </div>
 
-            {/* FIXED FOOTER (Delivery + Total + Buttons) */}
+            {/* FIXED FOOTER AREA */}
             {items.length > 0 && (
-              <div className="p-6 bg-white border-t border-slate-100 shrink-0 shadow-[0_-15px_30px_rgba(0,0,0,0.08)] pb-safe z-10">
+              <div className="shrink-0 p-6 bg-white border-t border-slate-100 shadow-[0_-15px_30px_rgba(0,0,0,0.05)]">
                 <div className="space-y-4 mb-6">
-                  <div className="grid grid-cols-1 gap-4">
-                    <div>
-                      <label className="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-1.5 block">Delivery Date</label>
-                      <input 
-                        type="date" 
-                        min={new Date(Date.now() + 86400000).toISOString().split('T')[0]} 
-                        value={deliveryDate}
-                        onClick={handleDateClick}
-                        onChange={(e) => setDeliveryDate(e.target.value)}
-                        className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none cursor-pointer focus:border-[#E89EB8] transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className={`text-[9px] uppercase font-black tracking-widest mb-1.5 block transition-colors ${showError ? 'text-red-500' : 'text-slate-400'}`}>
-                        {showError ? 'Please provide a delivery address' : 'Delivery Area in Thane'}
-                      </label>
-                      <textarea 
-                        placeholder="e.g. Hiranandani Estate, Majiwada..." 
-                        value={address}
-                        onChange={(e) => {
-                          setAddress(e.target.value);
-                          if(showError) setShowError(false);
-                        }} 
-                        rows="2"
-                        className={`w-full p-3 rounded-xl border bg-slate-50 text-xs outline-none resize-none transition-all ${showError ? 'border-red-300 ring-2 ring-red-50' : 'border-slate-200 focus:border-[#E89EB8]'}`}
-                      />
-                    </div>
+                  <div>
+                    <label className="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-1.5 block">Delivery Date</label>
+                    <input 
+                      type="date" 
+                      min={new Date(Date.now() + 86400000).toISOString().split('T')[0]} 
+                      value={deliveryDate}
+                      onClick={handleDateClick}
+                      onChange={(e) => setDeliveryDate(e.target.value)}
+                      className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none focus:border-[#E89EB8] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className={`text-[9px] uppercase font-black tracking-widest mb-1.5 block transition-colors ${showError ? 'text-red-500' : 'text-slate-400'}`}>
+                      {showError ? 'Please provide a delivery address' : 'Delivery Area in Thane'}
+                    </label>
+                    <textarea 
+                      placeholder="e.g. Hiranandani Estate, Majiwada..." 
+                      value={address}
+                      onChange={(e) => {
+                        setAddress(e.target.value);
+                        if(showError) setShowError(false);
+                      }} 
+                      rows="2"
+                      className={`w-full p-3 rounded-xl border bg-slate-50 text-xs outline-none resize-none transition-all ${showError ? 'border-red-300 ring-2 ring-red-50' : 'border-slate-200 focus:border-[#E89EB8]'}`}
+                    />
                   </div>
                 </div>
 
@@ -136,16 +127,13 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                 </div>
 
                 <div className="space-y-3">
-                  <motion.div
-                    animate={showError ? { x: [-4, 4, -4, 4, 0] } : {}}
-                    transition={{ duration: 0.4 }}
-                  >
+                  <motion.div animate={showError ? { x: [-4, 4, -4, 4, 0] } : {}} transition={{ duration: 0.4 }}>
                     <button
                       onClick={handleCheckout}
                       className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest transition-all text-xs shadow-lg 
                         ${isAddressValid 
-                          ? 'bg-[#25D366] text-white hover:brightness-105 active:scale-[0.98] shadow-green-100' 
-                          : 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none'
+                          ? 'bg-[#25D366] text-white hover:brightness-105 active:scale-[0.98]' 
+                          : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                         }`}
                     >
                       {isAddressValid ? 'Send Order to WhatsApp' : 'Enter Address to Order'}
