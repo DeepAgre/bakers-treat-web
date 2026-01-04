@@ -58,7 +58,7 @@ const FloatingElement = ({ children, delay = 0, duration = 5, x = 0, y = 0 }) =>
 
 const Ingredients = () => {
   return (
-    <section className="relative bg-[#FFF5F7] py-20 sm:py-32 w-full overflow-hidden" id="philosophy">
+    <section className="relative bg-[#FFF5F7] py-20 sm:py-32 w-full overflow-hidden" id="ingredients">
       
       {/* PERFORMANCE OPTIMIZED BACKGROUND */}
       <div className="absolute inset-0 pointer-events-none">
