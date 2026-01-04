@@ -2,28 +2,34 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout }) => {
-  // Logic to ensure date is always tomorrow or later
-  const getTomorrowDate = () => {
+  const [deliveryDate, setDeliveryDate] = useState(() => {
     const today = new Date();
     today.setDate(today.getDate() + 1);
     return today.toISOString().split('T')[0];
-  };
-
-  const [deliveryDate, setDeliveryDate] = useState(getTomorrowDate());
+  });
+  
   const [address, setAddress] = useState('');
+  const [showError, setShowError] = useState(false);
+
+  const isAddressValid = address.trim().length > 5;
+
+  const handleCheckout = () => {
+    if (!isAddressValid) {
+      setShowError(true);
+      // Auto-hide error after 3 seconds
+      setTimeout(() => setShowError(false), 3000);
+      return;
+    }
+    onCheckout('whatsapp', deliveryDate, address);
+  };
 
   const cleanPrice = (val) => {
     if (!val) return "0";
     return val.toString().replace(/₹/g, '').trim();
   };
 
-  // Helper to trigger date picker when clicking the whole field
   const handleDateClick = (e) => {
-    try {
-      e.target.showPicker();
-    } catch (err) {
-      // Fallback
-    }
+    try { e.target.showPicker(); } catch (err) {}
   };
 
   return (
@@ -43,7 +49,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            /* h-[100dvh] fixes the mobile viewport height issue */
             className="fixed right-0 top-0 h-[100dvh] w-full max-w-md bg-white z-[9999] shadow-2xl flex flex-col overflow-hidden"
           >
             {/* Header */}
@@ -57,12 +62,8 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               </button>
             </div>
 
-            {/* Scrollable Section: Now includes Delivery info to keep footer small */}
-            <div 
-              data-lenis-prevent
-              className="flex-1 overflow-y-auto p-6 space-y-6 bg-white"
-              style={{ overscrollBehavior: 'contain' }}
-            >
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white" style={{ overscrollBehavior: 'contain' }}>
               <div className="space-y-4">
                 {items.length === 0 ? (
                   <div className="text-center py-24 text-slate-400">Your bag is empty.</div>
@@ -87,7 +88,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                 )}
               </div>
 
-              {/* Delivery Details (Moved inside scrollable area for mobile safety) */}
               {items.length > 0 && (
                 <div className="pt-6 border-t border-slate-100 space-y-4">
                    <h3 className="text-xs font-black uppercase tracking-widest text-slate-900">Delivery Details</h3>
@@ -95,7 +95,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                     <label className="text-[10px] uppercase font-black tracking-widest text-slate-400 mb-2 block">Requested Delivery Date</label>
                     <input 
                       type="date" 
-                      min={getTomorrowDate()} 
+                      min={new Date(Date.now() + 86400000).toISOString().split('T')[0]} 
                       value={deliveryDate}
                       onClick={handleDateClick}
                       onChange={(e) => setDeliveryDate(e.target.value)}
@@ -103,50 +103,52 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] uppercase font-black tracking-widest text-slate-400 mb-2 block">Delivery Area in Thane</label>
+                    <label className={`text-[10px] uppercase font-black tracking-widest mb-2 block transition-colors ${showError ? 'text-red-500' : 'text-slate-400'}`}>
+                      {showError ? 'Please provide a delivery address' : 'Delivery Area in Thane'}
+                    </label>
                     <textarea 
                       placeholder="e.g. Hiranandani Estate, Majiwada..." 
                       value={address}
-                      onChange={(e) => setAddress(e.target.value)} 
+                      onChange={(e) => {
+                        setAddress(e.target.value);
+                        if(showError) setShowError(false);
+                      }} 
                       rows="2"
-                      className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 text-sm outline-none resize-none focus:border-[#E89EB8] transition-colors"
+                      className={`w-full p-4 rounded-xl border bg-slate-50 text-sm outline-none resize-none transition-all ${showError ? 'border-red-300 ring-2 ring-red-50' : 'border-slate-200 focus:border-[#E89EB8]'}`}
                     />
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Compact Footer */}
+            {/* Footer */}
             {items.length > 0 && (
               <div className="p-6 bg-white border-t border-slate-100 shrink-0 shadow-[0_-15px_30px_rgba(0,0,0,0.05)] pb-safe">
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-slate-500 font-medium text-sm">Estimated Total</span>
-                  <span className="text-2xl font-black text-slate-900 leading-none">
-                    ₹{cleanPrice(total)}
-                  </span>
+                  <span className="text-2xl font-black text-slate-900 leading-none">₹{cleanPrice(total)}</span>
                 </div>
 
                 <div className="space-y-3">
-                  <button
-                    onClick={() => onCheckout('whatsapp', deliveryDate, address)}
-                    className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:brightness-105 active:scale-[0.98] transition-all text-xs shadow-lg shadow-green-100"
+                  <motion.div
+                    animate={showError ? { x: [-4, 4, -4, 4, 0] } : {}}
+                    transition={{ duration: 0.4 }}
                   >
-                    Send Order to WhatsApp
-                  </button>
+                    <button
+                      onClick={handleCheckout}
+                      className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest transition-all text-xs shadow-lg 
+                        ${isAddressValid 
+                          ? 'bg-[#25D366] text-white hover:brightness-105 active:scale-[0.98] shadow-green-100' 
+                          : 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none'
+                        }`}
+                    >
+                      {isAddressValid ? 'Send Order to WhatsApp' : 'Enter Address to Order'}
+                    </button>
+                  </motion.div>
                   
                   <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => onCheckout('call')}
-                      className="bg-slate-900 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-800 transition-colors"
-                    >
-                      Direct Call
-                    </button>
-                    <button
-                      onClick={onClose}
-                      className="border border-slate-200 text-slate-500 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-50 transition-colors"
-                    >
-                      Keep Browsing
-                    </button>
+                    <button onClick={() => onCheckout('call')} className="bg-slate-900 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-800 transition-colors">Direct Call</button>
+                    <button onClick={onClose} className="border border-slate-200 text-slate-500 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-50 transition-colors">Keep Browsing</button>
                   </div>
                 </div>
               </div>
