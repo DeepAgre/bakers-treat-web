@@ -50,7 +50,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             <div className="absolute top-0 left-0 right-0 h-24 p-6 border-b border-slate-100 flex justify-between items-center bg-white z-20">
               <div>
                 <h2 className="text-2xl font-serif font-bold text-slate-900">Your Bag</h2>
-                <p className="text-[10px] text-[#E89EB8] uppercase tracking-[0.3em] font-black italic">Bakers Treat Studio</p>
+                <p className="text-[10px] text-[#E89EB8] uppercase tracking-[0.3em] font-black italic">Delight Bakehouse Studio</p>
               </div>
               <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-slate-100 rounded-full">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
