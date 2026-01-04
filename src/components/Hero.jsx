@@ -137,7 +137,7 @@ const Hero = ({ isParentLoading }) => {
                   <div className="flex justify-between items-center">
                     <p className="font-serif italic text-slate-400 text-lg opacity-60">K. Manjrekar</p>
                     <div className="px-3 py-1 bg-slate-900 text-white rounded-full text-[9px] font-black tracking-widest uppercase">
-                      Est. 2024
+                      Enjoy
                     </div>
                   </div>
                 </div>
