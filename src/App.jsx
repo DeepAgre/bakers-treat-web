@@ -15,12 +15,7 @@ import Cart from './components/Cart';
 import ProductModal from './components/ProductModal';
 import Toast from './components/Toast';
 import PreLoader from './components/PreLoader';
-
-const AnnouncementBar = () => (
-  <div className="w-full bg-black text-white text-[10px] md:text-[12px] font-black uppercase tracking-[0.4em] py-4 text-center border-none shadow-sm">
-    ✨ 24-Hour Notice Required • <span className="text-[#E89EB8]">Handcrafted in Thane</span> ✨
-  </div>
-);
+import AnnouncementBanner from './components/AnnouncementBanner'; // Import the fixed banner
 
 const BakeryApp = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -83,23 +78,26 @@ const BakeryApp = () => {
   
   const cartCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
-  const handleCheckout = (type) => {
+  const handleCheckout = (type, deliveryDate, address) => {
     const khushiNumber = "919136371662"; 
     if (type === 'call') {
       window.location.href = `tel:+${khushiNumber}`;
       return;
     }
     const itemSummary = cartItems.map(i => `• ${i.name} (x${i.qty})`).join('\n');
-    const message = encodeURIComponent(`Hi Khushi! I'd like to place an order from Delight Bakehouse:\n\n${itemSummary}\n\nTotal: ${formattedTotal}`);
+    // Renamed to Bakers Treat
+    const message = encodeURIComponent(
+      `Hi Khushi! I'd like to place an order from Bakers Treat:\n\n` +
+      `Items:\n${itemSummary}\n\n` +
+      `Delivery Date: ${deliveryDate}\n` +
+      `Address: ${address}\n\n` +
+      `Total: ${formattedTotal}`
+    );
     window.open(`https://wa.me/${khushiNumber}?text=${message}`, '_blank');
   };
 
   return (
     <div className="relative w-full min-h-screen bg-white text-slate-900 selection:bg-[#E89EB8]/20">
-      {/* 1. FIX: Move Cart and ProductModal OUTSIDE of SmoothScroll.
-          SmoothScroll targets its children for scroll-jacking. 
-          Overlay components should be outside of it.
-      */}
       <Cart 
         isOpen={isCartOpen} 
         onClose={() => setIsCartOpen(false)} 
@@ -117,7 +115,6 @@ const BakeryApp = () => {
         onAddToBag={addToCart}
       />
 
-      {/* 2. FIX: Pass isCartOpen to SmoothScroll if your component supports pausing */}
       <SmoothScroll isPaused={isCartOpen || isModalOpen}>
         <AnimatePresence mode="wait">
           {isLoading && <PreLoader key="loader" onSkip={handleSkipIntro} />}
@@ -126,13 +123,15 @@ const BakeryApp = () => {
         <Toast show={showToast} message="Added to your bag!" />
 
         {!isLoading && (
-          <header className="fixed top-0 left-0 w-full z-[150] flex flex-col items-stretch">
-            <AnnouncementBar />
+          /* FIX: Unified fixed header to prevent collision */
+          <header className="fixed top-0 left-0 w-full z-[150] flex flex-col items-stretch shadow-sm">
+            <AnnouncementBanner />
             <Navbar cartCount={cartCount} onOpenCart={() => setIsCartOpen(true)} />
           </header>
         )}
 
-        <main className={`relative w-full ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
+        {/* FIX: Added top padding (pt-[110px]) to push content below the new taller header */}
+        <main className={`relative w-full pt-[110px] md:pt-[120px] ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
           <Hero isParentLoading={isLoading} />
           
           <div className="space-y-0">
