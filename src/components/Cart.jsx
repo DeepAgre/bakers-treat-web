@@ -11,7 +11,8 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
   const [address, setAddress] = useState('');
   const [showError, setShowError] = useState(false);
 
-  const isAddressValid = address.trim().length > 5;
+  // Updated: Now valid with at least 1 character
+  const isAddressValid = address.trim().length >= 1;
 
   const handleCheckout = () => {
     if (!isAddressValid) {
@@ -54,44 +55,50 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
               <div>
                 <h2 className="text-2xl font-serif font-bold text-slate-900">Your Bag</h2>
-                <p className="text-[10px] text-[#E89EB8] uppercase tracking-[0.3em] font-black italic">Bakers Treat Studio</p>
+                <p className="text-[10px] text-[#E89EB8] uppercase tracking-[0.3em] font-black italic">Delight Bakehouse Studio</p>
               </div>
               <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-slate-100 rounded-full transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
 
-            {/* SCROLLABLE PRODUCT LIST ONLY */}
+            {/* SCROLLABLE PRODUCT LIST */}
+            {/* Added h-full and pointer-events-auto to ensure scroll capturing */}
             <div 
-              className="flex-1 overflow-y-auto p-6 space-y-4 bg-white" 
-              style={{ WebkitOverflowScrolling: 'touch' }}
+              className="flex-1 overflow-y-auto overflow-x-hidden p-6 space-y-4 bg-white custom-scrollbar" 
+              style={{ 
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'thin'
+              }}
             >
               {items.length === 0 ? (
                 <div className="text-center py-24 text-slate-400">Your bag is empty.</div>
               ) : (
-                items.map((item) => (
-                  <div key={item.id} className="flex gap-4 items-center bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
-                    <img src={item.img} alt={item.name} className="w-16 h-16 rounded-xl object-cover shrink-0 shadow-sm" />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-slate-900 text-sm truncate">{item.name}</h4>
-                      <p className="text-[#E89EB8] font-black text-sm">₹{cleanPrice(item.price)}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <button onClick={() => updateQty(item.id, -1)} className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white hover:bg-[#E89EB8] hover:text-white transition-all">-</button>
-                        <span className="w-8 text-center font-black text-xs">{item.qty}</span>
-                        <button onClick={() => updateQty(item.id, 1)} className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white hover:bg-[#E89EB8] hover:text-white transition-all">+</button>
+                <div className="flex flex-col gap-4">
+                   {items.map((item) => (
+                    <div key={item.id} className="flex gap-4 items-center bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                      <img src={item.img} alt={item.name} className="w-16 h-16 rounded-xl object-cover shrink-0 shadow-sm" />
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-slate-900 text-sm truncate">{item.name}</h4>
+                        <p className="text-[#E89EB8] font-black text-sm">₹{cleanPrice(item.price)}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <button onClick={() => updateQty(item.id, -1)} className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white hover:bg-[#E89EB8] hover:text-white transition-all">-</button>
+                          <span className="w-8 text-center font-black text-xs">{item.qty}</span>
+                          <button onClick={() => updateQty(item.id, 1)} className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white hover:bg-[#E89EB8] hover:text-white transition-all">+</button>
+                        </div>
                       </div>
+                      <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-red-500 p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                      </button>
                     </div>
-                    <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-red-500 p-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                    </button>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
             </div>
 
             {/* FIXED FOOTER (Delivery + Total + Buttons) */}
             {items.length > 0 && (
-              <div className="p-6 bg-white border-t border-slate-100 shrink-0 shadow-[0_-15px_30px_rgba(0,0,0,0.08)] pb-safe">
+              <div className="p-6 bg-white border-t border-slate-100 shrink-0 shadow-[0_-15px_30px_rgba(0,0,0,0.08)] pb-safe z-10">
                 <div className="space-y-4 mb-6">
                   <div className="grid grid-cols-1 gap-4">
                     <div>
