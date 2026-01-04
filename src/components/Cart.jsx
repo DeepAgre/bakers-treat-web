@@ -11,7 +11,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
   const [address, setAddress] = useState('');
   const [showError, setShowError] = useState(false);
 
-  // Enabled as soon as 1 character is typed
   const isAddressValid = address.trim().length >= 1;
 
   const handleCheckout = () => {
@@ -26,10 +25,6 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
   const cleanPrice = (val) => {
     if (!val) return "0";
     return val.toString().replace(/₹/g, '').trim();
-  };
-
-  const handleDateClick = (e) => {
-    try { e.target.showPicker(); } catch (err) {}
   };
 
   return (
@@ -49,22 +44,28 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-[9999] shadow-2xl flex flex-col"
+            className="fixed right-0 top-0 h-screen w-full max-w-md bg-white z-[9999] shadow-2xl overflow-hidden"
           >
-            {/* FIXED HEADER */}
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
+            {/* 1. ABSOLUTE HEADER */}
+            <div className="absolute top-0 left-0 right-0 h-24 p-6 border-b border-slate-100 flex justify-between items-center bg-white z-20">
               <div>
                 <h2 className="text-2xl font-serif font-bold text-slate-900">Your Bag</h2>
-                <p className="text-[10px] text-[#E89EB8] uppercase tracking-[0.3em] font-black italic">Delight Bakehouse Studio</p>
+                <p className="text-[10px] text-[#E89EB8] uppercase tracking-[0.3em] font-black italic">Bakers Treat Studio</p>
               </div>
-              <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-slate-100 rounded-full transition-all">
+              <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-slate-100 rounded-full">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
 
-            {/* SCROLLABLE SECTION - Fixed with min-h-0 and overflow-y-auto */}
-            <div className="flex-1 min-h-0 w-full overflow-y-auto bg-white" style={{ overscrollBehavior: 'contain' }}>
-              <div className="p-6 space-y-4">
+            {/* 2. SCROLLABLE AREA (Strictly defined by top/bottom offsets) */}
+            <div 
+              className="absolute top-24 bottom-[380px] left-0 right-0 overflow-y-scroll overflow-x-hidden p-6 bg-white"
+              style={{ 
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'thin'
+              }}
+            >
+              <div className="space-y-4">
                 {items.length === 0 ? (
                   <div className="text-center py-24 text-slate-400">Your bag is empty.</div>
                 ) : (
@@ -75,13 +76,13 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                         <h4 className="font-bold text-slate-900 text-sm truncate">{item.name}</h4>
                         <p className="text-[#E89EB8] font-black text-sm">₹{cleanPrice(item.price)}</p>
                         <div className="flex items-center gap-2 mt-2">
-                          <button onClick={() => updateQty(item.id, -1)} className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white hover:bg-[#E89EB8] hover:text-white transition-all">-</button>
+                          <button onClick={() => updateQty(item.id, -1)} className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white hover:bg-[#E89EB8] hover:text-white">-</button>
                           <span className="w-8 text-center font-black text-xs">{item.qty}</span>
-                          <button onClick={() => updateQty(item.id, 1)} className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white hover:bg-[#E89EB8] hover:text-white transition-all">+</button>
+                          <button onClick={() => updateQty(item.id, 1)} className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white hover:bg-[#E89EB8] hover:text-white">+</button>
                         </div>
                       </div>
                       <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-red-500 p-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                       </button>
                     </div>
                   ))
@@ -89,9 +90,9 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               </div>
             </div>
 
-            {/* FIXED FOOTER AREA */}
+            {/* 3. ABSOLUTE FOOTER */}
             {items.length > 0 && (
-              <div className="shrink-0 p-6 bg-white border-t border-slate-100 shadow-[0_-15px_30px_rgba(0,0,0,0.05)]">
+              <div className="absolute bottom-0 left-0 right-0 h-[380px] p-6 bg-white border-t border-slate-100 shadow-[0_-15px_30px_rgba(0,0,0,0.05)] z-20">
                 <div className="space-y-4 mb-6">
                   <div>
                     <label className="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-1.5 block">Delivery Date</label>
@@ -99,9 +100,8 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                       type="date" 
                       min={new Date(Date.now() + 86400000).toISOString().split('T')[0]} 
                       value={deliveryDate}
-                      onClick={handleDateClick}
                       onChange={(e) => setDeliveryDate(e.target.value)}
-                      className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none focus:border-[#E89EB8] transition-colors"
+                      className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none"
                     />
                   </div>
                   <div>
@@ -141,8 +141,8 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                   </motion.div>
                   
                   <div className="grid grid-cols-2 gap-3">
-                    <button onClick={() => onCheckout('call')} className="bg-slate-900 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-800 transition-colors">Direct Call</button>
-                    <button onClick={onClose} className="border border-slate-200 text-slate-500 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-50 transition-colors">Keep Browsing</button>
+                    <button onClick={() => onCheckout('call')} className="bg-slate-900 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[9px]">Direct Call</button>
+                    <button onClick={onClose} className="border border-slate-200 text-slate-500 py-4 rounded-xl font-black uppercase tracking-widest text-[9px]">Keep Browsing</button>
                   </div>
                 </div>
               </div>
