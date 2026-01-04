@@ -4,11 +4,9 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 const Hero = ({ isParentLoading }) => {
   const bgImage = "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80&w=2000";
   
-  // Parallax scroll for floating elements
   const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, -150]);
-  const y2 = useTransform(scrollY, [0, 500], [0, 100]);
-  const rotate = useTransform(scrollY, [0, 500], [0, 45]);
+  const y1 = useTransform(scrollY, [0, 500], [0, -100]);
+  const rotate = useTransform(scrollY, [0, 500], [0, 25]);
 
   return (
     <section 
@@ -22,26 +20,23 @@ const Hero = ({ isParentLoading }) => {
           alt="Baking background" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/20 to-transparent lg:bg-gradient-to-r lg:from-white lg:via-white/80 lg:to-transparent" />
-        <div className="absolute inset-0 bg-white/30 lg:hidden pointer-events-none" /> 
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/30 to-transparent lg:bg-gradient-to-r lg:from-white lg:via-white/90 lg:to-transparent" />
+        <div className="absolute inset-0 bg-white/40 lg:hidden pointer-events-none" /> 
       </div>
 
-      {/* 2. DYNAMIC FLOATING ELEMENTS (The "Cool" Factor) */}
-      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
-        {/* Floating Chocolate Shard - Top Right */}
-        <motion.div style={{ y: y1, rotate }} className="absolute top-[15%] right-[10%] hidden lg:block opacity-80">
-          <div className="w-24 h-32 bg-slate-900/10 backdrop-blur-sm rounded-full blur-2xl" />
-          <img src="https://pngimg.com/d/chocolate_PNG97184.png" className="w-32 h-auto drop-shadow-2xl" alt="" />
+      {/* 2. UNIQUE ABSTRACT ELEMENTS (Replaced Chocolates) */}
+      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden hidden lg:block">
+        {/* Floating Geometric Wireframe */}
+        <motion.div style={{ y: y1, rotate }} className="absolute top-[20%] right-[15%] opacity-20">
+          <svg width="200" height="200" viewBox="0 0 100 100" fill="none" stroke="currentColor" className="text-slate-900">
+            <circle cx="50" cy="50" r="40" strokeWidth="0.5" />
+            <circle cx="50" cy="50" r="30" strokeWidth="0.5" strokeDasharray="2 2" />
+            <path d="M50 10 L50 90 M10 50 L90 50" strokeWidth="0.2" />
+          </svg>
         </motion.div>
 
-        {/* Floating Berry/Element - Bottom Center */}
-        <motion.div style={{ y: y2 }} className="absolute bottom-[20%] left-[45%] hidden lg:block opacity-60">
-          <div className="w-16 h-16 bg-[#E89EB8]/30 rounded-full blur-xl" />
-        </motion.div>
-
-        {/* Soft Pink Glowing Orbs to fill space */}
-        <div className="absolute top-[40%] right-[20%] w-64 h-64 bg-[#E89EB8]/10 rounded-full blur-[100px]" />
-        <div className="absolute bottom-[10%] left-[10%] w-96 h-96 bg-slate-200/20 rounded-full blur-[120px]" />
+        {/* Soft Decorative Blobs */}
+        <div className="absolute top-[10%] left-[50%] w-72 h-72 bg-[#E89EB8]/10 rounded-full blur-[120px]" />
       </div>
 
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center relative z-20">
@@ -92,35 +87,57 @@ const Hero = ({ isParentLoading }) => {
           </div>
         </motion.div>
 
-        {/* RIGHT SIDE: Interactive 3D Card (Replaces the Brown Cake) */}
+        {/* RIGHT SIDE: Overhauled Philosophy Card (Filled & Detailed) */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={!isParentLoading ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 1, delay: 0.2 }}
           className="relative hidden lg:flex justify-end" 
         >
-          {/* A Floating "Philosophy" Card instead of a simple photo */}
-          <div className="relative group">
-            <div className="absolute inset-0 bg-[#E89EB8]/20 blur-3xl rounded-full scale-110 group-hover:bg-[#E89EB8]/30 transition-colors" />
+          <div className="relative group w-full max-w-[480px]">
+            {/* Soft Glow Background */}
+            <div className="absolute inset-0 bg-[#E89EB8]/15 blur-[100px] rounded-full" />
             
-            <div className="relative z-10 w-[450px] aspect-[4/5] bg-white/40 backdrop-blur-xl rounded-[3rem] border border-white/60 shadow-2xl p-12 flex flex-col justify-between overflow-hidden">
-                {/* Decorative Pattern inside card */}
-                <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#E89EB8]/10 rounded-full blur-3xl" />
+            <div className="relative z-10 w-full bg-white/40 backdrop-blur-2xl rounded-[3rem] border border-white/80 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] p-10 flex flex-col gap-8 overflow-hidden">
                 
-                <div className="space-y-4">
-                  <div className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center text-white text-xl">✨</div>
-                  <h3 className="text-3xl font-serif text-slate-900 italic">"Engineering the art of sweetness"</h3>
+                {/* 1. Header Section */}
+                <div className="flex justify-between items-start">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#E89EB8]">The Philosophy</p>
+                    <h3 className="text-3xl font-serif text-slate-900 leading-tight">Engineering the <br/> art of sweetness.</h3>
+                  </div>
+                  <div className="text-4xl text-slate-300 italic font-serif opacity-50">"</div>
                 </div>
 
-                <div className="space-y-6">
-                  <div className="h-[1px] w-full bg-slate-200" />
-                  <div className="flex justify-between items-end">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-widest text-slate-500 font-black">Est. 2024</p>
-                      <p className="text-xl font-sans font-bold text-slate-900">Thane West</p>
+                {/* 2. Middle Content (Fills the blank space) */}
+                <div className="grid grid-cols-2 gap-6 bg-white/30 rounded-2xl p-6 border border-white/40">
+                  <div className="space-y-1">
+                    <p className="text-[9px] font-black uppercase text-slate-400">Precision</p>
+                    <p className="text-sm font-sans text-slate-700">Calculated textures and custom 3D structures.</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[9px] font-black uppercase text-slate-400">Purity</p>
+                    <p className="text-sm font-sans text-slate-700">100% Handcrafted in our Thane studio.</p>
+                  </div>
+                </div>
+
+                {/* 3. Footer Section */}
+                <div className="space-y-6 pt-4 border-t border-slate-200/50">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-white p-1">
+                       <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-white text-[10px] font-black">BT</div>
                     </div>
-                    <div className="w-16 h-16 rounded-full border border-[#E89EB8] p-1">
-                        <div className="w-full h-full rounded-full bg-[#E89EB8]/10 flex items-center justify-center text-[#E89EB8] font-bold">BT</div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Khushi Manjrekar</p>
+                      <p className="text-[10px] text-slate-400 uppercase tracking-widest">Founder & Head Engineer</p>
+                    </div>
+                  </div>
+                  
+                  {/* Digital Signature Appearance */}
+                  <div className="flex justify-between items-center">
+                    <p className="font-serif italic text-slate-400 text-lg opacity-60">K. Manjrekar</p>
+                    <div className="px-3 py-1 bg-slate-900 text-white rounded-full text-[9px] font-black tracking-widest uppercase">
+                      Est. 2024
                     </div>
                   </div>
                 </div>
@@ -129,7 +146,6 @@ const Hero = ({ isParentLoading }) => {
         </motion.div>
       </div>
 
-      {/* SUBTLE TEXTURE OVERLAY */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
     </section>
   );
