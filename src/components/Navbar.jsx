@@ -13,27 +13,34 @@ const Navbar = ({ cartCount, onOpenCart }) => {
   }, []);
 
   const navLinks = [
-    { name: 'Our Story', href: 'about' },
+    { name: 'Our Story', href: 'about' }, // Ensure this matches <AboutKhushi id="about" />
     { name: 'Menu', href: 'menu' },
-    { name: 'Philosophy', href: 'philosophy' },
-    { name: 'Contact', href: 'contact' },
+    { name: 'Philosophy', href: 'ingredients' }, // Linked to ingredients
+    { name: 'Reviews', href: 'reviews' }, // Linked to testimonials
+    { name: 'Contact', href: 'contact' }, // Linked to footer
   ];
 
   const scrollToSection = (e, id) => {
     e.preventDefault();
-    const element = document.getElementById(id);
-    if (element) {
-      // Increased offset (140) to account for BOTH the banner and the navbar height
-      const headerOffset = 140; 
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
+    
+    // 1. Close the mobile menu first
     setIsMenuOpen(false);
+
+    // 2. Short delay to allow menu animation to finish and coordinates to stabilize
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      if (element) {
+        // Offset: Banner (40px) + Navbar (~80px) + some breathing room
+        const headerOffset = window.innerWidth < 768 ? 130 : 150; 
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 300); // 300ms matches the AnimatePresence exit duration roughly
   };
 
   const handleLogoClick = (e) => {
@@ -48,7 +55,6 @@ const Navbar = ({ cartCount, onOpenCart }) => {
         scrolled ? 'py-3 shadow-2xl' : 'py-6'
       }`}
       style={{ 
-        // Logic: Pushes the navbar down exactly 40px to leave room for AnnouncementBanner
         top: '40px', 
         backgroundColor: scrolled ? 'rgba(232, 158, 184, 0.98)' : '#E89EB8',
         backdropFilter: scrolled ? 'blur(10px)' : 'none'
@@ -137,19 +143,19 @@ const Navbar = ({ cartCount, onOpenCart }) => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
             className="lg:hidden border-t border-white/10 overflow-hidden"
             style={{ backgroundColor: '#E89EB8' }}
           >
             <div className="flex flex-col p-8 gap-6">
               {navLinks.map((link) => (
-                <a 
+                <button 
                   key={link.name}
-                  href={`#${link.href}`}
                   onClick={(e) => scrollToSection(e, link.href)}
-                  className="text-lg font-serif font-bold text-white hover:text-black transition-colors"
+                  className="text-left text-2xl font-serif font-bold text-white hover:text-black transition-colors"
                 >
                   {link.name}
-                </a>
+                </button>
               ))}
             </div>
           </motion.div>
