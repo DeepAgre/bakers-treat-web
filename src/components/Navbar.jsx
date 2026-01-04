@@ -12,25 +12,25 @@ const Navbar = ({ cartCount, onOpenCart }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // UPDATED: href IDs to match the sections in your App.jsx
   const navLinks = [
-    { name: 'Our Story', href: 'about' }, // Ensure this matches <AboutKhushi id="about" />
+    { name: 'Our Story', href: 'about' }, 
     { name: 'Menu', href: 'menu' },
-    { name: 'Philosophy', href: 'ingredients' }, // Linked to ingredients
-    { name: 'Reviews', href: 'reviews' }, // Linked to testimonials
-    { name: 'Contact', href: 'contact' }, // Linked to footer
+    { name: 'Philosophy', href: 'ingredients' }, 
+    { name: 'Reviews', href: 'feedback' }, 
+    { name: 'Contact', href: 'contact' }, 
   ];
 
   const scrollToSection = (e, id) => {
     e.preventDefault();
     
-    // 1. Close the mobile menu first
+    // Close the mobile menu first
     setIsMenuOpen(false);
 
-    // 2. Short delay to allow menu animation to finish and coordinates to stabilize
+    // Short delay to allow menu animation to finish and coordinates to stabilize
     setTimeout(() => {
       const element = document.getElementById(id);
       if (element) {
-        // Offset: Banner (40px) + Navbar (~80px) + some breathing room
         const headerOffset = window.innerWidth < 768 ? 130 : 150; 
         const elementPosition = element.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -40,7 +40,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
           behavior: 'smooth'
         });
       }
-    }, 300); // 300ms matches the AnimatePresence exit duration roughly
+    }, 300); 
   };
 
   const handleLogoClick = (e) => {
@@ -100,10 +100,11 @@ const Navbar = ({ cartCount, onOpenCart }) => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onOpenCart}
-            className="relative bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-full flex items-center gap-3 transition-all shadow-lg group"
+            // FIXED: Removed the internal <style> tag that was causing text to disappear
+            className="relative bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-full flex items-center gap-3 transition-all shadow-lg active:scale-95"
           >
-            <span className="text-[10px] font-black uppercase tracking-[0.15em]">Bag</span>
-            <div className="relative">
+            <span className="text-[10px] font-black uppercase tracking-[0.15em] text-white">Bag</span>
+            <div className="relative text-white">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
               </svg>
