@@ -113,7 +113,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                     </div>
                     <div>
                       <label className={`text-[9px] uppercase font-black tracking-widest mb-1.5 block transition-colors ${showError ? 'text-red-500' : 'text-slate-400'}`}>
-                        {showError ? 'Please provide a delivery address' : 'Delivery Area in Thane'}
+                        {showError ? 'Please provide a delivery address' : 'Delivery Address'}
                       </label>
                       <textarea 
                         placeholder="e.g. Hiranandani Estate, Majiwada..." 
