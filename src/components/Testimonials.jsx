@@ -6,7 +6,7 @@ const hardcodedTestimonials = [
   {
     _id: 'seed-1',
     name: "Ananya Iyer",
-    comment: "The brownies from Delight Bakehouse are out of this world! So fudgy and rich. Khushi really knows her craft.",
+    comment: "The brownies from Bakers Treat are out of this world! So fudgy and rich. Khushi really knows her craft.",
     location: "Thane West",
     rating: 5,
     isVerified: true
@@ -14,7 +14,7 @@ const hardcodedTestimonials = [
   {
     _id: 'seed-2',
     name: "Siddharth Malhotra",
-    comment: "Ordered a customized hamper for my sister's birthday. Every single item was fresh and beautifully packed. Highly recommend!",
+    comment: "Ordered a customized hamper for my sister's birthday. Every single item was fresh and beautifully packed.",
     location: "Hiranandani Estate",
     rating: 5,
     isVerified: true
@@ -30,7 +30,7 @@ const hardcodedTestimonials = [
   {
     _id: 'seed-4',
     name: "Ishani Ghosh",
-    comment: "The attention to detail in the wedding cake was mind-blowing. It was the star of the evening. Thank you, Khushi!",
+    comment: "The attention to detail in the wedding cake was mind-blowing. It was the star of the evening.",
     location: "Vasant Vihar",
     rating: 5,
     isVerified: true
@@ -42,14 +42,6 @@ const hardcodedTestimonials = [
     location: "Ghodbunder Road",
     rating: 5,
     isVerified: true
-  },
-  {
-    _id: 'seed-6',
-    name: "Pooja Deshmukh",
-    comment: "The fruit tarts are so fresh! You can tell she uses seasonal, high-quality ingredients. A treat for the soul.",
-    location: "Kalwa",
-    rating: 5,
-    isVerified: true
   }
 ];
 
@@ -58,125 +50,103 @@ const Testimonials = () => {
 
   useEffect(() => {
     const query = `*[_type == "feedback" && isApproved == true] | order(createdAt desc)`;
-    
     client.fetch(query)
       .then((data) => {
-        const formattedData = data.map(rev => ({
-          ...rev,
-          isVerified: true 
-        }));
-        setRealReviews(formattedData);
+        setRealReviews(data.map(rev => ({ ...rev, isVerified: true })));
       })
       .catch((err) => console.error("Sanity Fetch Error:", err));
   }, []);
 
   const allTestimonials = [...realReviews, ...hardcodedTestimonials];
+  // We double the array to ensure a seamless loop
+  const displayReviews = [...allTestimonials, ...allTestimonials];
 
   return (
-    <section className="relative py-24 sm:py-32 w-full overflow-hidden bg-[#0F1115]" id="reviews">
+    <section className="relative py-24 sm:py-40 w-full overflow-hidden bg-[#0a0a0a]" id="reviews">
       
-      {/* FLORAL & ARTISTIC BACKGROUND */}
-      <div className="absolute inset-0 pointer-events-none opacity-10">
-        {/* Repeating Floral Pattern via SVG */}
-        <div className="absolute inset-0" style={{ 
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-10 10-10 10-10s0 10-10 10c0 10-10 10-10 10s0-10 10-10z' fill='%23E89EB8' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E")`,
-          backgroundSize: '120px 120px'
-        }} />
+      {/* 1. BRANDING BACKGROUND */}
+      <div className="absolute inset-0 pointer-events-none select-none opacity-[0.02] overflow-hidden">
+        <h2 className="text-[25vw] font-serif font-black absolute -right-20 top-20 whitespace-nowrap text-white">
+          TESTIMONIALS
+        </h2>
       </div>
 
-      {/* Large Decorative Text for 'Fullness' */}
-      <div className="absolute top-10 left-10 opacity-[0.02] pointer-events-none select-none">
-        <h2 className="text-[20vw] font-serif font-black text-white leading-none">TRUST</h2>
-      </div>
-
-      {/* Main Content Container - Expanded to match About section */}
-      <div className="max-w-[1600px] mx-auto px-6 sm:px-12 relative z-10">
-        
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
-          <div className="max-w-2xl">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="flex items-center gap-4 mb-4"
-            >
-              <span className="h-[1px] w-12 bg-[#E89EB8]" />
-              <h4 className="text-[#E89EB8] font-black uppercase tracking-[0.5em] text-[10px] sm:text-[12px]">
-                Kind Words
-              </h4>
-            </motion.div>
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-white leading-tight"
-            >
-              From our <span className="italic text-[#E89EB8]">Bakehouse</span> family
-            </motion.h2>
-          </div>
-          
+      <div className="max-w-[1800px] mx-auto px-6 sm:px-12 relative z-10 mb-20">
+        <div className="max-w-3xl">
           <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            className="hidden lg:block text-right pb-4"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="flex items-center gap-4 mb-6"
           >
-             <p className="text-white/40 font-serif italic text-xl">
-               100+ Happy Customers in Thane
-             </p>
+            <div className="h-[1px] w-12 bg-[#E89EB8]" />
+            <span className="text-[#E89EB8] uppercase tracking-[0.6em] text-[10px] font-bold">Client Experiences</span>
           </motion.div>
-        </div>
-        
-        {/* GRID: Now using 3 columns but more compact gap for a 'fuller' feel */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
-          {allTestimonials.map((item, index) => (
-            <motion.div 
-              key={item._id || index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: (index % 3) * 0.1, duration: 0.6 }}
-              className="group relative bg-white/[0.03] backdrop-blur-md p-10 rounded-[3.5rem] border border-white/10 hover:border-[#E89EB8]/30 transition-all duration-500 flex flex-col justify-between will-change-transform"
-            >
-              {/* Subtle hover glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#E89EB8]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[3.5rem]" />
-
-              <div className="relative z-10">
-                <div className="flex justify-between items-start mb-8">
-                  <div className="text-5xl text-[#E89EB8]/20 group-hover:text-[#E89EB8]/40 font-serif transition-colors duration-500">“</div>
-                  {item.isVerified && (
-                    <span className="bg-white/5 text-[#E89EB8] text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-full border border-[#E89EB8]/20">
-                      Verified
-                    </span>
-                  )}
-                </div>
-                
-                <p className="text-white/80 font-light text-lg leading-relaxed mb-12 group-hover:text-white transition-colors duration-500">
-                  {item.comment}
-                </p>
-              </div>
-
-              <div className="relative z-10">
-                <div className="flex text-[#E89EB8] text-[10px] mb-6 space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className={i < (item.rating || 5) ? "opacity-100" : "opacity-20"}>★</span>
-                  ))}
-                </div>
-                
-                <h4 className="font-serif font-bold text-white text-2xl mb-2">{item.name}</h4>
-                <div className="flex items-center gap-3">
-                  <span className="w-6 h-[1px] bg-[#E89EB8]/30"></span>
-                  <p className="text-[#E89EB8]/60 text-[10px] font-black uppercase tracking-[0.3em]">
-                    {item.location || "Thane Customer"}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+          
+          <h2 className="text-6xl md:text-8xl font-serif text-white tracking-tighter leading-none mb-4">
+            The Studio <br />
+            <span className="italic text-[#E89EB8] font-light">Endorsements.</span>
+          </h2>
         </div>
       </div>
 
-      {/* Bottom Floating Flower Elements */}
-      <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-[#E89EB8]/5 blur-[100px] rounded-full" />
+      {/* 2. INFINITE MARQUEE CONTAINER */}
+      <div className="relative w-full">
+        
+        {/* PREMIUM FADE GELS (Left & Right) */}
+        <div className="absolute left-0 top-0 bottom-0 w-32 sm:w-64 bg-gradient-to-r from-[#0a0a0a] to-transparent z-20 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-32 sm:w-64 bg-gradient-to-l from-[#0a0a0a] to-transparent z-20 pointer-events-none" />
+
+        <div className="flex overflow-hidden group">
+          {/* ANIMATED TRACK */}
+          <div className="flex animate-marquee whitespace-nowrap py-10 hover:[animation-play-state:paused]">
+            {displayReviews.map((item, index) => (
+              <div 
+                key={index}
+                className="inline-block w-[350px] sm:w-[450px] mx-4 sm:mx-8 whitespace-normal vertical-top"
+              >
+                <div className="bg-white/[0.03] backdrop-blur-xl p-10 rounded-[2.5rem] border border-white/5 hover:border-[#E89EB8]/30 transition-all duration-700 h-full flex flex-col justify-between shadow-2xl">
+                  <div>
+                    <div className="flex justify-between items-start mb-8">
+                      <div className="text-4xl text-[#E89EB8]/30 font-serif">“</div>
+                      {item.isVerified && (
+                        <span className="text-[#E89EB8] text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-[#E89EB8]/20 bg-[#E89EB8]/5">
+                          Verified
+                        </span>
+                      )}
+                    </div>
+                    
+                    <p className="text-white/70 font-light text-lg leading-relaxed mb-10 italic">
+                      {item.comment}
+                    </p>
+                  </div>
+
+                  <div className="pt-6 border-t border-white/5">
+                    <h4 className="font-serif font-bold text-white text-xl mb-1">{item.name}</h4>
+                    <p className="text-[#E89EB8]/50 text-[9px] font-black uppercase tracking-[0.3em]">
+                      {item.location || "Thane Studio"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 3. STYLE TAG FOR THE ANIMATION (No separate CSS file needed) */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 60s linear infinite;
+        }
+      `}} />
+
+      {/* DECORATIVE ELEMENTS */}
+      <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-[#E89EB8]/5 blur-[120px] rounded-full pointer-events-none" />
     </section>
   );
 };
