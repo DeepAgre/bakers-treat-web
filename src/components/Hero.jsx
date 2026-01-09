@@ -67,7 +67,7 @@ const Hero = ({ isParentLoading }) => {
       >
         <img 
           src={bgImage} 
-          alt="Bakers Treat Texture" 
+          alt="Delight Bakehouse Texture" 
           className="w-full h-full object-cover grayscale-[40%] contrast-[110%]"
           loading="eager"
         />

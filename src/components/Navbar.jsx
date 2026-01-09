@@ -43,7 +43,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
 
   return (
     <header className="fixed top-0 left-0 w-full z-[200]">
-      {/* 1. PERMANENT ANNOUNCEMENT BAR (Bigger and Always Visible) */}
+      {/* 1. ANNOUNCEMENT BAR */}
       <div className="w-full bg-black py-3 px-4 flex items-center justify-center gap-4 text-[11px] md:text-sm font-black uppercase tracking-[0.25em] z-[210]">
         <span className="text-[#E89EB8]">✨ 24-Hour Notice Required</span>
         <span className="hidden md:inline text-white/40">•</span>
@@ -51,7 +51,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
         <span className="animate-pulse">✨</span>
       </div>
 
-      {/* 2. MAIN NAVBAR (Updated to Soft Pink Theme) */}
+      {/* 2. MAIN NAVBAR */}
       <nav 
         className={`w-full transition-all duration-500 border-none ${
           scrolled 
@@ -61,9 +61,9 @@ const Navbar = ({ cartCount, onOpenCart }) => {
       >
         <div className="max-w-[1600px] mx-auto px-6 md:px-12 flex items-center justify-between">
           
-          {/* LEFT: Logo */}
+          {/* LEFT: Logo & Brand Name */}
           <div className="flex-1 flex justify-start">
-            <button onClick={handleLogoClick} className="flex items-center gap-4 group">
+            <button onClick={handleLogoClick} className="flex items-center gap-4 group text-left outline-none">
               <div className="relative">
                 <img 
                   src={logo} 
@@ -74,9 +74,12 @@ const Navbar = ({ cartCount, onOpenCart }) => {
                 />
                 <div className="absolute inset-0 rounded-full border border-white/0 group-hover:border-white/50 transition-all duration-500 scale-110" />
               </div>
-              <div className="flex flex-col items-start text-white">
-                <span className={`font-serif tracking-tighter leading-none transition-all ${scrolled ? 'text-lg' : 'text-xl md:text-3xl'}`}>
-                  Delight <span className={`italic font-light ${scrolled ? 'text-black' : 'text-[#E89EB8]'}`}>Bakehouse</span>
+
+              <div className="flex flex-col items-start transition-colors duration-300">
+                <span className={`font-serif tracking-tighter leading-none transition-all ${
+                  scrolled ? 'text-lg text-black' : 'text-xl md:text-3xl text-white'
+                }`}>
+                  Delight <span className={`italic font-light ${scrolled ? 'text-white' : 'text-[#E89EB8]'}`}>Bakehouse</span>
                 </span>
                 {!scrolled && (
                   <span className="text-[8px] uppercase tracking-[0.4em] text-white/60 group-hover:text-white transition-colors mt-1">
