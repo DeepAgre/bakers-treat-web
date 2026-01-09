@@ -4,7 +4,6 @@ import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'fram
 const Hero = ({ isParentLoading }) => {
   const heroRef = useRef(null);
   
-  // High-end, architectural cake-layer texture
   const bgImage = "https://images.unsplash.com/photo-1621303837174-89787a7d4729?q=80&w=2000&auto=format&fit=crop";
   
   const { scrollYProgress } = useScroll({
@@ -35,7 +34,7 @@ const Hero = ({ isParentLoading }) => {
   const textY = useTransform(scrollYProgress, [0, 1], [0, 200]);
   const blurValue = useTransform(scrollYProgress, [0, 0.5], [0, 10]);
 
-  // Mouse Parallax for Typography (Altitude 101 style drift)
+  // Mouse Parallax for Typography
   const driftX = useTransform(smoothMouseX, [-0.5, 0.5], [-20, 20]);
   const driftY = useTransform(smoothMouseY, [-0.5, 0.5], [-15, 15]);
 
@@ -56,47 +55,15 @@ const Hero = ({ isParentLoading }) => {
           className="w-full h-full object-cover grayscale-[20%] contrast-[110%]"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-transparent to-[#0a0a0a]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent" />
       </motion.div>
 
-      {/* 2. REPOSITIONED BLUEPRINT ELEMENTS (Moved to edges to avoid covering text) */}
-      <div className="absolute inset-0 z-10 pointer-events-none">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.3 }}
-            transition={{ delay: 1 + (i * 0.2), duration: 1.5 }}
-            className="absolute hidden lg:block"
-            style={{
-              x: useTransform(smoothMouseX, [-0.5, 0.5], [i * -30, i * 30]),
-              y: useTransform(smoothMouseY, [-0.5, 0.5], [i * -20, i * 20]),
-              // Alternate fragments between far left and far right
-              left: i % 2 === 0 ? `${5 + (i * 3)}%` : 'auto',
-              right: i % 2 !== 0 ? `${5 + (i * 3)}%` : 'auto',
-              top: `${15 + (i * 12)}%`,
-            }}
-          >
-            <div className="flex flex-col items-start">
-              <motion.div 
-                animate={{ width: [0, 40, 24] }}
-                transition={{ duration: 2, delay: 1.5 + (i * 0.1) }}
-                className="h-[1px] bg-[#E89EB8]/40 mb-3" 
-              />
-              <span className="text-[9px] text-white/30 uppercase tracking-[0.5em] font-mono italic">
-                {["Structure", "Hydration", "Aeration", "Crystalline", "Thermal", "Aesthetic"][i]}
-              </span>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* 3. MAIN CONTENT GRID */}
+      {/* 2. MAIN CONTENT GRID */}
       <div className="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-20">
         
         {/* LEFT: BOUTIQUE TYPOGRAPHY */}
         <motion.div 
-          style={{ y: textY, x: driftX, rotateY: driftX }}
+          style={{ y: textY, x: driftX }}
           initial={{ opacity: 0, x: -60 }}
           animate={!isParentLoading ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
@@ -133,25 +100,24 @@ const Hero = ({ isParentLoading }) => {
               <span className="text-white/70">layer by calculated layer.</span>
             </p>
             
-            {/* BUTTONS: UPDATED TO ARCHITECTURAL STYLE */}
-            <div className="flex flex-wrap gap-6 items-center">
+            {/* BUTTONS: REDESIGNED FOR HIGH VISIBILITY AND MOBILE CLARITY */}
+            <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center pt-4">
               <motion.button 
-                whileHover={{ scale: 1.05, backgroundColor: 'rgba(232, 158, 184, 0.1)' }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => document.getElementById('menu').scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-full text-white uppercase tracking-[0.4em] text-[10px] font-black transition-all duration-300 group"
+                className="w-full sm:w-auto px-10 py-5 bg-[#E89EB8] text-black rounded-full text-[11px] font-black uppercase tracking-[0.3em] shadow-[0_10px_30px_rgba(232,158,184,0.3)] hover:shadow-[0_15px_40px_rgba(232,158,184,0.5)] transition-all duration-500"
               >
-                <span className="relative z-10">Deconstruct Menu</span>
-                <div className="absolute inset-0 rounded-full bg-[#E89EB8]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                Deconstruct Menu
               </motion.button>
 
               <motion.button 
-                whileHover={{ x: 10 }}
+                whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => document.getElementById('custom').scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 text-white/40 uppercase tracking-[0.4em] text-[10px] font-black hover:text-[#E89EB8] transition-all duration-300 flex items-center gap-4"
+                className="w-full sm:w-auto px-10 py-5 bg-transparent border border-white/20 backdrop-blur-md rounded-full text-white text-[11px] font-black uppercase tracking-[0.3em] hover:border-[#E89EB8] transition-all duration-500"
               >
                 Start Project
-                <div className="h-[1px] w-8 bg-white/20 group-hover:w-12 group-hover:bg-[#E89EB8] transition-all" />
               </motion.button>
             </div>
           </div>
