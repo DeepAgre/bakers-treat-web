@@ -76,7 +76,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
               </div>
               <div className="flex flex-col items-start text-white">
                 <span className={`font-serif tracking-tighter leading-none transition-all ${scrolled ? 'text-lg' : 'text-xl md:text-3xl'}`}>
-                  Bakers <span className={`italic font-light ${scrolled ? 'text-black' : 'text-[#E89EB8]'}`}>Treat</span>
+                  Delight <span className={`italic font-light ${scrolled ? 'text-black' : 'text-[#E89EB8]'}`}>Bakehouse</span>
                 </span>
                 {!scrolled && (
                   <span className="text-[8px] uppercase tracking-[0.4em] text-white/60 group-hover:text-white transition-colors mt-1">
