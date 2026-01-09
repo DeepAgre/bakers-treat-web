@@ -7,7 +7,7 @@ const PreLoader = () => {
   const [cycleIndex, setCycleIndex] = useState(0);
 
   // The "Funky" Pendragon-style cycling descriptors
-  const phrases = ["Delight Bakehouse", "THANE STUDIO", "PRECISION CRAFT", "KHUSHI MANJREKAR", "EST. 2026"];
+  const phrases = ["Delight Bakehouse"];
 
   useEffect(() => {
     const interval = setInterval(() => {
