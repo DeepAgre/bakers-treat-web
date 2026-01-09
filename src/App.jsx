@@ -87,7 +87,7 @@ const BakeryApp = () => {
     }
     const itemSummary = cartItems.map(i => `• ${i.name} (x${i.qty})`).join('\n');
     const message = encodeURIComponent(
-      `Hi Khushi! I'd like to place an order from Bakers Treat:\n\n` +
+      `Hi Khushi! I'd like to place an order from Delight Bakehouse:\n\n` +
       `Items:\n${itemSummary}\n\n` +
       `Delivery Date: ${deliveryDate}\n` +
       `Address: ${address}\n\n` +
