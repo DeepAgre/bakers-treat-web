@@ -62,47 +62,55 @@ const Menu = ({ onProductSelect }) => {
   }, [activeCategory, products]);
 
   if (loading) return (
-    <div className="py-40 text-center font-serif text-slate-400 animate-pulse bg-white">
-      Preparing the Delight Bakehouse Menu...
+    <div className="py-60 text-center font-serif text-[#E89EB8] animate-pulse bg-[#0a0a0a] min-h-screen flex items-center justify-center">
+      <div className="space-y-4">
+        <div className="w-12 h-12 border-2 border-[#E89EB8] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="tracking-[0.5em] uppercase text-[10px] font-bold">Curating the Collection...</p>
+      </div>
     </div>
   );
 
   return (
-    <section className="relative py-20 sm:py-32 px-4 sm:px-10 bg-white overflow-hidden" id="menu">
+    <section className="relative py-24 sm:py-40 px-6 sm:px-12 bg-[#0a0a0a] overflow-hidden" id="menu">
       
-      {/* CREATIVE ELEMENT: Subtle background text/motif to fill space */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-[0.03] z-0 overflow-hidden">
-        <h2 className="text-[20vw] font-serif font-bold absolute -left-20 top-40 rotate-90 whitespace-nowrap text-slate-900">
-          Delight Bakehouse
-        </h2>
-        <h2 className="text-[20vw] font-serif font-bold absolute -right-20 bottom-40 -rotate-90 whitespace-nowrap text-slate-900">
-          HANDCRAFTED
+      {/* BACKGROUND BRANDING */}
+      <div className="absolute inset-0 pointer-events-none select-none opacity-[0.02] overflow-hidden">
+        <h2 className="text-[25vw] font-serif font-black absolute -left-20 top-20 whitespace-nowrap text-white">
+          THE COLLECTION
         </h2>
       </div>
 
-      <div className="max-w-[1600px] mx-auto relative z-10">
-        <div className="text-center mb-16 sm:mb-24">
-          <motion.span 
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-[#E89EB8] uppercase tracking-[0.4em] text-[10px] sm:text-[12px] font-black mb-4 block"
-          >
-            Freshly Baked in Thane
-          </motion.span>
-          
-          <h2 className="text-5xl sm:text-7xl font-serif font-bold mb-8 text-slate-900 tracking-tight">Our Menu</h2>
-          
-          {/* CATEGORY FILTER */}
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mt-8">
+      <div className="max-w-[1800px] mx-auto relative z-10">
+        
+        {/* HEADER SECTION */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-24 border-b border-white/10 pb-16">
+          <div className="max-w-3xl">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex items-center gap-4 mb-6"
+            >
+                <div className="h-[1px] w-12 bg-[#E89EB8]" />
+                <span className="text-[#E89EB8] uppercase tracking-[0.6em] text-[10px] font-bold">Thane Studio Portfolio</span>
+            </motion.div>
+            
+            <h2 className="text-6xl md:text-8xl font-serif text-white tracking-tighter leading-none">
+              Explore the <br />
+              <span className="italic text-[#E89EB8] font-light">Bakers Treat.</span>
+            </h2>
+          </div>
+
+          {/* CATEGORY FILTER - Luxury Sidebar Style */}
+          <div className="flex flex-wrap gap-3">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-6 py-2 sm:px-8 sm:py-3 rounded-full text-[10px] font-black tracking-widest uppercase transition-all duration-500
+                className={`px-8 py-3 rounded-full text-[10px] font-black tracking-widest uppercase transition-all duration-700 border
                   ${activeCategory === cat 
-                    ? 'bg-slate-900 text-white shadow-xl shadow-slate-400 scale-105' 
-                    : 'bg-slate-50 text-slate-400 border border-slate-100 hover:border-[#E89EB8] hover:text-[#E89EB8] hover:bg-white'}`}
+                    ? 'bg-[#E89EB8] text-black border-[#E89EB8] shadow-2xl shadow-[#E89EB8]/20' 
+                    : 'bg-transparent text-white/40 border-white/10 hover:border-[#E89EB8]/50 hover:text-white'}`}
               >
                 {cat}
               </button>
@@ -110,63 +118,74 @@ const Menu = ({ onProductSelect }) => {
           </div>
         </div>
 
-        {/* UPDATED GRID: grid-cols-4 for full look */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-16">
+        {/* PRODUCTS GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-20">
           <AnimatePresence mode='popLayout'>
-            {filteredProducts.map((product) => (
+            {filteredProducts.map((product, idx) => (
               <motion.div 
                 layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.6, delay: idx * 0.05 }}
                 key={product.id}
                 onClick={() => !product.isSoldOut && onProductSelect(product)}
-                className={`group flex flex-col ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                className={`group relative ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
               >
-                {/* IMAGE CONTAINER: Aspect-square for modern gallery feel */}
-                <div className="relative overflow-hidden rounded-[2rem] aspect-square shadow-[0_15px_35px_rgba(0,0,0,0.06)] mb-6 bg-slate-50 border border-slate-100">
+                {/* IMAGE CONTAINER */}
+                <div className="relative overflow-hidden rounded-[1.5rem] aspect-[4/5] mb-8 bg-[#111] border border-white/5">
                   <img 
                     src={product.img} 
                     alt={product.name} 
-                    className={`w-full h-full object-cover transition-transform duration-[1200ms]
-                      ${product.isSoldOut ? 'grayscale opacity-40' : 'group-hover:scale-110'}`} 
+                    className={`w-full h-full object-cover transition-all duration-[1500ms] ease-out
+                      ${product.isSoldOut ? 'grayscale contrast-125 opacity-30' : 'group-hover:scale-110 group-hover:grayscale-[20%]'}`} 
                   />
                   
+                  {/* Subtle Gradient Overly */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+
                   {product.isSoldOut && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-white/40 backdrop-blur-[2px]">
-                      <span className="bg-white text-slate-900 font-black px-5 py-2 rounded-full text-[9px] uppercase tracking-[0.2em] shadow-lg border border-slate-100">
-                        Sold Out
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-white/40 font-bold text-[10px] uppercase tracking-[0.5em] border border-white/10 px-6 py-3 rounded-full backdrop-blur-md">
+                        Vaulted
                       </span>
                     </div>
                   )}
 
-                  {/* Hover Floating Badge */}
+                  {/* Corner Price Tag */}
                   {!product.isSoldOut && (
-                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
-                        <div className="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="text-[#E89EB8]" viewBox="0 0 16 16">
-                                <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5z"/>
-                            </svg>
-                        </div>
+                    <div className="absolute top-6 left-6 overflow-hidden">
+                       <motion.div 
+                        initial={{ y: -20, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        className="bg-white text-black px-4 py-2 rounded-full font-bold text-[10px] shadow-2xl"
+                       >
+                         ₹{product.displayPrice}+
+                       </motion.div>
                     </div>
                   )}
                 </div>
 
                 {/* PRODUCT INFO */}
-                <div className="text-center px-2">
-                  <p className="text-[#E89EB8] uppercase tracking-[0.2em] text-[8px] font-black mb-2 opacity-70">
-                    {product.category}
-                  </p>
+                <div className="space-y-3 px-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#E89EB8] uppercase tracking-[0.4em] text-[9px] font-bold">
+                      {product.category}
+                    </span>
+                    <div className="h-[1px] w-8 bg-white/10" />
+                  </div>
                   
-                  <h3 className="text-xl font-serif font-bold text-slate-900 mb-2 group-hover:text-[#E89EB8] transition-colors duration-300">
+                  <h3 className="text-2xl font-serif text-white group-hover:italic transition-all duration-500">
                     {product.name}
                   </h3>
 
-                  <div className="flex items-center justify-center gap-3">
-                    <span className="text-sm font-bold text-slate-500">
-                      {product.variants.length > 1 ? 'From ' : ''}₹{product.displayPrice}
-                    </span>
+                  <p className="text-white/30 text-xs font-light leading-relaxed line-clamp-2 group-hover:text-white/60 transition-colors">
+                    {product.description || "A signature architectural creation from the studio."}
+                  </p>
+
+                  <div className="pt-4 flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                     <span className="text-[10px] text-white uppercase tracking-[0.3em] font-black">View Details</span>
+                     <div className="h-[1px] flex-grow bg-gradient-to-r from-[#E89EB8] to-transparent" />
                   </div>
                 </div>
               </motion.div>
@@ -174,6 +193,9 @@ const Menu = ({ onProductSelect }) => {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* TEXTURE OVERLAY */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
     </section>
   );
 };
