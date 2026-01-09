@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'fram
 const Hero = ({ isParentLoading }) => {
   const heroRef = useRef(null);
   
-  // A high-end, architectural cake-layer / texture image
+  // High-end, architectural cake-layer texture
   const bgImage = "https://images.unsplash.com/photo-1621303837174-89787a7d4729?q=80&w=2000&auto=format&fit=crop";
   
   const { scrollYProgress } = useScroll({
@@ -12,7 +12,7 @@ const Hero = ({ isParentLoading }) => {
     offset: ["start start", "end start"]
   });
 
-  // Mouse Parallax for the "Unique Element"
+  // Mouse Parallax Logic
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const smoothMouseX = useSpring(mouseX, { damping: 20, stiffness: 100 });
@@ -27,13 +27,13 @@ const Hero = ({ isParentLoading }) => {
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [mouseX, mouseY]);
 
-  // Scroll Animations (Idea Bakery / Olly Style)
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
-  const imageOpacity = useTransform(scrollYProgress, [0, 0.5], [0.6, 0.2]);
-  const textY = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const blurValue = useTransform(scrollYProgress, [0, 0.5], [0, 10]);
+  // Scroll Animations
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
+  const imageOpacity = useTransform(scrollYProgress, [0, 0.5], [0.6, 0.1]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, 250]);
+  const blurValue = useTransform(scrollYProgress, [0, 0.5], [0, 15]);
 
   return (
     <section 
@@ -41,43 +41,46 @@ const Hero = ({ isParentLoading }) => {
       className="relative min-h-[110vh] w-full flex items-center justify-center overflow-hidden bg-[#0a0a0a]" 
       id="hero"
     >
-      {/* 1. ARCHITECTURAL CAKE BACKGROUND */}
+      {/* 1. CINEMATIC CAKE LAYER BACKGROUND */}
       <motion.div 
         style={{ scale, opacity: imageOpacity, filter: `blur(${blurValue}px)` }}
         className="absolute inset-0 z-0"
       >
         <img 
           src={bgImage} 
-          alt="Layered Cake Texture" 
-          className="w-full h-full object-cover grayscale-[20%] contrast-[110%]"
+          alt="Architectural Cake Layers" 
+          className="w-full h-full object-cover grayscale-[30%] contrast-[120%]"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-transparent to-[#0a0a0a]" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-transparent to-transparent" />
       </motion.div>
 
-      {/* 2. THE UNIQUE ELEMENT: FLOATING "DNA" FRAGMENTS */}
+      {/* 2. THE UNIQUE ELEMENT: FLOATING "DNA" FRAGMENTS (FIXED CODE) */}
       <div className="absolute inset-0 z-10 pointer-events-none">
         {[...Array(6)].map((_, i) => (
           <motion.div
             key={i}
-            style={{
-              x: useTransform(smoothMouseX, [ -0.5, 0.5], [i * -50, i * 50]),
-              y: useTransform(smoothMouseY, [ -0.5, 0.5], [i * -30, i * 30]),
-            }}
-            className="absolute hidden lg:block"
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.4 }}
-            transition={{ delay: 1 + (i * 0.2) }}
+            transition={{ delay: 1 + (i * 0.2), duration: 1.5 }}
+            className="absolute hidden lg:block"
             style={{
-                left: `${20 + (i * 15)}%`,
-                top: `${15 + (i * 12)}%`,
+              // Merged all styles into one block to fix the error
+              x: useTransform(smoothMouseX, [-0.5, 0.5], [i * -40, i * 40]),
+              y: useTransform(smoothMouseY, [-0.5, 0.5], [i * -25, i * 25]),
+              left: `${20 + (i * 12)}%`,
+              top: `${15 + (i * 10)}%`,
             }}
           >
-            <div className="flex flex-col items-start">
-                <div className="h-[1px] w-12 bg-[#E89EB8]/40 mb-2" />
-                <span className="text-[9px] text-white/30 uppercase tracking-[0.4em] font-mono">
-                    {["Structure", "Sugar", "Air", "Butter", "Heat", "Art"][i]}
-                </span>
+            <div className="flex flex-col items-start group">
+              <motion.div 
+                animate={{ width: [0, 48, 32] }}
+                transition={{ duration: 2, delay: 1.5 + (i * 0.1) }}
+                className="h-[1px] bg-[#E89EB8]/60 mb-3" 
+              />
+              <span className="text-[10px] text-white/40 uppercase tracking-[0.5em] font-mono italic">
+                {["Structure", "Hydration", "Aeration", "Crystalline", "Thermal", "Aesthetic"][i]}
+              </span>
             </div>
           </motion.div>
         ))}
@@ -89,96 +92,96 @@ const Hero = ({ isParentLoading }) => {
         {/* LEFT: BOUTIQUE TYPOGRAPHY */}
         <motion.div 
           style={{ y: textY }}
-          initial={{ opacity: 0, x: -50 }}
+          initial={{ opacity: 0, x: -60 }}
           animate={!isParentLoading ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
           className="lg:col-span-8 flex flex-col justify-center"
         >
-          <div className="flex items-center gap-4 mb-10">
+          <div className="flex items-center gap-6 mb-12">
             <motion.div 
               initial={{ width: 0 }}
-              animate={{ width: 80 }}
-              transition={{ delay: 0.8, duration: 1.2 }}
+              animate={{ width: 100 }}
+              transition={{ delay: 1, duration: 1.5 }}
               className="h-[1px] bg-[#E89EB8]"
             />
-            <span className="uppercase tracking-[0.8em] text-[10px] font-bold text-[#E89EB8]">
-              Thane's Bespoke Studio
+            <span className="uppercase tracking-[1em] text-[10px] font-bold text-[#E89EB8]/80">
+              Thane • Maharashtra
             </span>
           </div>
           
-          <h1 className="text-[16vw] lg:text-[11rem] font-serif leading-[0.75] mb-12 text-white tracking-tighter">
+          <h1 className="text-[15vw] lg:text-[12rem] font-serif leading-[0.75] mb-14 text-white tracking-tighter">
             Bakers <br />
-            <span className="italic font-light text-[#E89EB8] ml-[8vw] relative">
+            <span className="italic font-light text-[#E89EB8] ml-[10vw] relative inline-block">
                 Treat
                 <motion.span 
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
-                    transition={{ delay: 1.5, duration: 1 }}
-                    className="absolute -bottom-2 left-0 w-full h-[2px] bg-white/10 origin-left"
+                    transition={{ delay: 2, duration: 1.5 }}
+                    className="absolute -bottom-4 left-0 w-full h-[1px] bg-white/20 origin-left"
                 />
             </span>
           </h1>
           
-          <div className="max-w-md space-y-10">
-            <p className="text-xl text-white/60 leading-relaxed font-light italic">
-              Deconstructing the art of the cakery. <br/>
-              Engineered layer by layer in <span className="text-white">Thane</span>.
+          <div className="max-w-md space-y-12">
+            <p className="text-2xl text-white/50 leading-relaxed font-light italic">
+              Architecting sweetness, <br/>
+              <span className="text-white/80">layer by calculated layer.</span>
             </p>
             
-            <div className="flex flex-wrap gap-12">
+            <div className="flex flex-wrap gap-16">
               <button 
                 onClick={() => document.getElementById('menu').scrollIntoView({ behavior: 'smooth' })}
-                className="group relative text-white uppercase tracking-[0.4em] text-[10px] font-black"
+                className="group relative text-white uppercase tracking-[0.5em] text-[11px] font-black"
               >
-                <span className="relative z-10">View Layers</span>
-                <div className="absolute -bottom-4 left-0 w-0 h-[2px] bg-[#E89EB8] transition-all duration-500 group-hover:w-full" />
+                <span className="relative z-10">Deconstruct Menu</span>
+                <div className="absolute -bottom-4 left-0 w-0 h-[1px] bg-[#E89EB8] transition-all duration-700 group-hover:w-full" />
               </button>
 
               <button 
                 onClick={() => document.getElementById('custom-studio').scrollIntoView({ behavior: 'smooth' })}
-                className="group relative text-white/40 uppercase tracking-[0.4em] text-[10px] font-black hover:text-[#E89EB8] transition-colors"
+                className="group relative text-white/30 uppercase tracking-[0.5em] text-[11px] font-black hover:text-[#E89EB8] transition-colors duration-500"
               >
-                <span className="relative z-10">Start Commission</span>
+                <span className="relative z-10">Start Project</span>
               </button>
             </div>
           </div>
         </motion.div>
 
-        {/* RIGHT: THE INTERACTIVE TEXTURE CARD */}
+        {/* RIGHT: INTERACTIVE GLASS CARD */}
         <motion.div 
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={!isParentLoading ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 1.8, delay: 0.6 }}
+          initial={{ opacity: 0, scale: 0.9, y: 40 }}
+          animate={!isParentLoading ? { opacity: 1, scale: 1, y: 0 } : {}}
+          transition={{ duration: 2, delay: 0.8 }}
           className="lg:col-span-4 hidden lg:flex items-center justify-end"
         >
           <div className="relative group">
-            {/* The "Interactive" Element - A rotating, glass-morphism data ring */}
+            {/* The Rotating Decorative Ring */}
             <motion.div 
               animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute -inset-16 border border-white/5 rounded-full"
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              className="absolute -inset-24 border border-white/5 rounded-full"
             />
             
-            <div className="w-[320px] bg-white/[0.03] backdrop-blur-2xl border border-white/10 p-12 rounded-[3rem] shadow-2xl transition-all duration-700 group-hover:bg-white/[0.07] group-hover:border-white/20">
-              <div className="space-y-10">
-                <div className="space-y-2">
-                   <div className="flex justify-between items-end">
-                      <span className="text-[9px] font-black text-[#E89EB8] uppercase tracking-widest">Process</span>
-                      <span className="text-[10px] text-white/20 font-mono">01/03</span>
+            <div className="w-[340px] bg-white/[0.02] backdrop-blur-3xl border border-white/10 p-14 rounded-[4rem] shadow-2xl transition-all duration-1000 group-hover:bg-white/[0.05] group-hover:border-[#E89EB8]/20 group-hover:-translate-y-4">
+              <div className="space-y-12">
+                <div className="space-y-3">
+                   <div className="flex justify-between items-center">
+                      <span className="text-[10px] font-black text-[#E89EB8] uppercase tracking-widest">The Studio</span>
+                      <div className="px-2 py-1 border border-white/10 rounded-md text-[8px] text-white/30 font-mono tracking-widest uppercase">Live 2026</div>
                    </div>
-                   <h3 className="text-2xl font-serif italic text-white leading-tight">Calculated <br/> Perfection.</h3>
+                   <h3 className="text-3xl font-serif italic text-white leading-tight">Edible <br/> Blueprints.</h3>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="h-[1px] w-full bg-gradient-to-r from-[#E89EB8]/40 to-transparent" />
-                  <p className="text-xs text-white/40 leading-loose">
-                    Every crumb is a result of precise engineering. From moisture ratios to structural integrity, Khushi transforms ingredients into architecture.
+                <div className="space-y-6">
+                  <div className="h-[1px] w-full bg-gradient-to-r from-[#E89EB8]/30 via-white/10 to-transparent" />
+                  <p className="text-sm text-white/40 leading-relaxed font-light">
+                    Founded by Khushi Manjrekar, Bakers Treat merges industrial precision with artisanal soul to create Thane's most exclusive cakes.
                   </p>
                 </div>
 
-                <div className="flex items-center gap-4 pt-4">
-                   <div className="h-2 w-2 rounded-full bg-[#E89EB8] animate-pulse" />
-                   <span className="text-[10px] uppercase tracking-widest text-white/60">Handcrafted in Thane</span>
+                <div className="flex items-center gap-4 pt-6 group-hover:gap-6 transition-all duration-500">
+                   <div className="h-[1px] w-8 bg-[#E89EB8]" />
+                   <span className="text-[10px] uppercase tracking-[0.3em] text-white/60">Commission only</span>
                 </div>
               </div>
             </div>
@@ -186,13 +189,13 @@ const Hero = ({ isParentLoading }) => {
         </motion.div>
       </div>
 
-      {/* 4. PREMIUM FOOTER ELEMENT */}
+      {/* 4. SCROLL INDICATOR (IDEA BAKERY STYLE) */}
       <motion.div 
-        style={{ opacity: useTransform(scrollYProgress, [0, 0.2], [1, 0]) }}
-        className="absolute bottom-12 left-12 hidden lg:flex items-center gap-6"
+        style={{ opacity: useTransform(scrollYProgress, [0, 0.15], [1, 0]) }}
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 lg:left-12 lg:translate-x-0 flex items-center gap-8"
       >
-        <span className="text-[10px] text-white/20 uppercase tracking-[0.5em] [writing-mode:vertical-lr]">Scroll to Deconstruct</span>
-        <div className="h-24 w-[1px] bg-gradient-to-b from-white/20 to-transparent" />
+        <span className="text-[10px] text-white/20 uppercase tracking-[0.6em] [writing-mode:vertical-lr] lg:[writing-mode:horizontal-tb]">Scroll to reveal</span>
+        <div className="h-[1px] w-24 bg-gradient-to-r from-white/20 to-transparent hidden lg:block" />
       </motion.div>
     </section>
   );
