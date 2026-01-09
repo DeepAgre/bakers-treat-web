@@ -1,139 +1,119 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const AboutKhushi = () => {
+  const containerRef = useRef(null);
+
+  // Scroll tracking for "Idea Bakery" style fades
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  // Animation values
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const y = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [100, 0, 0, -100]);
+  const imageScale = useTransform(scrollYProgress, [0, 0.5], [0.8, 1.1]);
+
   return (
-    <section className="relative py-24 sm:py-40 w-full overflow-hidden bg-[#0A0A0A]" id="about">
-      
-      {/* FUNKY PREMIUM BACKGROUND ELEMENTS */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Animated Gradient Glows */}
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#E89EB8]/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#E89EB8]/5 blur-[100px] rounded-full" />
-        
-        {/* Subtle Grid Pattern with Pink Tint */}
-        <div className="absolute inset-0 opacity-[0.05]" 
-             style={{ backgroundImage: `radial-gradient(#E89EB8 1px, transparent 1px)`, backgroundSize: '50px 50px' }} />
-        
-        {/* Large Floating "KM" Background Text */}
-        <motion.div 
-          initial={{ opacity: 0, x: 100 }}
-          whileInView={{ opacity: 0.05, x: 0 }}
-          transition={{ duration: 1.5 }}
-          className="absolute -right-20 top-20 text-[18rem] md:text-[25rem] font-serif font-black select-none text-white will-change-transform"
+    <section 
+      ref={containerRef}
+      className="relative min-h-screen py-40 w-full overflow-hidden bg-[#0a0a0a]" 
+      id="about"
+    >
+      {/* 1. CINEMATIC BACKGROUND TYPOGRAPHY (Bernice Bakery Style) */}
+      <div className="absolute inset-0 pointer-events-none select-none flex flex-col justify-between py-20 opacity-[0.02]">
+        <motion.h2 
+           style={{ x: useTransform(scrollYProgress, [0, 1], [-200, 200]) }}
+           className="text-[25vw] font-serif leading-none text-white whitespace-nowrap"
         >
-          KHUSHI
-        </motion.div>
+          THE ART OF CAKERY
+        </motion.h2>
+        <motion.h2 
+           style={{ x: useTransform(scrollYProgress, [0, 1], [200, -200]) }}
+           className="text-[25vw] font-serif leading-none text-white whitespace-nowrap text-right"
+        >
+          KHUSHI MANJREKAR
+        </motion.h2>
       </div>
 
-      {/* WIDER CONTAINER */}
-      <div className="max-w-[1600px] mx-auto px-6 sm:px-12 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
+      <motion.div 
+        style={{ opacity, y }}
+        className="max-w-[1400px] mx-auto px-6 relative z-10"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-center">
           
-          {/* LEFT SIDE: The Statement Card (Darker Theme) */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="lg:col-span-5 relative group"
-          >
-            <div className="relative z-10 bg-white/5 backdrop-blur-sm rounded-[3rem] sm:rounded-[4rem] p-10 sm:p-16 overflow-hidden border border-white/10 shadow-2xl min-h-[550px] flex flex-col justify-center will-change-transform">
-              
-              {/* Rotating Border Element */}
-              <motion.div 
-                animate={{ rotate: 360 }}
-                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                className="absolute -top-32 -right-32 w-80 h-80 border-2 border-[#E89EB8]/10 border-dashed rounded-full pointer-events-none"
-              />
-              
-              <div className="text-[#E89EB8] text-7xl font-serif leading-none mb-8 opacity-80 group-hover:opacity-100 transition-opacity">“</div>
-              
-              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-serif italic text-white leading-tight z-10">
-                A cake should be the <span className="text-[#E89EB8] not-italic font-bold">centerpiece</span> of your most beautiful memories.
-              </h3>
-              
-              <div className="mt-12 pt-10 border-t border-white/10">
-                <p className="text-[#E89EB8] font-black uppercase tracking-[0.4em] text-[11px] mb-4">
-                  The Founder & Artist
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-[1px] bg-[#E89EB8]/50" />
-                  <p className="text-white/90 text-sm font-sans tracking-[0.1em] uppercase">
-                    Khushi Manjrekar
-                  </p>
-                </div>
-              </div>
+          {/* LEFT: THE STORY IMAGE (The Olly Style) */}
+          <div className="lg:col-span-6 relative">
+             <motion.div 
+               style={{ scale: imageScale }}
+               className="aspect-[4/5] w-full rounded-[2rem] overflow-hidden border border-white/10 relative"
+             >
+                <img 
+                  src="https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?q=80&w=1200&auto=format&fit=crop" 
+                  alt="Khushi's Workspace"
+                  className="w-full h-full object-cover grayscale-[40%] hover:grayscale-0 transition-all duration-1000"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
+             </motion.div>
 
-              {/* Minimal Branding Stamp */}
-              <div className="absolute bottom-12 right-12 opacity-10 group-hover:opacity-20 transition-all duration-700">
-                <span className="text-white text-8xl font-serif font-bold italic">KM</span>
-              </div>
-            </div>
-          </motion.div>
+             {/* Floating Caption */}
+             <motion.div 
+               style={{ y: useTransform(scrollYProgress, [0, 1], [50, -50]) }}
+               className="absolute -bottom-10 -right-10 bg-white/5 backdrop-blur-2xl p-8 rounded-2xl border border-white/10 hidden md:block"
+             >
+                <p className="text-[#E89EB8] text-[10px] font-black uppercase tracking-[0.4em] mb-2">Thane Studio</p>
+                <p className="text-white font-serif italic text-xl">"Where blueprints become sugar."</p>
+             </motion.div>
+          </div>
 
-          {/* RIGHT SIDE: The Story Content */}
-          <motion.div 
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="lg:col-span-7 flex flex-col justify-center"
-          >
-            <div className="inline-flex items-center gap-4 mb-8">
-              <span className="h-[1px] w-16 bg-[#E89EB8]" />
-              <span className="text-[#E89EB8] uppercase tracking-[0.5em] text-[12px] font-black">
-                Our Story
-              </span>
-            </div>
-            
-            <h2 className="text-5xl md:text-8xl lg:text-[9rem] font-serif font-bold text-white mb-10 leading-[0.85] tracking-tighter">
-              About <br /> 
-              <span className="italic text-[#E89EB8]">Khushi Manjrekar</span>.
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 border-l border-white/5 pl-8 sm:pl-12">
-              <div className="space-y-6 text-white/70 font-sans leading-relaxed text-lg">
-                <p className="text-justify first-letter:text-6xl first-letter:font-serif first-letter:text-[#E89EB8] first-letter:mr-3 first-letter:float-left">
-                  Based in the heart of Thane, Khushi transformed her lifelong passion for art into a world of edible wonders. With a perfectionist’s soul, she doesn't just bake—she crafts emotions into every slice.
-                </p>
+          {/* RIGHT: THE CONTENT (Idea Bakery Style) */}
+          <div className="lg:col-span-6 space-y-12">
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                 <div className="w-12 h-[1px] bg-[#E89EB8]" />
+                 <span className="text-[#E89EB8] uppercase tracking-[0.6em] text-[10px] font-bold">The Founder</span>
               </div>
-              <div className="space-y-6 text-white/70 font-sans leading-relaxed text-lg">
-                <p className="text-justify italic">
-                  Every creation at <strong className="text-white font-bold">Delight Bakehouse</strong> is a personal labor of love. By blending premium Belgian chocolate with seasonal fruits, she ensures flavor is never sacrificed for beauty.
-                </p>
+              <h2 className="text-7xl lg:text-9xl font-serif text-white leading-[0.85] tracking-tighter">
+                Meet <br />
+                <span className="italic text-[#E89EB8] font-light">Khushi.</span>
+              </h2>
+            </div>
+
+            <div className="space-y-8 text-white/50 text-xl font-light leading-relaxed max-w-xl">
+              <p>
+                Based in the heart of <span className="text-white">Thane</span>, Khushi Manjrekar deconstructs the traditional bakery experience. 
+                At <span className="text-white italic">Bakers Treat</span>, we view every cake as a piece of edible architecture.
+              </p>
+              <p className="border-l border-[#E89EB8]/30 pl-8 italic">
+                “My goal is to balance the structural precision of a designer with the soul of a storyteller. Every layer is a calculated decision; every flavor is a memory.”
+              </p>
+            </div>
+
+            {/* PREMIUM STATS GRID (The Olly Style) */}
+            <div className="grid grid-cols-2 gap-12 pt-10 border-t border-white/10">
+              <div className="group">
+                <p className="text-4xl font-serif text-white group-hover:text-[#E89EB8] transition-colors">100%</p>
+                <p className="text-[9px] uppercase tracking-[0.4em] text-white/30 mt-2 font-black">Bespoke Design</p>
+              </div>
+              <div className="group">
+                <p className="text-4xl font-serif text-white group-hover:text-[#E89EB8] transition-colors">Premium</p>
+                <p className="text-[9px] uppercase tracking-[0.4em] text-white/30 mt-2 font-black">Belgian Ingredients</p>
               </div>
             </div>
 
-            {/* NEON STATS SECTION */}
-            <div className="relative mt-16 p-1 bg-gradient-to-r from-white/10 to-transparent rounded-[2.5rem]">
-              <div className="bg-[#0A0A0A] p-10 rounded-[2.4rem] grid grid-cols-2 sm:grid-cols-3 gap-8 relative z-10 border border-white/5 overflow-hidden group">
-                
-                {/* Background "KM" for the stats card */}
-                <div className="absolute -bottom-8 -right-8 text-white/5 text-[8rem] font-black italic select-none group-hover:scale-110 transition-transform duration-1000">
-                    KM
-                </div>
-
-                <div className="relative">
-                  <p className="text-4xl md:text-6xl font-serif font-bold text-white group-hover:text-[#E89EB8] transition-colors">100+</p>
-                  <p className="text-[10px] uppercase tracking-[0.3em] font-black text-[#E89EB8] mt-3">Delights Delivered</p>
-                </div>
-                
-                <div className="relative">
-                  <p className="text-4xl md:text-6xl font-serif font-bold text-white group-hover:text-[#E89EB8] transition-colors">100%</p>
-                  <p className="text-[10px] uppercase tracking-[0.3em] font-black text-[#E89EB8] mt-3">Artisanal Craft</p>
-                </div>
-
-                <div className="relative hidden sm:block">
-                  <p className="text-4xl md:text-6xl font-serif font-bold text-white group-hover:text-[#E89EB8] transition-colors">Thane</p>
-                  <p className="text-[10px] uppercase tracking-[0.3em] font-black text-[#E89EB8] mt-3">Studio Location</p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+            <button 
+              className="px-12 py-5 border border-white/10 rounded-full text-white text-[10px] uppercase tracking-[0.5em] font-bold hover:bg-white hover:text-black transition-all duration-500"
+            >
+              The Story Continued
+            </button>
+          </div>
 
         </div>
-      </div>
+      </motion.div>
+
+      {/* 4. TEXTURE OVERLAY */}
+      <div className="absolute inset-0 z-10 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
     </section>
   );
 };
