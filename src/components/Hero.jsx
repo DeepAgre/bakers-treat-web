@@ -15,8 +15,8 @@ const Hero = ({ isParentLoading }) => {
   // Mouse Parallax Logic
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const smoothMouseX = useSpring(mouseX, { damping: 20, stiffness: 100 });
-  const smoothMouseY = useSpring(mouseY, { damping: 20, stiffness: 100 });
+  const smoothMouseX = useSpring(mouseX, { damping: 30, stiffness: 100 });
+  const smoothMouseY = useSpring(mouseY, { damping: 30, stiffness: 100 });
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -30,10 +30,14 @@ const Hero = ({ isParentLoading }) => {
   }, [mouseX, mouseY]);
 
   // Scroll Animations
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
   const imageOpacity = useTransform(scrollYProgress, [0, 0.5], [0.6, 0.1]);
-  const textY = useTransform(scrollYProgress, [0, 1], [0, 250]);
-  const blurValue = useTransform(scrollYProgress, [0, 0.5], [0, 15]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const blurValue = useTransform(scrollYProgress, [0, 0.5], [0, 10]);
+
+  // Mouse Parallax for Typography (Altitude 101 style drift)
+  const driftX = useTransform(smoothMouseX, [-0.5, 0.5], [-20, 20]);
+  const driftY = useTransform(smoothMouseY, [-0.5, 0.5], [-15, 15]);
 
   return (
     <section 
@@ -41,7 +45,7 @@ const Hero = ({ isParentLoading }) => {
       className="relative min-h-[110vh] w-full flex items-center justify-center overflow-hidden bg-[#0a0a0a]" 
       id="hero"
     >
-      {/* 1. CINEMATIC CAKE LAYER BACKGROUND */}
+      {/* 1. CINEMATIC BACKGROUND */}
       <motion.div 
         style={{ scale, opacity: imageOpacity, filter: `blur(${blurValue}px)` }}
         className="absolute inset-0 z-0"
@@ -49,36 +53,37 @@ const Hero = ({ isParentLoading }) => {
         <img 
           src={bgImage} 
           alt="Architectural Cake Layers" 
-          className="w-full h-full object-cover grayscale-[30%] contrast-[120%]"
+          className="w-full h-full object-cover grayscale-[20%] contrast-[110%]"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-transparent to-[#0a0a0a]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent" />
       </motion.div>
 
-      {/* 2. THE UNIQUE ELEMENT: FLOATING "DNA" FRAGMENTS (FIXED CODE) */}
+      {/* 2. REPOSITIONED BLUEPRINT ELEMENTS (Moved to edges to avoid covering text) */}
       <div className="absolute inset-0 z-10 pointer-events-none">
         {[...Array(6)].map((_, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.4 }}
+            animate={{ opacity: 0.3 }}
             transition={{ delay: 1 + (i * 0.2), duration: 1.5 }}
             className="absolute hidden lg:block"
             style={{
-              // Merged all styles into one block to fix the error
-              x: useTransform(smoothMouseX, [-0.5, 0.5], [i * -40, i * 40]),
-              y: useTransform(smoothMouseY, [-0.5, 0.5], [i * -25, i * 25]),
-              left: `${20 + (i * 12)}%`,
-              top: `${15 + (i * 10)}%`,
+              x: useTransform(smoothMouseX, [-0.5, 0.5], [i * -30, i * 30]),
+              y: useTransform(smoothMouseY, [-0.5, 0.5], [i * -20, i * 20]),
+              // Alternate fragments between far left and far right
+              left: i % 2 === 0 ? `${5 + (i * 3)}%` : 'auto',
+              right: i % 2 !== 0 ? `${5 + (i * 3)}%` : 'auto',
+              top: `${15 + (i * 12)}%`,
             }}
           >
-            <div className="flex flex-col items-start group">
+            <div className="flex flex-col items-start">
               <motion.div 
-                animate={{ width: [0, 48, 32] }}
+                animate={{ width: [0, 40, 24] }}
                 transition={{ duration: 2, delay: 1.5 + (i * 0.1) }}
-                className="h-[1px] bg-[#E89EB8]/60 mb-3" 
+                className="h-[1px] bg-[#E89EB8]/40 mb-3" 
               />
-              <span className="text-[10px] text-white/40 uppercase tracking-[0.5em] font-mono italic">
+              <span className="text-[9px] text-white/30 uppercase tracking-[0.5em] font-mono italic">
                 {["Structure", "Hydration", "Aeration", "Crystalline", "Thermal", "Aesthetic"][i]}
               </span>
             </div>
@@ -91,85 +96,90 @@ const Hero = ({ isParentLoading }) => {
         
         {/* LEFT: BOUTIQUE TYPOGRAPHY */}
         <motion.div 
-          style={{ y: textY }}
+          style={{ y: textY, x: driftX, rotateY: driftX }}
           initial={{ opacity: 0, x: -60 }}
           animate={!isParentLoading ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-          className="lg:col-span-8 flex flex-col justify-center"
+          className="lg:col-span-8 flex flex-col justify-center perspective-[1000px]"
         >
-          <div className="flex items-center gap-6 mb-12">
+          <div className="flex items-center gap-6 mb-10">
             <motion.div 
               initial={{ width: 0 }}
-              animate={{ width: 100 }}
+              animate={{ width: 80 }}
               transition={{ delay: 1, duration: 1.5 }}
               className="h-[1px] bg-[#E89EB8]"
             />
-            <span className="uppercase tracking-[1em] text-[10px] font-bold text-[#E89EB8]/80">
+            <span className="uppercase tracking-[1em] text-[10px] font-bold text-[#E89EB8]">
               Thane • Maharashtra
             </span>
           </div>
           
-          <h1 className="text-[15vw] lg:text-[12rem] font-serif leading-[0.75] mb-14 text-white tracking-tighter">
+          <h1 className="text-[16vw] lg:text-[11rem] font-serif leading-[0.75] mb-12 text-white tracking-tighter">
             Delight <br />
-            <span className="italic font-light text-[#E89EB8] ml-[10vw] relative inline-block">
+            <span className="italic font-light text-[#E89EB8] ml-[8vw] relative inline-block">
                 Bakehouse
                 <motion.span 
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ delay: 2, duration: 1.5 }}
-                    className="absolute -bottom-4 left-0 w-full h-[1px] bg-white/20 origin-left"
+                    className="absolute -bottom-4 left-0 w-full h-[1px] bg-white/10 origin-left"
                 />
             </span>
           </h1>
           
           <div className="max-w-md space-y-12">
-            <p className="text-2xl text-white/50 leading-relaxed font-light italic">
+            <p className="text-xl md:text-2xl text-white/40 leading-relaxed font-light italic">
               Architecting sweetness, <br/>
-              <span className="text-white/80">layer by calculated layer.</span>
+              <span className="text-white/70">layer by calculated layer.</span>
             </p>
             
-            <div className="flex flex-wrap gap-16">
-              <button 
+            {/* BUTTONS: UPDATED TO ARCHITECTURAL STYLE */}
+            <div className="flex flex-wrap gap-6 items-center">
+              <motion.button 
+                whileHover={{ scale: 1.05, backgroundColor: 'rgba(232, 158, 184, 0.1)' }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => document.getElementById('menu').scrollIntoView({ behavior: 'smooth' })}
-                className="group relative text-white uppercase tracking-[0.5em] text-[11px] font-black"
+                className="px-8 py-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-full text-white uppercase tracking-[0.4em] text-[10px] font-black transition-all duration-300 group"
               >
                 <span className="relative z-10">Deconstruct Menu</span>
-                <div className="absolute -bottom-4 left-0 w-0 h-[1px] bg-[#E89EB8] transition-all duration-700 group-hover:w-full" />
-              </button>
+                <div className="absolute inset-0 rounded-full bg-[#E89EB8]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              </motion.button>
 
-              <button 
-                onClick={() => document.getElementById('custom-studio').scrollIntoView({ behavior: 'smooth' })}
-                className="group relative text-white/30 uppercase tracking-[0.5em] text-[11px] font-black hover:text-[#E89EB8] transition-colors duration-500"
+              <motion.button 
+                whileHover={{ x: 10 }}
+                onClick={() => document.getElementById('custom').scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-4 text-white/40 uppercase tracking-[0.4em] text-[10px] font-black hover:text-[#E89EB8] transition-all duration-300 flex items-center gap-4"
               >
-                <span className="relative z-10">Start Project</span>
-              </button>
+                Start Project
+                <div className="h-[1px] w-8 bg-white/20 group-hover:w-12 group-hover:bg-[#E89EB8] transition-all" />
+              </motion.button>
             </div>
           </div>
         </motion.div>
 
         {/* RIGHT: INTERACTIVE GLASS CARD */}
         <motion.div 
+          style={{ y: driftY, x: driftX }}
           initial={{ opacity: 0, scale: 0.9, y: 40 }}
           animate={!isParentLoading ? { opacity: 1, scale: 1, y: 0 } : {}}
           transition={{ duration: 2, delay: 0.8 }}
           className="lg:col-span-4 hidden lg:flex items-center justify-end"
         >
           <div className="relative group">
-            {/* The Rotating Decorative Ring */}
             <motion.div 
               animate={{ rotate: 360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute -inset-24 border border-white/5 rounded-full"
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+              className="absolute -inset-20 border border-white/5 rounded-full pointer-events-none"
             />
             
-            <div className="w-[340px] bg-white/[0.02] backdrop-blur-3xl border border-white/10 p-14 rounded-[4rem] shadow-2xl transition-all duration-1000 group-hover:bg-white/[0.05] group-hover:border-[#E89EB8]/20 group-hover:-translate-y-4">
+            <div className="w-[340px] bg-white/[0.01] backdrop-blur-2xl border border-white/10 p-14 rounded-[4rem] shadow-2xl transition-all duration-1000 group-hover:bg-white/[0.04] group-hover:border-[#E89EB8]/20 group-hover:-translate-y-4">
               <div className="space-y-12">
                 <div className="space-y-3">
-                   <div className="flex justify-between items-center">
-                      <span className="text-[10px] font-black text-[#E89EB8] uppercase tracking-widest">The Studio</span>
-                      <div className="px-2 py-1 border border-white/10 rounded-md text-[8px] text-white/30 font-mono tracking-widest uppercase">Live 2026</div>
-                   </div>
-                   <h3 className="text-3xl font-serif italic text-white leading-tight">Edible <br/> Blueprints.</h3>
+                    <div className="flex justify-between items-center">
+                       <span className="text-[10px] font-black text-[#E89EB8] uppercase tracking-widest">The Studio</span>
+                       <div className="px-2 py-1 border border-white/10 rounded-md text-[8px] text-white/30 font-mono tracking-widest uppercase">Live 2026</div>
+                    </div>
+                    <h3 className="text-3xl font-serif italic text-white leading-tight">Edible <br/> Blueprints.</h3>
                 </div>
 
                 <div className="space-y-6">
@@ -189,13 +199,13 @@ const Hero = ({ isParentLoading }) => {
         </motion.div>
       </div>
 
-      {/* 4. SCROLL INDICATOR (IDEA BAKERY STYLE) */}
+      {/* 4. SCROLL INDICATOR */}
       <motion.div 
-        style={{ opacity: useTransform(scrollYProgress, [0, 0.15], [1, 0]) }}
+        style={{ opacity: useTransform(scrollYProgress, [0, 0.1], [1, 0]) }}
         className="absolute bottom-12 left-1/2 -translate-x-1/2 lg:left-12 lg:translate-x-0 flex items-center gap-8"
       >
         <span className="text-[10px] text-white/20 uppercase tracking-[0.6em] [writing-mode:vertical-lr] lg:[writing-mode:horizontal-tb]">Scroll to reveal</span>
-        <div className="h-[1px] w-24 bg-gradient-to-r from-white/20 to-transparent hidden lg:block" />
+        <div className="h-[1px] w-24 bg-gradient-to-r from-white/10 to-transparent hidden lg:block" />
       </motion.div>
     </section>
   );
