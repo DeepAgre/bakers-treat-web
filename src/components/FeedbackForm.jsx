@@ -82,7 +82,7 @@ const FeedbackForm = () => {
               
               <div className="flex flex-wrap gap-3 pt-4">
                  <div className="px-5 py-2 rounded-full border border-white/10 text-white/30 text-[9px] uppercase tracking-widest font-black">
-                   #BakersTreatThane
+                   #DelightBakehouseThane
                  </div>
                  <div className="px-5 py-2 rounded-full border border-white/10 text-white/30 text-[9px] uppercase tracking-widest font-black">
                    #ArtisanCakes

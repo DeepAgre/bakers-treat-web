@@ -6,149 +6,154 @@ const PreLoader = () => {
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
-    // Faster, smoother progress increment
-    const timer = setInterval(() => {
+    // Variable speed loading to feel more "organic" like high-end studios
+    const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          clearInterval(timer);
-          setTimeout(() => setIsComplete(true), 500);
+          clearInterval(interval);
+          setTimeout(() => setIsComplete(true), 800);
           return 100;
         }
-        return prev + 1;
+        // Jumps slightly to simulate "data loading"
+        const jump = Math.random() > 0.8 ? 3 : 1;
+        return prev + jump;
       });
-    }, 15); // Snappy loading
-    return () => clearInterval(timer);
+    }, 20); 
+    return () => clearInterval(interval);
   }, []);
+
+  // Animation Variants
+  const textReveal = {
+    initial: { y: "100%", skewY: 7 },
+    animate: { y: 0, skewY: 0 },
+    transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] }
+  };
+
+  const containerExit = {
+    initial: { clipPath: "inset(0% 0% 0% 0%)" },
+    exit: { 
+      clipPath: "inset(0% 0% 100% 0%)",
+      transition: { duration: 1.2, ease: [0.85, 0, 0.15, 1], delay: 0.2 } 
+    }
+  };
 
   return (
     <AnimatePresence>
-      <motion.div
-        initial={{ y: 0 }}
-        exit={{ 
-          y: "-100vh",
-          transition: { duration: 1.2, ease: [0.85, 0, 0.15, 1] } 
-        }}
-        className="fixed inset-0 z-[500] bg-[#080808] flex items-center justify-center overflow-hidden"
-      >
-        {/* --- STUDIO BACKGROUND ELEMENTS --- */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          {/* Subtle Pink Ambient Glow (Lower Left) */}
-          <motion.div 
-            animate={{ 
-              scale: [1, 1.1, 1], 
-              opacity: [0.1, 0.2, 0.1] 
-            }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-[10%] -left-[10%] w-[60vw] h-[60vw] bg-[#E89EB8]/20 blur-[150px] rounded-full"
-          />
-
-          {/* Large Architectural "B" Outline */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center text-[30vw] font-serif font-black text-white/[0.02] select-none tracking-tighter">
-            DB
-          </div>
-        </div>
-
-        {/* --- MAIN CONTENT --- */}
-        <div className="relative z-10 flex flex-col items-center w-full max-w-sm px-10">
-          
-          {/* Brand Name with Staggered Letter Reveal */}
-          <div className="overflow-hidden mb-12 text-center">
-            <motion.h1
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="text-5xl md:text-7xl font-serif text-white tracking-tighter"
-            >
-              Delight <span className="italic font-light text-[#E89EB8]">Bakehouse</span>
-            </motion.h1>
-            
-            <div className="flex items-center justify-center gap-3 mt-4">
-              <motion.div 
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ delay: 0.5, duration: 1 }}
-                className="h-[1px] w-8 bg-[#E89EB8]/50 origin-left"
-              />
-              <motion.p 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="text-[9px] uppercase tracking-[0.6em] text-white/40 font-medium"
-              >
-                Artisan Studio • Thane
-              </motion.p>
-              <motion.div 
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ delay: 0.5, duration: 1 }}
-                className="h-[1px] w-8 bg-[#E89EB8]/50 origin-right"
-              />
-            </div>
-          </div>
-
-          {/* Minimalist Progress Section */}
-          <div className="w-full space-y-4">
-            <div className="flex justify-between items-end px-1">
-              <div className="flex flex-col">
-                <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white/20 mb-1">
-                  Loading Experience
-                </span>
-                <motion.span 
-                  className="text-[10px] font-mono text-[#E89EB8] font-bold"
-                >
-                  {progress < 10 ? `00${progress}` : `0${progress}`} / 0100
-                </motion.span>
-              </div>
-              
-              <div className="text-right">
-                 <span className="text-[8px] font-mono text-white/20 uppercase">Ver 2.6.0</span>
-              </div>
-            </div>
-
-            {/* Architectural Loading Bar */}
-            <div className="relative w-full h-[2px] bg-white/[0.05] overflow-hidden">
-              <motion.div 
-                className="absolute top-0 left-0 h-full bg-[#E89EB8]"
-                style={{ width: `${progress}%` }}
-                transition={{ ease: "easeOut" }}
-              />
-              {/* Secondary Glow line */}
-              <motion.div 
-                className="absolute top-0 left-0 h-full bg-white/40 blur-[2px]"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* --- BOTTOM STUDIO MARKS --- */}
-        <div className="absolute bottom-12 left-10 right-10 flex justify-between items-center opacity-30">
-          <div className="flex items-center gap-4">
-            <span className="text-[10px] font-serif italic text-white">Khushi Manjrekar</span>
-          </div>
-          <div className="h-[1px] flex-1 mx-8 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-          <div className="text-right">
-            <p className="text-white font-mono text-[8px] tracking-widest uppercase">
-              
-            </p>
-          </div>
-        </div>
-
-        {/* Top Floating Badge */}
+      {!isComplete && (
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className="absolute top-12 flex items-center gap-3"
+          variants={containerExit}
+          initial="initial"
+          exit="exit"
+          className="fixed inset-0 z-[1000] bg-[#0a0a0a] flex flex-col items-center justify-center overflow-hidden"
         >
-          <div className="w-[6px] h-[6px] rounded-full bg-[#E89EB8] animate-pulse" />
-          <span className="text-[8px] font-black uppercase tracking-[0.5em] text-white/40">Studio Connection Active</span>
-        </motion.div>
+          {/* 1. LARGE ARCHITECTURAL BACKGROUND INITIALS */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 0.03, scale: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          >
+            <h2 className="text-[50vw] font-serif font-black tracking-tighter text-white">
+              DB
+            </h2>
+          </motion.div>
 
-        {/* NOISE OVERLAY FOR TEXTURE */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.03] contrast-150 mix-blend-screen" 
-             style={{ backgroundImage: `url("https://grainy-gradients.vercel.app/noise.svg")` }} />
-      </motion.div>
+          {/* 2. MAIN CENTER CONTENT */}
+          <div className="relative z-10 flex flex-col items-center">
+            
+            {/* Staggered Word Reveal */}
+            <div className="flex flex-col items-center mb-16">
+              <div className="overflow-hidden h-20 md:h-32">
+                <motion.h1 
+                  variants={textReveal}
+                  initial="initial"
+                  animate="animate"
+                  className="text-6xl md:text-9xl font-serif text-white tracking-tighter"
+                >
+                  Delight
+                </motion.h1>
+              </div>
+              <div className="overflow-hidden h-20 md:h-32 -mt-4 md:-mt-8">
+                <motion.h1 
+                  variants={textReveal}
+                  initial="initial"
+                  animate="animate"
+                  transition={{ delay: 0.1, duration: 1.2 }}
+                  className="text-6xl md:text-9xl font-serif italic text-[#E89EB8] tracking-tighter"
+                >
+                  Bakehouse
+                </motion.h1>
+              </div>
+            </div>
+
+            {/* Counter - Elegant and Minimal */}
+            <div className="overflow-hidden flex flex-col items-center gap-4">
+               <motion.div 
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: 1 }}
+                 transition={{ delay: 0.5 }}
+                 className="flex flex-col items-center"
+               >
+                 <span className="text-[10px] uppercase tracking-[0.8em] text-white/20 mb-2 font-black">
+                   Initializing Studio
+                 </span>
+                 <span className="text-4xl md:text-6xl font-mono text-white font-light tracking-widest">
+                   {progress}%
+                 </span>
+               </motion.div>
+            </div>
+          </div>
+
+          {/* 3. PERIMETER DETAILS (High-End Studio Feel) */}
+          <div className="absolute inset-0 p-8 md:p-16 flex flex-col justify-between pointer-events-none">
+            <div className="flex justify-between items-start">
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 0.4, x: 0 }}
+                className="flex items-center gap-3"
+              >
+                <div className="w-1 h-1 bg-[#E89EB8] rounded-full animate-pulse" />
+                <span className="text-[9px] uppercase tracking-[0.4em] text-white">Thane, MH</span>
+              </motion.div>
+              <motion.span 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 0.4, x: 0 }}
+                className="text-[9px] uppercase tracking-[0.4em] text-white"
+              >
+                © 2026
+              </motion.span>
+            </div>
+
+            <div className="flex justify-between items-end">
+               <motion.div 
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={{ opacity: 0.4, y: 0 }}
+                 className="max-w-[150px]"
+               >
+                 <p className="text-[8px] uppercase tracking-widest leading-relaxed text-white">
+                   Architectural Patisserie <br />
+                   By Khushi Manjrekar
+                 </p>
+               </motion.div>
+               <motion.div 
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={{ opacity: 0.4, y: 0 }}
+                 className="text-right"
+               >
+                 <p className="text-[8px] uppercase tracking-widest text-white">
+                   Precision // Soul // Craft
+                 </p>
+               </motion.div>
+            </div>
+          </div>
+
+          {/* 4. SCANLINE / NOISE EFFECT */}
+          <div className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+          
+          {/* Architectural Grid Overlay */}
+          <div className="absolute inset-0 border-[1px] border-white/5 pointer-events-none m-8 md:m-16" />
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 };

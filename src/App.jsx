@@ -26,12 +26,12 @@ const BakeryApp = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); 
   
   const [cartItems, setCartItems] = useState(() => {
-    const saved = localStorage.getItem('bakers_treat_cart');
+    const saved = localStorage.getItem('Delight_Bakehouse_cart');
     return saved ? JSON.parse(saved) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem('bakers_treat_cart', JSON.stringify(cartItems));
+    localStorage.setItem('Delight_Bakehouse_cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
   useEffect(() => {

@@ -6,7 +6,7 @@ import cakeGallery from '../assets/cake-gallery.jpeg';
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const khushiNumber = "919136371662"; 
-  const bakeryInsta = "https://www.instagram.com/_bakers_treat_/";
+  const bakeryInsta = "https://www.instagram.com/_Delight_Bakehouse_/";
   const personalInsta = "https://www.instagram.com/_khushi_0810_/";
   const bakeryEmail = "Khushimanjrekar08@gmail.com";
 
@@ -78,7 +78,7 @@ const Footer = () => {
               </h2>
               <p className="text-white/50 max-w-md leading-relaxed text-lg font-light">
                 Handcrafting premium, artisanal bakes in the heart of Thane. 
-                Every treat by <span className="text-white font-medium">Khushi Manjrekar</span> is a masterpiece of Belgian chocolate and local passion.
+                Every Bakehouse by <span className="text-white font-medium">Khushi Manjrekar</span> is a masterpiece of Belgian chocolate and local passion.
               </p>
             </motion.div>
 
