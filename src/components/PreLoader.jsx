@@ -4,107 +4,139 @@ import { motion, AnimatePresence } from 'framer-motion';
 const PreLoader = () => {
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
-  const [cycleIndex, setCycleIndex] = useState(0);
-
-  // The "Funky" Pendragon-style cycling descriptors
-  const phrases = ["Delight Bakehouse"];
 
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(() => setIsComplete(true), 1000);
+          setTimeout(() => setIsComplete(true), 1200); // Slight pause for visual impact
           return 100;
         }
-        return prev + Math.floor(Math.random() * 5) + 1;
+        return prev + Math.floor(Math.random() * 8) + 2;
       });
-      // Cycle phrases rapidly for that kinetic energy
-      setCycleIndex((prev) => (prev + 1) % phrases.length);
-    }, 60); 
-
+    }, 40);
     return () => clearInterval(interval);
   }, []);
+
+  // Animation variants for the heavy staggered reveal
+  const containerVariants = {
+    exit: {
+      y: "-100%",
+      transition: { 
+        duration: 0.8, 
+        ease: [0.83, 0, 0.17, 1],
+        when: "afterChildren"
+      }
+    }
+  };
+
+  const textVariants = {
+    initial: { y: 100, rotate: 10, opacity: 0 },
+    animate: { 
+      y: 0, 
+      rotate: 0, 
+      opacity: 1,
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    }
+  };
 
   return (
     <AnimatePresence>
       {!isComplete && (
         <motion.div
-          initial={{ clipPath: "inset(0% 0% 0% 0%)" }}
-          exit={{ 
-            clipPath: "inset(50% 0% 50% 0%)", // Shutter-style exit
-            transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } 
-          }}
-          className="fixed inset-0 z-[1000] bg-[#E89EB8] flex items-center justify-center overflow-hidden"
+          variants={containerVariants}
+          initial="initial"
+          exit="exit"
+          className="fixed inset-0 z-[1000] bg-[#E89EB8] flex flex-col items-center justify-center overflow-hidden"
         >
-          {/* 1. KINETIC BACKGROUND TEXT (Moving horizontally like Pendragon) */}
-          <div className="absolute inset-0 flex flex-col justify-around opacity-10 pointer-events-none select-none">
-            {[...Array(6)].map((_, i) => (
+          {/* 1. BACKGROUND KINETIC MASKING (Heavily Animated) */}
+          <div className="absolute inset-0 flex flex-row pointer-events-none">
+            {[...Array(5)].map((_, i) => (
               <motion.div
                 key={i}
-                initial={{ x: i % 2 === 0 ? "-20%" : "20%" }}
-                animate={{ x: i % 2 === 0 ? "20%" : "-20%" }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                className="text-[12vw] font-black italic whitespace-nowrap text-black leading-none"
-              >
-                Delight Bakehouse — Delight Bakehouse — Delight Bakehouse
-              </motion.div>
+                initial={{ scaleY: 0 }}
+                animate={{ scaleY: progress / 100 }}
+                className="flex-1 bg-black/5 origin-top"
+                transition={{ duration: 0.5, delay: i * 0.05 }}
+              />
             ))}
           </div>
 
-          {/* 2. MAIN CENTER ENGINE */}
-          <div className="relative z-10 flex flex-col items-center">
-            {/* The Glitchy/Cycling Phrase */}
-            <div className="h-24 flex items-center justify-center">
-                <motion.span 
-                    key={cycleIndex}
-                    initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
-                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                    className="text-4xl md:text-7xl font-black text-black tracking-tightest uppercase italic"
-                >
-                    {phrases[cycleIndex]}
-                </motion.span>
+          {/* 2. OVERLAPPING LARGE TEXT (Liquid Feel) */}
+          <div className="relative z-10 w-full flex flex-col items-center">
+            <div className="overflow-hidden">
+              <motion.h1 
+                variants={textVariants}
+                animate="animate"
+                initial="initial"
+                className="text-[18vw] md:text-[12vw] font-serif font-black text-black leading-none tracking-tighter"
+              >
+                Delight
+              </motion.h1>
             </div>
+            
+            <motion.div 
+               initial={{ width: 0 }}
+               animate={{ width: "60vw" }}
+               transition={{ duration: 1.5, ease: "easeInOut" }}
+               className="h-[2px] bg-black my-4"
+            />
 
-            {/* Progress Bar (Heavy & Brutalist) */}
-            <div className="mt-12 w-64 md:w-96">
-                <div className="flex justify-between items-end mb-2">
-                    <span className="text-black font-black text-[10px] tracking-tighter">ENGINE_STATUS: LOADING</span>
-                    <span className="text-black font-mono text-2xl font-black">{progress}%</span>
-                </div>
-                <div className="w-full h-4 border-2 border-black p-[2px]">
-                    <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${progress}%` }}
-                        className="h-full bg-black"
-                    />
-                </div>
+            <div className="overflow-hidden">
+              <motion.h1 
+                variants={textVariants}
+                animate="animate"
+                initial="initial"
+                transition={{ delay: 0.2 }}
+                className="text-[18vw] md:text-[12vw] font-serif italic font-light text-black leading-none tracking-tighter"
+              >
+                Bakehouse
+              </motion.h1>
             </div>
           </div>
 
-          {/* 3. CORNER MARKS (Funky UI Elements) */}
-          <div className="absolute top-10 left-10 text-black">
-             <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-black animate-bounce" />
-                <span className="font-black text-xs">BT_SYS_v2.6</span>
-             </div>
+          {/* 3. BIG COUNTER (Mobile Optimized) */}
+          <div className="absolute bottom-[10%] left-0 w-full flex flex-col items-center justify-center">
+             <motion.div 
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               className="flex flex-col items-center"
+             >
+                <span className="text-black font-serif italic text-xl mb-2">Thane Studio</span>
+                <div className="relative overflow-hidden h-24">
+                   <motion.span 
+                    key={progress}
+                    initial={{ y: 50, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    className="text-8xl font-black text-black block"
+                   >
+                     {progress}
+                   </motion.span>
+                </div>
+             </motion.div>
           </div>
 
-          <div className="absolute bottom-10 right-10 text-black text-right font-black text-[10px] leading-none uppercase">
-            <p>Calculated Sweetness</p>
-            <p>Thane / Mumbai</p>
-            <p className="mt-2 text-white bg-black px-1">Limited Access</p>
-          </div>
-
-          {/* 4. FLICKER OVERLAY */}
+          {/* 4. LIQUID DECORATION */}
           <motion.div 
-            animate={{ opacity: [0, 0.05, 0] }}
-            transition={{ duration: 0.1, repeat: Infinity }}
-            className="absolute inset-0 bg-white pointer-events-none"
+            animate={{ 
+              scale: [1, 1.2, 1],
+              rotate: [0, 180, 360] 
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+            className="absolute -top-20 -right-20 w-64 h-64 border-[1px] border-black/20 rounded-full"
+          />
+          <motion.div 
+            animate={{ 
+              scale: [1.2, 1, 1.2],
+              rotate: [360, 180, 0] 
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+            className="absolute -bottom-20 -left-20 w-96 h-96 border-[1px] border-black/10 rounded-full"
           />
 
-          {/* SCANLINE EFFECT */}
-          <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[length:100%_4px,3px_100%]" />
+          {/* 5. GRAIN OVERLAY */}
+          <div className="absolute inset-0 pointer-events-none opacity-[0.15] mix-blend-multiply bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
         </motion.div>
       )}
     </AnimatePresence>
