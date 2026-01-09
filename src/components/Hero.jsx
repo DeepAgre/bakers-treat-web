@@ -110,9 +110,9 @@ const Hero = ({ isParentLoading }) => {
           </div>
           
           <h1 className="text-[15vw] lg:text-[12rem] font-serif leading-[0.75] mb-14 text-white tracking-tighter">
-            Bakers <br />
+            Dedlight <br />
             <span className="italic font-light text-[#E89EB8] ml-[10vw] relative inline-block">
-                Treat
+                Bakehouse
                 <motion.span 
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}

@@ -59,7 +59,7 @@ const PreLoader = () => {
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
               className="text-5xl md:text-7xl font-serif text-white tracking-tighter"
             >
-              Bakers <span className="italic font-light text-[#E89EB8]">Treat</span>
+              Delight <span className="italic font-light text-[#E89EB8]">Bakehouse</span>
             </motion.h1>
             
             <div className="flex items-center justify-center gap-3 mt-4">
