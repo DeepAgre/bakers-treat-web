@@ -15,7 +15,7 @@ import Cart from './components/Cart';
 import ProductModal from './components/ProductModal';
 import Toast from './components/Toast';
 import PreLoader from './components/PreLoader';
-import AnnouncementBanner from './components/AnnouncementBanner';
+
 
 const BakeryApp = () => {
   const [isLoading, setIsLoading] = useState(true);
