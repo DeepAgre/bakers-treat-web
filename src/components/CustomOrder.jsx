@@ -1,32 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useSpring, useMotionValue, useTransform } from 'framer-motion';
 
 const CustomOrder = () => {
   const [prompt, setPrompt] = useState('');
-  const [style, setStyle] = useState('photorealistic, highly detailed');
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const KHUSHI_PHONE = "919136371662";
-  const HF_TOKEN = import.meta.env.VITE_HF_TOKEN;
 
   // --- Magnetic & 3D Tilt Logic ---
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const mouseX = useSpring(x, { damping: 25, stiffness: 150 });
-  const mouseY = useSpring(y, { damping: 25, stiffness: 150 });
+  const mouseX = useSpring(x, { damping: 30, stiffness: 200 });
+  const mouseY = useSpring(y, { damping: 30, stiffness: 200 });
 
-  const rotateX = useTransform(mouseY, [-20, 20], [15, -15]);
-  const rotateY = useTransform(mouseX, [-20, 20], [-15, 15]);
+  const rotateX = useTransform(mouseY, [-20, 20], [10, -10]);
+  const rotateY = useTransform(mouseX, [-20, 20], [-10, 10]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
-      x.set((e.clientX - centerX) / 25);
-      y.set((e.clientY - centerY) / 25);
+      x.set((e.clientX - centerX) / 30);
+      y.set((e.clientY - centerY) / 30);
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
@@ -36,190 +34,147 @@ const CustomOrder = () => {
     if (!prompt) return;
     setLoading(true);
     setError('');
-    setImage(null);
-
-    const fullPrompt = `Masterpiece cake art: ${prompt}, ${style}, bakery photography, high quality, pastel colors, 8k resolution, cinematic lighting`;
-    const seed = Math.floor(Math.random() * 100000);
+    
+    const fullPrompt = `Architectural luxury cake, ${prompt}, high-end food photography, dark moody lighting, sharp focus, 8k, professional pâtisserie style`;
+    const seed = Math.floor(Math.random() * 99999);
     const pollinationUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?seed=${seed}&width=1024&height=1024&nologo=true`;
 
     try {
       const imgCheck = new Image();
       imgCheck.src = pollinationUrl;
       imgCheck.onload = () => { setImage(pollinationUrl); setLoading(false); };
-      imgCheck.onerror = () => tryHuggingFace(fullPrompt);
+      imgCheck.onerror = () => { setError("Studio is busy. Try again."); setLoading(false); };
     } catch (err) {
-      tryHuggingFace(fullPrompt);
-    }
-  };
-
-  const tryHuggingFace = async (fullPrompt) => {
-    try {
-      const response = await fetch("https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1", {
-        headers: { Authorization: `Bearer ${HF_TOKEN}` },
-        method: "POST",
-        body: JSON.stringify({ inputs: fullPrompt }),
-      });
-      if (!response.ok) throw new Error("Busy");
-      const blob = await response.blob();
-      setImage(URL.createObjectURL(blob));
-      setLoading(false);
-    } catch (err) {
-      setError("AI bakers are busy! Try again in a minute.");
       setLoading(false);
     }
   };
 
   return (
-    <section id="custom-studio" className="py-24 relative overflow-hidden min-h-screen flex items-center bg-[#E89EB8]">
+    <section id="custom-studio" className="py-32 relative overflow-hidden min-h-screen flex items-center bg-[#080808]">
       
-      {/* KINETIC BACKGROUND TEXT */}
-      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden opacity-10">
+      {/* 1. KINETIC BACKGROUND TYPOGRAPHY */}
+      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden opacity-[0.03]">
         <motion.div 
-          animate={{ x: [0, -1200] }} 
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="text-[250px] font-serif font-black text-white whitespace-nowrap"
+          animate={{ x: [0, -1500] }} 
+          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+          className="text-[300px] font-serif font-black text-white whitespace-nowrap"
         >
-          BAKERS TREAT • DESIGN YOUR VISION • THANE • 
+          BAKERS TREAT • ARCHITECTURAL CAKERY • THANE STUDIO • 
         </motion.div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+      <div className="max-w-[1600px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
         
-        {/* LEFT COLUMN: INTERACTIVE 3D FIELD */}
-        <div className="relative h-[650px] hidden lg:flex items-center justify-center order-2 lg:order-1">
-          <motion.div 
-            style={{ rotateX, rotateY, perspective: 1200 }}
-            className="relative w-full h-full flex items-center justify-center"
+        {/* LEFT COLUMN: THE BRAND STATEMENT */}
+        <div className="lg:col-span-7 space-y-12">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
           >
-            {/* Dynamic Glass Orbs */}
-            {[...Array(3)].map((_, i) => (
-              <motion.div
-                key={i}
-                animate={{ 
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 180, 360],
-                  x: [0, 40, 0],
-                  y: [0, -40, 0]
-                }}
-                transition={{ duration: 12 + i * 3, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute w-[500px] h-[500px] bg-gradient-to-tr from-white/30 to-transparent rounded-full blur-3xl border border-white/20"
-                style={{ left: `${i * 8}%`, top: `${i * 4}%` }}
-              />
-            ))}
+            <div className="flex items-center gap-4 mb-8">
+                <div className="h-[1px] w-12 bg-[#E89EB8]" />
+                <span className="text-[#E89EB8] uppercase tracking-[0.8em] text-[10px] font-bold">The Commission Studio</span>
+            </div>
+            <h2 className="text-7xl md:text-[10rem] font-serif text-white leading-[0.8] tracking-tighter">
+              Dream in <br/>
+              <span className="italic text-[#E89EB8] font-light text-[0.9em]">Sugar.</span>
+            </h2>
+          </motion.div>
 
-            {/* Central Branding Card */}
-            <motion.div 
-              className="bg-white/10 backdrop-blur-3xl p-20 rounded-[4rem] border border-white/40 shadow-[0_50px_100px_rgba(0,0,0,0.15)] relative z-20 text-center"
-              whileHover={{ scale: 1.05 }}
+          {/* MAIN WHATSAPP CALL TO ACTION */}
+          <motion.div 
+            style={{ rotateX, rotateY, perspective: 1000 }}
+            className="relative group"
+          >
+            <button 
+              onClick={() => window.open(`https://wa.me/${KHUSHI_PHONE}?text=Hi Khushi! I want to discuss a custom Bakers Treat order.`, '_blank')}
+              className="w-full max-w-2xl bg-[#111] hover:bg-[#151515] border border-white/10 rounded-[2rem] p-10 md:p-16 text-left transition-all duration-500 shadow-2xl relative overflow-hidden group"
             >
-              <div className="text-white space-y-6">
-                <span className="text-xs uppercase tracking-[1em] font-black block opacity-60">Thane, India</span>
-                <h4 className="text-8xl font-serif font-bold italic tracking-tighter leading-none">
-                  Delight <br/> Bakehouse
-                </h4>
-                <div className="h-1.5 w-32 bg-white mx-auto opacity-40 rounded-full animate-pulse" />
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-[#25D366] rounded-full animate-pulse" />
+                    <span className="text-white/40 text-[10px] uppercase tracking-widest font-bold">Direct Inquiry</span>
+                  </div>
+                  <h3 className="text-white text-4xl md:text-5xl font-serif italic">Consult with Khushi</h3>
+                  <p className="text-white/40 text-sm font-light max-w-xs uppercase tracking-widest leading-loose">Discuss flavors, blueprints, and delivery in Thane.</p>
+                </div>
+                <div className="h-20 w-20 rounded-full border border-[#E89EB8]/30 flex items-center justify-center group-hover:bg-[#E89EB8] group-hover:border-[#E89EB8] transition-all duration-700">
+                  <span className="text-[#E89EB8] group-hover:text-black text-3xl transition-colors">→</span>
+                </div>
               </div>
-            </motion.div>
-
-            {/* Floating Elements (Larger & More Interactive) */}
-            <KineticText text="Artisan Craft" x={-280} y={-240} mouseX={mouseX} mouseY={mouseY} delay={0} size="text-4xl" />
-            <KineticText text="Bespoke Art" x={300} y={-180} mouseX={mouseX} mouseY={mouseY} delay={1} size="text-4xl" />
-            <KineticText text="Pure Magic" x={-240} y={230} mouseX={mouseX} mouseY={mouseY} delay={2} size="text-5xl" />
-            <KineticText text="Studio Thane" x={250} y={260} mouseX={mouseX} mouseY={mouseY} delay={0.5} size="text-3xl" />
+              
+              {/* Abstract Shape Overlay */}
+              <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-[#E89EB8]/5 rounded-full blur-3xl group-hover:bg-[#E89EB8]/10 transition-colors" />
+            </button>
           </motion.div>
         </div>
 
-        {/* RIGHT COLUMN: MAIN ACTIONS */}
-        <div className="order-1 lg:order-2 space-y-10">
-          <div>
-            <h2 className="text-7xl md:text-[8.5rem] font-serif font-bold mb-4 leading-[0.85] text-white">
-              Dream it. <br/> Eat it.
-            </h2>
-          </div>
+        {/* RIGHT COLUMN: THE AI VISUALIZER */}
+        <div className="lg:col-span-5 relative">
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="bg-white/5 backdrop-blur-3xl p-8 md:p-12 rounded-[3rem] border border-white/10 shadow-3xl"
+          >
+            <div className="space-y-8">
+              <div className="space-y-2">
+                <h4 className="text-white font-serif text-2xl italic">The Visualizer</h4>
+                <p className="text-white/30 text-[10px] uppercase tracking-[0.3em]">Generate a concept sketch using AI</p>
+              </div>
 
-          {/* MAIN BUTTON: CHAT WITH KHUSHI */}
-          <div className="relative">
-             <motion.button 
-                whileHover={{ scale: 1.03, y: -5 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => window.open(`https://wa.me/${KHUSHI_PHONE}?text=Hi Khushi! I want to discuss a custom cake order.`, '_blank')}
-                className="w-full bg-white text-[#2D2D2D] p-12 rounded-[3rem] shadow-[0_30px_60px_rgba(0,0,0,0.2)] border-b-[8px] border-[#d1d1d1] flex flex-col items-center justify-center text-center group hover:bg-[#2D2D2D] hover:text-white hover:border-[#000] transition-all duration-300 relative overflow-hidden"
-              >
-                {/* Floating "Click Here" Pill */}
-                <motion.div 
-                  animate={{ y: [0, -5, 0] }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                  className="bg-[#E89EB8] text-white px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 shadow-sm"
-                >
-                  Click here to start chat
-                </motion.div>
+              <div className="relative">
+                <input 
+                  type="text" 
+                  placeholder="e.g. A black velvet cake with gold marble..."
+                  className="w-full bg-black/40 border border-white/10 rounded-2xl p-6 text-white placeholder:text-white/20 focus:border-[#E89EB8]/50 transition-all outline-none"
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                />
+              </div>
 
-                <span className="text-4xl md:text-6xl font-serif font-bold italic mb-2">Consult with Khushi</span>
-                
-                <div className="flex items-center gap-2 mt-2 opacity-60 group-hover:opacity-100">
-                  <div className="w-2 h-2 bg-[#25D366] rounded-full animate-ping" />
-                  <p className="text-sm font-bold tracking-tight uppercase">Chat on WhatsApp for Pricing & Flavors</p>
-                </div>
-
-                {/* Decorative Whisk background for button */}
-                <div className="absolute -right-8 -bottom-8 opacity-5 rotate-12 group-hover:scale-110 transition-transform">
-                   <WhiskLoader size={180} />
-                </div>
-             </motion.button>
-          </div>
-          
-          {/* SECONDARY: AI GENERATOR */}
-          <div className="bg-white/95 backdrop-blur-2xl p-10 rounded-[3rem] shadow-2xl border border-white/50">
-            <h4 className="text-xs font-black uppercase tracking-[0.2em] mb-6 text-[#2D2D2D]/50 flex items-center gap-3">
-               <span className="w-2 h-2 bg-[#E89EB8] rounded-full animate-pulse" />
-               Visualizer: See your idea before ordering
-            </h4>
-
-            <div className="space-y-4">
-              <input 
-                type="text" 
-                placeholder="Describe a cake design (e.g. A vintage floral car)"
-                className="w-full bg-[#f8f8f8] border-2 border-transparent rounded-2xl p-6 text-[#2D2D2D] font-medium placeholder:text-[#2D2D2D]/40 focus:border-[#E89EB8] transition-all outline-none text-lg"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-              />
-              
               <button 
                 onClick={generateImage}
                 disabled={loading}
-                className="w-full bg-[#2D2D2D] text-white py-6 rounded-2xl font-black uppercase tracking-widest hover:bg-black transition-all disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-3 shadow-lg"
+                className="w-full py-6 bg-white text-black rounded-2xl font-black uppercase tracking-[0.4em] text-[10px] hover:bg-[#E89EB8] transition-all duration-500 disabled:opacity-50"
               >
-                {loading ? (
-                  <>
-                    <WhiskLoader size={24} />
-                    <span>Baking Pixels...</span>
-                  </>
-                ) : "Generate AI Visual"}
+                {loading ? "Constructing Concept..." : "Initialize Design"}
               </button>
-            </div>
 
-            <AnimatePresence mode="wait">
-              {error && <motion.p initial={{opacity:0}} className="mt-4 text-sm text-red-500 font-bold text-center">{error}</motion.p>}
-              
-              {image && (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8 pt-8 border-t border-black/5">
-                  <div className="relative group cursor-zoom-in overflow-hidden rounded-[2rem]" onClick={() => setIsFullscreen(true)}>
-                    <img src={image} className="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-110" alt="Result" />
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                       <span className="text-white font-bold text-xs border border-white px-6 py-3 rounded-full uppercase tracking-widest">Enlarge Design</span>
-                    </div>
-                  </div>
-
-                  <button 
-                    onClick={() => window.open(`https://wa.me/${KHUSHI_PHONE}?text=Hi Khushi! I've visualized this design: ${image}`, '_blank')}
-                    className="mt-6 w-full bg-[#25D366] text-white py-6 rounded-2xl font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-md flex items-center justify-center gap-3"
+              <AnimatePresence mode="wait">
+                {image && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }} 
+                    animate={{ opacity: 1, scale: 1 }} 
+                    className="space-y-6 pt-6 border-t border-white/5"
                   >
-                    <span>Send this design to Khushi</span>
-                    <span className="text-xl">→</span>
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                    <div 
+                      className="relative rounded-2xl overflow-hidden cursor-zoom-in aspect-square border border-white/10"
+                      onClick={() => setIsFullscreen(true)}
+                    >
+                      <img src={image} className="w-full h-full object-cover" alt="AI Preview" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                         <span className="text-white text-[10px] uppercase tracking-widest border border-white/40 px-6 py-2 rounded-full">Enlarge</span>
+                      </div>
+                    </div>
+                    
+                    <button 
+                      onClick={() => window.open(`https://wa.me/${KHUSHI_PHONE}?text=Hi Khushi! I've visualized this Bakers Treat concept: ${image}`, '_blank')}
+                      className="w-full py-4 bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20 rounded-xl font-bold uppercase tracking-widest text-[9px] hover:bg-[#25D366] hover:text-white transition-all"
+                    >
+                      Send Concept to Studio
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+          
+          {/* Floating Decorative Label */}
+          <div className="absolute -top-6 -right-6 h-24 w-24 bg-[#E89EB8] rounded-full flex items-center justify-center rotate-12 shadow-2xl hidden md:flex">
+             <p className="text-black font-black text-[10px] uppercase tracking-tighter text-center leading-tight">Bespoke<br/>Only</p>
           </div>
         </div>
       </div>
@@ -233,45 +188,17 @@ const CustomOrder = () => {
             onClick={() => setIsFullscreen(false)}
           >
             <motion.img 
-              initial={{ scale: 0.8 }} animate={{ scale: 1 }}
-              src={image} className="max-w-5xl max-h-[85vh] w-full object-contain rounded-2xl shadow-2xl"
-              onClick={(e) => e.stopPropagation()} 
+              initial={{ scale: 0.9 }} animate={{ scale: 1 }}
+              src={image} className="max-w-4xl max-h-[80vh] w-full object-contain rounded-xl shadow-2xl"
             />
           </motion.div>
         )}
       </AnimatePresence>
+      
+      {/* NOISE TEXTURE */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
     </section>
   );
 };
-
-// --- Awwwards Style Kinetic Text ---
-const KineticText = ({ text, x, y, mouseX, mouseY, delay, size = "text-3xl" }) => (
-  <motion.div
-    style={{ x: mouseX, y: mouseY, left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
-    className="absolute pointer-events-none"
-  >
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1, y: [0, -20, 0] }}
-      transition={{ y: { duration: 6, repeat: Infinity, delay }, opacity: { duration: 2 } }}
-      className={`text-white font-serif italic ${size} font-light opacity-80 whitespace-nowrap`}
-    >
-      {text}
-    </motion.div>
-  </motion.div>
-);
-
-// --- Whisking SVG Animation ---
-const WhiskLoader = ({ size = 24 }) => (
-  <motion.svg 
-    animate={{ rotate: 360 }}
-    transition={{ duration: 0.5, repeat: Infinity, ease: "linear" }}
-    width={size} height={size} viewBox="0 0 24 24" fill="none"
-  >
-    <path d="M12 2L12 10M12 2C10.5 2 9 3.5 9 5V14C9 16.5 10.5 18 12 18C13.5 18 15 16.5 15 14V5C15 3.5 13.5 2 12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M7 14C7 16.7614 9.23858 19 12 19C14.7614 19 17 16.7614 17 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-  </motion.svg>
-);
 
 export default CustomOrder;
