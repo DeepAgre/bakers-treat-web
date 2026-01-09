@@ -101,7 +101,7 @@ const Menu = ({ onProductSelect }) => {
             </h2>
           </div>
 
-          {/* CATEGORY FILTER - Luxury Sidebar Style */}
+          {/* CATEGORY FILTER */}
           <div className="flex flex-wrap gap-3">
             {categories.map((cat) => (
               <button
@@ -133,7 +133,7 @@ const Menu = ({ onProductSelect }) => {
                 className={`group relative ${product.isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}`}
               >
                 {/* IMAGE CONTAINER */}
-                <div className="relative overflow-hidden rounded-[1.5rem] aspect-[4/5] mb-8 bg-[#111] border border-white/5">
+                <div className="relative overflow-hidden rounded-[1.5rem] aspect-[4/5] mb-8 bg-[#111] border border-white/5 shadow-2xl shadow-black/50">
                   <img 
                     src={product.img} 
                     alt={product.name} 
@@ -141,7 +141,7 @@ const Menu = ({ onProductSelect }) => {
                       ${product.isSoldOut ? 'grayscale contrast-125 opacity-30' : 'group-hover:scale-110 group-hover:grayscale-[20%]'}`} 
                   />
                   
-                  {/* Subtle Gradient Overly */}
+                  {/* Subtle Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
 
                   {product.isSoldOut && (
@@ -151,39 +151,38 @@ const Menu = ({ onProductSelect }) => {
                       </span>
                     </div>
                   )}
-
-                  {/* Corner Price Tag */}
-                  {!product.isSoldOut && (
-                    <div className="absolute top-6 left-6 overflow-hidden">
-                       <motion.div 
-                        initial={{ y: -20, opacity: 0 }}
-                        whileInView={{ y: 0, opacity: 1 }}
-                        className="bg-white text-black px-4 py-2 rounded-full font-bold text-[10px] shadow-2xl"
-                       >
-                         ₹{product.displayPrice}+
-                       </motion.div>
-                    </div>
-                  )}
                 </div>
 
-                {/* PRODUCT INFO */}
-                <div className="space-y-3 px-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#E89EB8] uppercase tracking-[0.4em] text-[9px] font-bold">
-                      {product.category}
-                    </span>
-                    <div className="h-[1px] w-8 bg-white/10" />
-                  </div>
-                  
-                  <h3 className="text-2xl font-serif text-white group-hover:italic transition-all duration-500">
-                    {product.name}
-                  </h3>
+                {/* PRODUCT INFO AREA */}
+                <div className="space-y-4 px-2">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1">
+                      <span className="text-[#E89EB8] uppercase tracking-[0.4em] text-[9px] font-bold block mb-2">
+                        {product.category}
+                      </span>
+                      <h3 className="text-2xl font-serif text-white group-hover:italic transition-all duration-500">
+                        {product.name}
+                      </h3>
+                    </div>
 
+                    {/* PRICE PLACED BELOW IMAGE, NEXT TO TITLE */}
+                    {!product.isSoldOut && (
+                      <div className="text-right">
+                        <span className="text-white font-mono text-sm tracking-tighter">
+                          ₹{product.displayPrice}
+                          <span className="text-[10px] opacity-30 ml-0.5">+</span>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* DESCRIPTION */}
                   <p className="text-white/30 text-xs font-light leading-relaxed line-clamp-2 group-hover:text-white/60 transition-colors">
-                    {product.description || "A signature architectural creation from the studio."}
+                    {product.description || "A signature architectural creation from the Bakers Treat Thane studio."}
                   </p>
 
-                  <div className="pt-4 flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  {/* HOVER INTERACTION INDICATOR */}
+                  <div className="pt-2 flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
                      <span className="text-[10px] text-white uppercase tracking-[0.3em] font-black">View Details</span>
                      <div className="h-[1px] flex-grow bg-gradient-to-r from-[#E89EB8] to-transparent" />
                   </div>
