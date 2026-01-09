@@ -84,8 +84,8 @@ const Testimonials = () => {
           </motion.div>
           
           <h2 className="text-6xl md:text-8xl font-serif text-white tracking-tighter leading-none mb-4">
-            The Studio <br />
-            <span className="italic text-[#E89EB8] font-light">Endorsements.</span>
+            Customer <br />
+            <span className="italic text-[#E89EB8] font-light">Reviews.</span>
           </h2>
         </div>
       </div>

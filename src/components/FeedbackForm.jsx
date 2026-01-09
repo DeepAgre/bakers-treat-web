@@ -11,7 +11,7 @@ const FeedbackForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.rating === 0) {
-      setErrorMessage("Please pick a star rating!");
+      setErrorMessage("Please select a star rating.");
       setStatus('error');
       return;
     }
@@ -35,118 +35,103 @@ const FeedbackForm = () => {
       setTimeout(() => setStatus('idle'), 5000);
     } catch (err) {
       setStatus('error');
-      setErrorMessage("Kitchen connection busy! Try again.");
+      setErrorMessage("Studio connection busy. Please try again.");
     }
   };
 
   return (
-    <section className="relative py-24 sm:py-40 w-full overflow-hidden bg-[#FFF5F7]" id="feedback">
+    <section className="relative py-24 sm:py-40 w-full overflow-hidden bg-[#0a0a0a]" id="feedback">
       
-      {/* --- FUN PINK MODERN BACKGROUND ELEMENTS --- */}
+      {/* --- PREMIUM DARK BACKGROUND ELEMENTS --- */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {/* Soft Pink Mesh Gradients */}
-        <div className="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] bg-[#E89EB8]/20 blur-[120px] rounded-full" />
-        <div className="absolute -bottom-[10%] -right-[10%] w-[50%] h-[50%] bg-[#E89EB8]/15 blur-[100px] rounded-full" />
+        {/* Deep Glows */}
+        <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-[#E89EB8]/10 blur-[150px] rounded-full" />
+        <div className="absolute bottom-[-5%] left-[-5%] w-[30%] h-[30%] bg-[#E89EB8]/5 blur-[120px] rounded-full" />
         
-        {/* Floating "Fun" Elements (Optimized - No lag) */}
-        <motion.div 
-          animate={{ y: [0, -20, 0], rotate: [0, 10, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-20 right-[15%] text-6xl opacity-20 filter grayscale group-hover:grayscale-0 transition-all"
-        >
-          🍰
-        </motion.div>
-        <motion.div 
-          animate={{ y: [0, 20, 0], rotate: [0, -10, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute bottom-40 left-[10%] text-6xl opacity-20"
-        >
-          ✨
-        </motion.div>
-
-        {/* Big Background Text */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[25vw] font-serif font-black text-[#E89EB8]/5 select-none tracking-tighter">
-          HELLO
+        {/* Large Decorative Text */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-serif font-black text-white/[0.02] select-none tracking-tighter uppercase">
+          Guestbook
         </div>
       </div>
 
-      {/* WIDER CONTAINER (1600px) */}
       <div className="max-w-[1600px] mx-auto px-6 sm:px-12 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
           
-          {/* --- LEFT SIDE: THE VIBE --- */}
-          <div className="lg:col-span-5 space-y-8">
+          {/* --- LEFT SIDE: THE EDITORIAL --- */}
+          <div className="lg:col-span-5 space-y-10">
             <div className="inline-flex items-center gap-4">
-              <span className="h-[2px] w-12 bg-[#E89EB8]" />
+              <div className="h-[1px] w-12 bg-[#E89EB8]" />
               <motion.span 
                 initial={{ opacity: 0, x: -10 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                className="text-[#E89EB8] font-black text-[12px] uppercase tracking-[0.5em]"
+                className="text-[#E89EB8] font-black text-[10px] uppercase tracking-[0.6em]"
               >
-                Guestbook
+                Atelier Feedback
               </motion.span>
             </div>
             
-            <h2 className="text-6xl md:text-8xl font-serif font-bold text-slate-900 leading-[0.9] tracking-tighter">
-              Leave a <br />
-              <span className="italic text-[#E89EB8]">Sweet Note</span>.
+            <h2 className="text-6xl md:text-8xl font-serif text-white tracking-tighter leading-[0.85]">
+              Document your <br />
+              <span className="italic text-[#E89EB8] font-light">Experience.</span>
             </h2>
             
-            <p className="text-slate-600 text-xl leading-relaxed max-w-lg font-sans">
-              Every review helps Khushi grow the <strong className="text-slate-900">Delight Bakehouse</strong> family. Share your experience and help us spread the sweetness in Thane!
-            </p>
-            
-            <div className="flex flex-wrap gap-4 pt-6">
-               <div className="px-6 py-3 bg-white rounded-full shadow-sm border border-[#E89EB8]/10 text-slate-500 text-sm font-bold">
-                 #DelightBakehouseFamily
-               </div>
-               <div className="px-6 py-3 bg-white rounded-full shadow-sm border border-[#E89EB8]/10 text-slate-500 text-sm font-bold">
-                 #ThaneBakes
-               </div>
+            <div className="space-y-6 max-w-lg">
+              <p className="text-white/40 text-xl leading-relaxed font-light">
+                Every endorsement helps refine our craft. Share your thoughts on your latest <strong className="text-white font-medium">Bakers Treat</strong> creation from our Thane studio.
+              </p>
+              
+              <div className="flex flex-wrap gap-3 pt-4">
+                 <div className="px-5 py-2 rounded-full border border-white/10 text-white/30 text-[9px] uppercase tracking-widest font-black">
+                   #BakersTreatThane
+                 </div>
+                 <div className="px-5 py-2 rounded-full border border-white/10 text-white/30 text-[9px] uppercase tracking-widest font-black">
+                   #ArtisanCakes
+                 </div>
+              </div>
             </div>
           </div>
 
-          {/* --- RIGHT SIDE: MODERN FLOATING FORM --- */}
+          {/* --- RIGHT SIDE: BOUTIQUE FORM --- */}
           <div className="lg:col-span-7">
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white/80 backdrop-blur-xl p-8 md:p-16 rounded-[4rem] border border-white shadow-[0_40px_100px_rgba(232,158,184,0.15)] will-change-transform"
+              className="bg-white/[0.02] backdrop-blur-3xl p-8 md:p-16 rounded-[2.5rem] border border-white/5 shadow-2xl"
             >
-              <form onSubmit={handleSubmit} className="space-y-8">
+              <form onSubmit={handleSubmit} className="space-y-10">
                 
                 {/* NAME FIELD */}
-                <div className="group space-y-3">
-                  <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-2 group-focus-within:text-[#E89EB8] transition-colors">
-                    What's your name?
+                <div className="group space-y-4">
+                  <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 ml-1 group-focus-within:text-[#E89EB8] transition-colors">
+                    The Benefactor (Name)
                   </label>
                   <input 
                     type="text"
-                    placeholder="e.g. Ananya Iyer"
-                    className="w-full bg-slate-50/50 border border-slate-100 rounded-3xl px-8 py-5 outline-none focus:bg-white focus:border-[#E89EB8] focus:ring-[10px] focus:ring-[#E89EB8]/5 transition-all text-slate-800 placeholder:text-slate-300 text-lg" 
+                    placeholder="Enter your name"
+                    className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-8 py-5 outline-none focus:border-[#E89EB8]/50 focus:ring-1 focus:ring-[#E89EB8]/20 transition-all text-white placeholder:text-white/10 text-lg font-light" 
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     required 
                   />
                 </div>
 
-                {/* STAR RATING - MODERN SIZE */}
+                {/* STAR RATING */}
                 <div className="space-y-4">
-                  <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-2">
-                    How was the treat?
+                  <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 ml-1">
+                    Studio Rating
                   </label>
-                  <div className="flex gap-3 bg-slate-50/50 w-fit p-3 rounded-3xl border border-slate-100">
+                  <div className="flex gap-4 bg-white/[0.03] w-fit p-4 rounded-2xl border border-white/5">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
                         type="button"
                         onClick={() => setFormData({ ...formData, rating: star })}
-                        className={`transition-all duration-300 transform ${ (hoverRating || formData.rating) >= star ? 'text-[#E89EB8] scale-125' : 'text-slate-200 scale-100 hover:scale-110' }`}
+                        className={`transition-all duration-500 transform ${ (hoverRating || formData.rating) >= star ? 'text-[#E89EB8] scale-110 drop-shadow-[0_0_10px_rgba(232,158,184,0.4)]' : 'text-white/10 scale-100 hover:text-white/30' }`}
                         onMouseEnter={() => setHoverRating(star)}
                         onMouseLeave={() => setHoverRating(0)}
                       >
-                        <svg className="w-10 h-10 sm:w-12 sm:h-12" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-8 h-8 sm:w-10 sm:h-10" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                         </svg>
                       </button>
@@ -155,13 +140,13 @@ const FeedbackForm = () => {
                 </div>
 
                 {/* COMMENT FIELD */}
-                <div className="group space-y-3">
-                  <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-2 group-focus-within:text-[#E89EB8] transition-colors">
-                    Your message
+                <div className="group space-y-4">
+                  <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 ml-1 group-focus-within:text-[#E89EB8] transition-colors">
+                    The Testimony (Review)
                   </label>
                   <textarea 
-                    placeholder="Share your experience with Khushi..."
-                    className="w-full bg-slate-50/50 border border-slate-100 rounded-[2rem] px-8 py-6 min-h-[160px] outline-none focus:bg-white focus:border-[#E89EB8] focus:ring-[10px] focus:ring-[#E89EB8]/5 transition-all text-slate-800 resize-none placeholder:text-slate-300 text-lg" 
+                    placeholder="Describe your tasting experience..."
+                    className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-8 py-6 min-h-[160px] outline-none focus:border-[#E89EB8]/50 focus:ring-1 focus:ring-[#E89EB8]/20 transition-all text-white resize-none placeholder:text-white/10 text-lg font-light leading-relaxed" 
                     value={formData.comment}
                     onChange={(e) => setFormData({...formData, comment: e.target.value})}
                     required
@@ -171,29 +156,26 @@ const FeedbackForm = () => {
                 {/* STATUS ALERTS */}
                 <AnimatePresence mode="wait">
                   {status === 'success' && (
-                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-green-50 text-green-600 p-4 rounded-2xl text-center text-sm font-bold border border-green-100">
-                      Successfully sent to Khushi's Kitchen! ✨
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-[#E89EB8]/10 text-[#E89EB8] p-5 rounded-xl text-center text-[10px] font-black uppercase tracking-widest border border-[#E89EB8]/20">
+                      Signature received. Thank you. ✨
                     </motion.div>
                   )}
                   {status === 'error' && (
-                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-red-50 text-red-500 p-4 rounded-2xl text-center text-sm font-bold border border-red-100">
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-red-950/20 text-red-400 p-5 rounded-xl text-center text-[10px] font-black uppercase tracking-widest border border-red-500/20">
                       {errorMessage}
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                {/* SUBMIT BUTTON - FUNKY STYLING */}
+                {/* SUBMIT BUTTON */}
                 <button 
                   type="submit" 
                   disabled={status === 'loading'}
-                  className={`relative w-full overflow-hidden group/btn py-6 rounded-[2rem] font-black uppercase tracking-[0.4em] text-[12px] transition-all ${
-                    status === 'loading' ? 'bg-slate-200 text-slate-400' : 'bg-[#E89EB8] text-white hover:bg-slate-900 shadow-[0_20px_40px_rgba(232,158,184,0.3)] active:scale-[0.98]'
+                  className={`relative w-full py-6 rounded-2xl font-black uppercase tracking-[0.6em] text-[11px] transition-all duration-500 ${
+                    status === 'loading' ? 'bg-white/5 text-white/20' : 'bg-[#E89EB8] text-black hover:bg-white hover:tracking-[0.8em] shadow-2xl shadow-[#E89EB8]/10 active:scale-[0.98]'
                   }`}
                 >
-                  <span className="relative z-10">
-                    {status === 'loading' ? 'Whisking...' : 'Send Review'}
-                  </span>
-                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+                  {status === 'loading' ? 'Submitting...' : 'Send Testimony'}
                 </button>
               </form>
             </motion.div>
