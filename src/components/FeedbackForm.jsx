@@ -77,7 +77,7 @@ const FeedbackForm = () => {
             
             <div className="space-y-6 max-w-lg">
               <p className="text-white/40 text-xl leading-relaxed font-light">
-                Every endorsement helps refine our craft. Share your thoughts on your latest <strong className="text-white font-medium">Bakers Treat</strong> creation from our Thane studio.
+                Every endorsement helps refine our craft. Share your thoughts on your latest <strong className="text-white font-medium">Delight Bakehouse</strong> creation from our Thane studio.
               </p>
               
               <div className="flex flex-wrap gap-3 pt-4">

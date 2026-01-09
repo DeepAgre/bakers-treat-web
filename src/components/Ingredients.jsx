@@ -101,7 +101,7 @@ const Ingredients = () => {
              <p className="text-white/30 text-[10px] uppercase tracking-[0.4em] font-mono leading-loose text-right">
                 [ Ingredient Assay ] <br />
                 Ver: 2026.Studio <br />
-                Bakers Treat Thane
+                Delight Bakehouse Thane
              </p>
           </motion.div>
         </div>

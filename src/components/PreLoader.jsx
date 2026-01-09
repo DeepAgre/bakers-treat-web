@@ -44,7 +44,7 @@ const PreLoader = () => {
 
           {/* Large Architectural "B" Outline */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center text-[30vw] font-serif font-black text-white/[0.02] select-none tracking-tighter">
-            BT
+            DB
           </div>
         </div>
 
@@ -129,7 +129,7 @@ const PreLoader = () => {
           <div className="h-[1px] flex-1 mx-8 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           <div className="text-right">
             <p className="text-white font-mono text-[8px] tracking-widest uppercase">
-              Est. MMXXIV
+              
             </p>
           </div>
         </div>

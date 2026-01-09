@@ -97,7 +97,7 @@ const Menu = ({ onProductSelect }) => {
             
             <h2 className="text-6xl md:text-8xl font-serif text-white tracking-tighter leading-none">
               Explore the <br />
-              <span className="italic text-[#E89EB8] font-light">Bakers Treat.</span>
+              <span className="italic text-[#E89EB8] font-light">Delight Bakehouse.</span>
             </h2>
           </div>
 
@@ -178,7 +178,7 @@ const Menu = ({ onProductSelect }) => {
 
                   {/* DESCRIPTION */}
                   <p className="text-white/30 text-xs font-light leading-relaxed line-clamp-2 group-hover:text-white/60 transition-colors">
-                    {product.description || "A signature architectural creation from the Bakers Treat Thane studio."}
+                    {product.description || "A signature architectural creation from the Delight Bakehouse Thane studio."}
                   </p>
 
                   {/* HOVER INTERACTION INDICATOR */}

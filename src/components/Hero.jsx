@@ -175,7 +175,7 @@ const Hero = ({ isParentLoading }) => {
                 <div className="space-y-6">
                   <div className="h-[1px] w-full bg-gradient-to-r from-[#E89EB8]/30 via-white/10 to-transparent" />
                   <p className="text-sm text-white/40 leading-relaxed font-light">
-                    Founded by Khushi Manjrekar, Bakers Treat merges industrial precision with artisanal soul to create Thane's most exclusive cakes.
+                    Founded by Khushi Manjrekar, Delight Bakehouse merges industrial precision with artisanal soul to create Thane's most exclusive cakes.
                   </p>
                 </div>
 

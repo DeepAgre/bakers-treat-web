@@ -69,7 +69,7 @@ const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
               
               {/* Product Badge */}
               <div className="absolute bottom-8 left-8 hidden md:block">
-                <p className="text-[#E89EB8] font-mono text-[10px] tracking-[0.5em] uppercase mb-2">Bakers Treat // Thane</p>
+                <p className="text-[#E89EB8] font-mono text-[10px] tracking-[0.5em] uppercase mb-2">Delight Bakehouse // Thane</p>
                 <h3 className="text-white text-xl font-serif italic">Artisan Batch No. {product.id?.slice(-3) || '012'}</h3>
               </div>
             </div>

@@ -55,7 +55,7 @@ const AboutKhushi = () => {
              >
                 <img 
                   src={KhushiProfile} 
-                  alt="Bakers Treat Signature Cake" 
+                  alt="Delight Bakehouse Signature Cake" 
                   className="w-full h-full object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-1000 ease-out"
                 />
                 {/* Deep Overlay for the Olly Aesthetic */}
@@ -98,7 +98,7 @@ const AboutKhushi = () => {
 
             <div className="space-y-8 text-white/50 text-xl font-light leading-relaxed max-w-xl">
               <p>
-                Based in <span className="text-white">Thane</span>, Khushi Manjrekar founded <span className="text-white italic">Bakers Treat</span> to bridge the gap between structural design and artisanal baking.
+                Based in <span className="text-white">Thane</span>, Khushi Manjrekar founded <span className="text-white italic">Delight Bakehouse</span> to bridge the gap between structural design and artisanal baking.
               </p>
               <p className="border-l-2 border-[#E89EB8] pl-8 italic text-white/70">
                 “I don't just see layers of sponge and cream; I see structural integrity, flavor profiles, and the emotional resonance of a celebration.”
