@@ -66,13 +66,13 @@ const FeedbackForm = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 className="text-[#E89EB8] font-black text-[10px] uppercase tracking-[0.6em]"
               >
-                Atelier Feedback
+                Document your Experience.
               </motion.span>
             </div>
             
             <h2 className="text-6xl md:text-8xl font-serif text-white tracking-tighter leading-[0.85]">
-              Document your <br />
-              <span className="italic text-[#E89EB8] font-light">Experience.</span>
+              Give us your <br />
+              <span className="italic text-[#E89EB8] font-light">Feedback.</span>
             </h2>
             
             <div className="space-y-6 max-w-lg">

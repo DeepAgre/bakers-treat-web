@@ -32,7 +32,7 @@ const ingredients = [
     subtitle: "Aromatic Soul",
     img: vanillaImg,
     spec: "Grade A Bourbon",
-    text: "Hand-cured pods providing the aromatic backbone of every Baker's Treat layer.",
+    text: "Hand-cured pods providing the aromatic backbone of every layer.",
     gridClass: "lg:col-span-1"
   },
   {
@@ -56,6 +56,14 @@ const TechnicalGrid = () => (
 );
 
 const Ingredients = () => {
+  // Animation Variants for the Fade In/Out effect
+  const fadeInUp = {
+    initial: { opacity: 0, y: 60 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: false, margin: "-100px" },
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+  };
+
   return (
     <section className="relative bg-[#080808] py-24 sm:py-40 w-full overflow-hidden" id="ingredients">
       
@@ -68,13 +76,10 @@ const Ingredients = () => {
 
       <div className="max-w-[1600px] mx-auto px-6 sm:px-12 relative z-10">
         
-        {/* 2. HEADER: THE OLLY STYLE */}
+        {/* 2. HEADER SECTON */}
         <div className="mb-24 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
+            {...fadeInUp}
             className="max-w-4xl"
           >
             <div className="flex items-center gap-4 mb-8">
@@ -90,6 +95,7 @@ const Ingredients = () => {
           <motion.div 
              initial={{ opacity: 0 }}
              whileInView={{ opacity: 1 }}
+             viewport={{ once: false }}
              className="hidden lg:block pb-6"
           >
              <p className="text-white/30 text-[10px] uppercase tracking-[0.4em] font-mono leading-loose text-right">
@@ -100,37 +106,41 @@ const Ingredients = () => {
           </motion.div>
         </div>
 
-        {/* 3. BENTO GRID: IDEA BAKERY STYLE */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* 3. BENTO GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {ingredients.map((item, idx) => (
             <motion.div 
               key={item.id}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
               transition={{ delay: idx * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              viewport={{ once: true }}
-              className={`relative group rounded-[1.5rem] overflow-hidden bg-[#111] border border-white/5 ${item.gridClass} h-[550px] cursor-none`}
+              viewport={{ once: false, margin: "-50px" }}
+              className={`relative group rounded-[2rem] overflow-hidden bg-[#111] border border-white/5 ${item.gridClass} h-[550px]`}
             >
-              {/* IMAGE: Gray to Color on Hover */}
+              {/* IMAGE: Now starts colorful and high-contrast */}
               <div 
-                className="absolute inset-0 w-full h-full transition-all duration-[1500ms] ease-out group-hover:scale-110 grayscale group-hover:grayscale-0 opacity-40 group-hover:opacity-60"
+                className="absolute inset-0 w-full h-full transition-all duration-[1500ms] ease-out scale-105 group-hover:scale-110 opacity-70 group-hover:opacity-100"
                 style={{ 
                   backgroundImage: `url(${item.img})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                 }}
               />
+
+              {/* Gradient Overlay for Text Readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-[#080808]/20 to-transparent opacity-80" />
               
               {/* CONTENT AREA */}
               <div className="absolute inset-0 p-10 flex flex-col justify-between">
                 
-                {/* Top: Technical Spec */}
-                <div className="flex justify-between items-start translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700">
-                   <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">{item.spec}</span>
+                {/* Top: Technical Spec (Visible on scroll/hover) */}
+                <div className="flex justify-between items-start opacity-60 group-hover:opacity-100 transition-all duration-700">
+                   <span className="text-[10px] font-mono text-white uppercase tracking-widest">{item.spec}</span>
                    <span className="text-[10px] font-mono text-[#E89EB8]">00{item.id} // BT</span>
                 </div>
                 
-                {/* Bottom: Title & Subtitle */}
+                {/* Bottom: Title & Text */}
                 <div className="relative z-10">
                     <h5 className="text-[#E89EB8] text-[9px] font-bold uppercase tracking-[0.5em] mb-4">
                         {item.subtitle}
@@ -138,32 +148,41 @@ const Ingredients = () => {
                     <h3 className="text-white text-4xl font-serif mb-6 leading-tight group-hover:italic transition-all duration-500">
                         {item.title}
                     </h3>
-                    <div className="h-[1px] w-0 group-hover:w-full bg-gradient-to-r from-[#E89EB8] to-transparent transition-all duration-1000 mb-6" />
-                    <p className="text-white/40 text-sm leading-relaxed font-light max-w-xs h-0 group-hover:h-20 opacity-0 group-hover:opacity-100 transition-all duration-700 overflow-hidden">
+                    
+                    {/* Progress line */}
+                    <div className="h-[1px] w-full bg-white/10 relative overflow-hidden mb-6">
+                      <motion.div 
+                        initial={{ x: "-100%" }}
+                        whileInView={{ x: "0%" }}
+                        transition={{ duration: 1.5, delay: idx * 0.2 }}
+                        className="absolute inset-0 bg-[#E89EB8]"
+                      />
+                    </div>
+
+                    <p className="text-white/60 text-sm leading-relaxed font-light max-w-xs transition-all duration-700">
                         {item.text}
                     </p>
                 </div>
               </div>
 
-              {/* Minimal Border Glow */}
-              <div className="absolute inset-0 border border-white/0 group-hover:border-white/10 transition-colors duration-700 rounded-[1.5rem]" />
+              {/* Interaction Border */}
+              <div className="absolute inset-0 border border-white/5 group-hover:border-[#E89EB8]/20 transition-colors duration-700 rounded-[2rem]" />
             </motion.div>
           ))}
         </div>
 
         {/* 4. FOOTER CALLOUT */}
         <motion.div 
-           initial={{ opacity: 0 }}
-           whileInView={{ opacity: 1 }}
-           className="mt-20 flex flex-col items-center"
+           {...fadeInUp}
+           className="mt-24 flex flex-col items-center"
         >
-            <div className="h-20 w-[1px] bg-gradient-to-b from-[#E89EB8]/50 to-transparent mb-8" />
-            <p className="text-white/20 text-[10px] uppercase tracking-[0.8em]">Handcrafted in Thane</p>
+            <div className="h-24 w-[1px] bg-gradient-to-b from-[#E89EB8] to-transparent mb-8" />
+            <p className="text-white/40 text-[10px] uppercase tracking-[0.8em] font-medium">Curated Selection • Studio Grade</p>
         </motion.div>
       </div>
 
       {/* NOISE TEXTURE OVERLAY */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03] contrast-150 mix-blend-screen" 
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04] contrast-125" 
            style={{ backgroundImage: `url("https://grainy-gradients.vercel.app/noise.svg")` }} />
     </section>
   );
