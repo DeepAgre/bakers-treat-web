@@ -16,6 +16,7 @@ import ProductModal from './components/ProductModal';
 import Toast from './components/Toast';
 import PreLoader from './components/PreLoader';
 
+// NOTE: AnnouncementBanner import removed as it's now integrated into Navbar
 
 const BakeryApp = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -86,7 +87,7 @@ const BakeryApp = () => {
     }
     const itemSummary = cartItems.map(i => `• ${i.name} (x${i.qty})`).join('\n');
     const message = encodeURIComponent(
-      `Hi Khushi! I'd like to place an order from Delight Bakehouse:\n\n` +
+      `Hi Khushi! I'd like to place an order from Bakers Treat:\n\n` +
       `Items:\n${itemSummary}\n\n` +
       `Delivery Date: ${deliveryDate}\n` +
       `Address: ${address}\n\n` +
@@ -96,9 +97,9 @@ const BakeryApp = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen bg-white text-slate-900 selection:bg-[#E89EB8]/20">
+    <div className="relative w-full min-h-screen bg-[#080808] text-white selection:bg-[#E89EB8]/20">
       
-      {/* MODALS & OVERLAYS (Outside SmoothScroll for better scrolling performance) */}
+      {/* MODALS & OVERLAYS */}
       <Cart 
         isOpen={isCartOpen} 
         onClose={() => setIsCartOpen(false)} 
@@ -124,13 +125,10 @@ const BakeryApp = () => {
         <Toast show={showToast} message="Added to your bag!" />
 
         {!isLoading && (
-          <header className="fixed top-0 left-0 w-full z-[150] flex flex-col items-stretch shadow-sm">
-            <AnnouncementBanner />
-            <Navbar cartCount={cartCount} onOpenCart={() => setIsCartOpen(true)} />
-          </header>
+          <Navbar cartCount={cartCount} onOpenCart={() => setIsCartOpen(true)} />
         )}
 
-        <main className={`relative w-full pt-[110px] md:pt-[120px] ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
+        <main className={`relative w-full ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
           
           {/* 1. HERO PAGE */}
           <Hero isParentLoading={isLoading} />
@@ -139,26 +137,36 @@ const BakeryApp = () => {
             {/* Transition Marquee */}
             <Marquee />
 
-            {/* 2. ABOUT KHUSHI SECTION */}
-            <AboutKhushi />
+            {/* 2. ABOUT KHUSHI SECTION (id="about") */}
+            <section id="about">
+              <AboutKhushi />
+            </section>
 
-            {/* 3. INGREDIENTS SECTION */}
-            <Ingredients />
+            {/* 3. INGREDIENTS SECTION (id="ingredients") */}
+            <section id="ingredients">
+              <Ingredients />
+            </section>
 
-            {/* 4. CUSTOM ORDER SECTION */}
-            <CustomOrder />
+            {/* 4. CUSTOM ORDER SECTION (id="custom") */}
+            <section id="custom">
+              <CustomOrder />
+            </section>
 
-            {/* 5. MENU SECTION */}
-            <Menu onProductSelect={handleProductSelect} />
+            {/* 5. MENU SECTION (id="menu") */}
+            <section id="menu">
+              <Menu onProductSelect={handleProductSelect} />
+            </section>
 
-            {/* 6. REVIEWS (TESTIMONIALS) SECTION */}
-            <Testimonials />
+            {/* 6. REVIEWS SECTION (id="feedback") */}
+            <section id="feedback">
+              <Testimonials />
+              <FeedbackForm />
+            </section>
 
-            {/* 7. FEEDBACK FORM */}
-            <FeedbackForm />
-
-            {/* 8. FOOTER */}
-            <Footer />
+            {/* 7. CONTACT / FOOTER (id="contact") */}
+            <section id="contact">
+              <Footer />
+            </section>
           </div>
         </main>
       </SmoothScroll>
