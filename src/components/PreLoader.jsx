@@ -61,10 +61,10 @@ const PreLoader = () => {
             ))}
           </div>
 
-          {/* 2. CENTER BRANDING - Fixed Clipping */}
-          <div className="relative z-10 flex flex-col items-center">
+          {/* 2. CENTER BRANDING - FIXED CLIPPING FOR ITALICS */}
+          <div className="relative z-10 flex flex-col items-center w-full">
             {/* Delight Container */}
-            <div className="overflow-hidden py-2">
+            <div className="overflow-hidden py-2 px-6">
               <motion.h1 
                 variants={textVariants}
                 initial="initial"
@@ -75,8 +75,8 @@ const PreLoader = () => {
               </motion.h1>
             </div>
 
-            {/* Bakehouse Container - Fixed Height & Added Padding */}
-            <div className="overflow-hidden py-4 -mt-2 md:-mt-4">
+            {/* Bakehouse Container - Fixed: Added horizontal padding (px-10) to stop 'e' clipping */}
+            <div className="overflow-hidden py-4 px-10 -mt-2 md:-mt-4">
               <motion.h1 
                 variants={textVariants}
                 initial="initial"
