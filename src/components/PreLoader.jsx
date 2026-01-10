@@ -6,7 +6,6 @@ const PreLoader = () => {
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
-    // Smoother, more consistent increment for mobile performance
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -14,10 +13,9 @@ const PreLoader = () => {
           setIsComplete(true); 
           return 100;
         }
-        // Smaller increments to prevent "jitter"
         return prev + 1;
       });
-    }, 30); // Consistent 30ms pace
+    }, 30);
     return () => clearInterval(interval);
   }, []);
 
@@ -26,18 +24,18 @@ const PreLoader = () => {
     exit: {
       clipPath: "inset(0% 0% 100% 0%)",
       transition: { 
-        duration: 0.7, 
+        duration: 0.8, 
         ease: [0.8, 0, 0.1, 1] 
       }
     }
   };
 
   const textVariants = {
-    initial: { y: "100%", opacity: 0 },
+    initial: { y: "110%", opacity: 0 },
     animate: { 
       y: 0, 
       opacity: 1,
-      transition: { duration: 0.6, ease: "easeOut" }
+      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] }
     }
   };
 
@@ -50,7 +48,7 @@ const PreLoader = () => {
           exit="exit"
           className="fixed inset-0 z-[1000] bg-[#E89EB8] flex flex-col items-center justify-center overflow-hidden touch-none"
         >
-          {/* 1. KINETIC PROGRESS PILLARS (Optimized: No Filters) */}
+          {/* 1. KINETIC PROGRESS PILLARS */}
           <div className="absolute inset-0 flex flex-row pointer-events-none">
             {[...Array(4)].map((_, i) => (
               <motion.div
@@ -63,26 +61,28 @@ const PreLoader = () => {
             ))}
           </div>
 
-          {/* 2. CENTER BRANDING */}
+          {/* 2. CENTER BRANDING - Fixed Clipping */}
           <div className="relative z-10 flex flex-col items-center">
-            <div className="overflow-hidden">
+            {/* Delight Container */}
+            <div className="overflow-hidden py-2">
               <motion.h1 
                 variants={textVariants}
                 initial="initial"
                 animate="animate"
-                className="text-[16vw] md:text-[10vw] font-serif font-black text-black leading-none tracking-tighter"
+                className="text-[16vw] md:text-[10vw] font-serif font-black text-black leading-[0.9] tracking-tighter"
               >
                 Delight
               </motion.h1>
             </div>
 
-            <div className="overflow-hidden h-[12vw] md:h-[8vw]">
+            {/* Bakehouse Container - Fixed Height & Added Padding */}
+            <div className="overflow-hidden py-4 -mt-2 md:-mt-4">
               <motion.h1 
                 variants={textVariants}
                 initial="initial"
                 animate="animate"
                 transition={{ delay: 0.1 }}
-                className="text-[16vw] md:text-[10vw] font-serif italic font-light text-black leading-none tracking-tighter"
+                className="text-[16vw] md:text-[10vw] font-serif italic font-light text-black leading-[0.9] tracking-tighter"
               >
                 Bakehouse
               </motion.h1>
@@ -96,7 +96,7 @@ const PreLoader = () => {
               animate={{ opacity: 0.6 }}
               className="text-[10px] uppercase tracking-[0.4em] text-black font-bold mb-4"
             >
-              Thane Studio
+              Artisan Bakes
             </motion.p>
             <div className="flex items-baseline gap-1">
               <span className="text-6xl font-black text-black tabular-nums">
@@ -109,8 +109,8 @@ const PreLoader = () => {
           {/* 4. LIGHTWEIGHT ROTATING ELEMENT */}
           <motion.div 
             animate={{ rotate: 360 }}
-            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-            className="absolute w-[120vw] h-[120vw] border-[1px] border-black/5 rounded-full pointer-events-none"
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="absolute w-[150vw] h-[150vw] border-[1px] border-black/5 rounded-full pointer-events-none"
           />
 
           {/* 5. PERFORMANCE-FRIENDLY NOISE */}
