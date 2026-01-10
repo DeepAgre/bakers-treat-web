@@ -22,12 +22,12 @@ const Navbar = ({ cartCount, onOpenCart }) => {
     { name: 'Contact', href: 'contact' },
   ];
 
-  // The Bubble Transition Logic
+  // Enhanced Transition Logic
   const triggerTransition = (targetId = null) => {
     setIsTransitioning(true);
     setIsMenuOpen(false);
 
-    // Wait for bubble to cover screen (approx 0.6s)
+    // Timing adjusted for a premium "expand and reveal" feel
     setTimeout(() => {
       if (targetId) {
         const element = document.getElementById(targetId);
@@ -35,17 +35,17 @@ const Navbar = ({ cartCount, onOpenCart }) => {
           const headerOffset = 100;
           const elementPosition = element.getBoundingClientRect().top;
           const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-          window.scrollTo({ top: offsetPosition, behavior: 'auto' }); // 'auto' feels better with transition
+          window.scrollTo({ top: offsetPosition, behavior: 'auto' });
         }
       } else {
         window.scrollTo({ top: 0, behavior: 'auto' });
       }
       
-      // Close the bubble after the jump
+      // Delay closing slightly so the user sees the new page before bubble shrinks
       setTimeout(() => {
         setIsTransitioning(false);
-      }, 600);
-    }, 800);
+      }, 700);
+    }, 900);
   };
 
   const scrollToSection = (e, id) => {
@@ -60,24 +60,65 @@ const Navbar = ({ cartCount, onOpenCart }) => {
 
   return (
     <>
-      {/* 1. THE BUBBLE OVERLAY */}
+      {/* 1. THE BUBBLE OVERLAY WITH LOGO & LOADING */}
       <AnimatePresence>
         {isTransitioning && (
           <motion.div
             initial={{ clipPath: 'circle(0% at 50% 50%)' }}
             animate={{ clipPath: 'circle(150% at 50% 50%)' }}
             exit={{ clipPath: 'circle(0% at 50% 50%)' }}
-            transition={{ duration: 0.8, ease: [0.8, 0, 0.1, 1] }}
-            className="fixed inset-0 z-[3000] bg-white pointer-events-none flex items-center justify-center"
+            transition={{ duration: 0.9, ease: [0.83, 0, 0.17, 1] }}
+            className="fixed inset-0 z-[3000] bg-white pointer-events-none flex items-center justify-center overflow-hidden"
           >
-            {/* Minimal branding inside the bubble during transition */}
-            <motion.h2 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 0.1, y: 0 }}
-              className="text-6xl md:text-9xl font-serif italic text-black"
-            >
-              Delight
-            </motion.h2>
+            <div className="flex flex-col items-center gap-6">
+              {/* Logo Animation */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="relative"
+              >
+                <img 
+                  src={logo} 
+                  alt="Loading Logo" 
+                  className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-2 border-[#E89EB8]/20"
+                />
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.5, 0.2] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute inset-0 rounded-full border-2 border-[#E89EB8]"
+                />
+              </motion.div>
+
+              {/* Loading Text */}
+              <div className="flex flex-col items-center">
+                <motion.span 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-black font-serif italic text-2xl md:text-3xl"
+                >
+                  Delight Bakehouse
+                </motion.span>
+                <motion.div 
+                  className="mt-4 flex gap-1"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <span className="text-[10px] uppercase tracking-[0.4em] text-black/40 font-bold">
+                    Loading
+                  </span>
+                  <motion.span
+                    animate={{ opacity: [0, 1, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, times: [0, 0.5, 1] }}
+                    className="text-[10px] text-black/40 font-bold"
+                  >
+                    ...
+                  </motion.span>
+                </motion.div>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
