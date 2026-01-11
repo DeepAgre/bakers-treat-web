@@ -23,14 +23,11 @@ const BakeryApp = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); 
   
-  // Lazy state init
   const [cartItems, setCartItems] = useState(() => {
     try {
       const saved = localStorage.getItem('Delight_Bakehouse_cart');
       return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      return [];
-    }
+    } catch (e) { return []; }
   });
 
   useEffect(() => {
@@ -95,87 +92,61 @@ const BakeryApp = () => {
 
   const handleCheckout = useCallback((type, deliveryDate, address) => {
     const khushiNumber = "919136371662"; 
-    if (type === 'call') {
-      window.location.href = `tel:+${khushiNumber}`;
-      return;
-    }
     const itemSummary = cartItems.map(i => `• ${i.name} (x${i.qty})`).join('\n');
-    const message = encodeURIComponent(
-      `Hi Khushi! I'd like to place an order from Delight Bakehouse:\n\n` +
-      `Items:\n${itemSummary}\n\n` +
-      `Delivery Date: ${deliveryDate}\n` +
-      `Address: ${address}\n\n` +
-      `Total: ${formattedTotal}`
-    );
+    const message = encodeURIComponent(`Hi Khushi! I'd like to place an order...\n\nTotal: ${formattedTotal}`);
     window.open(`https://wa.me/${khushiNumber}?text=${message}`, '_blank');
   }, [cartItems, formattedTotal]);
 
   return (
-    <div className="relative w-full min-h-screen bg-[#080808] text-white selection:bg-[#E89EB8]/20 overflow-x-hidden">
+    <div className="relative w-full min-h-screen bg-[#080808] text-white overflow-x-hidden">
       
-      <Cart 
-        isOpen={isCartOpen} 
-        onClose={useCallback(() => setIsCartOpen(false), [])} 
-        items={cartItems} 
-        total={formattedTotal} 
-        updateQty={updateQty}
-        removeItem={useCallback((id) => setCartItems(prev => prev.filter(i => i.id !== id)), [])}
-        onCheckout={handleCheckout}
-      />
+      {/* 1. ALWAYS RENDER PRELOADER ON TOP */}
+      <AnimatePresence mode="wait">
+        {isLoading && <PreLoader key="loader" onSkip={handleSkipIntro} />}
+      </AnimatePresence>
 
-      <ProductModal 
-        product={selectedProduct} 
-        isOpen={isModalOpen}
-        onClose={useCallback(() => setIsModalOpen(false), [])}
-        onAddToBag={addToCart}
-      />
+      {/* 2. ONLY RENDER APP CONTENT ONCE LOADED */}
+      {!isLoading && (
+        <div className="animate-in fade-in duration-1000">
+          <Cart 
+            isOpen={isCartOpen} 
+            onClose={() => setIsCartOpen(false)} 
+            items={cartItems} 
+            total={formattedTotal} 
+            updateQty={updateQty}
+            removeItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
+            onCheckout={handleCheckout}
+          />
 
-      <SmoothScroll isPaused={isCartOpen || isModalOpen}>
-        <AnimatePresence mode="wait">
-          {isLoading && <PreLoader key="loader" onSkip={handleSkipIntro} />}
-        </AnimatePresence>
+          <ProductModal 
+            product={selectedProduct} 
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onAddToBag={addToCart}
+          />
 
-        <Toast show={showToast} message="Added to your bag!" />
+          <Toast show={showToast} message="Added to your bag!" />
+          
+          <Navbar cartCount={cartCount} onOpenCart={() => setIsCartOpen(true)} />
 
-        {!isLoading && (
-          <>
-            <Navbar cartCount={cartCount} onOpenCart={useCallback(() => setIsCartOpen(true), [])} />
-            
-            <main className="relative w-full animate-in fade-in duration-700">
-              <Hero isParentLoading={isLoading} />
-              
-              <div className="space-y-0 will-change-transform">
-                <Marquee />
-
-                <section id="about">
-                  <AboutKhushi />
-                </section>
-
-                <section id="ingredients">
-                  <Ingredients />
-                </section>
-
-                <section id="custom">
-                  <CustomOrder />
-                </section>
-
-                <section id="menu">
-                  <Menu onProductSelect={handleProductSelect} />
-                </section>
-
-                <section id="feedback">
-                  <Testimonials />
-                  <FeedbackForm />
-                </section>
-
-                <section id="contact">
-                  <Footer />
-                </section>
-              </div>
+          {/* 3. IF THE SCREEN IS STILL WHITE, THE ISSUE IS INSIDE SMOOTHSCROLL */}
+          <SmoothScroll isPaused={isCartOpen || isModalOpen}>
+            <main className="relative w-full">
+              <Hero isParentLoading={false} />
+              <Marquee />
+              <section id="about"><AboutKhushi /></section>
+              <section id="ingredients"><Ingredients /></section>
+              <section id="custom"><CustomOrder /></section>
+              <section id="menu"><Menu onProductSelect={handleProductSelect} /></section>
+              <section id="feedback">
+                <Testimonials />
+                <FeedbackForm />
+              </section>
+              <section id="contact"><Footer /></section>
             </main>
-          </>
-        )}
-      </SmoothScroll>
+          </SmoothScroll>
+        </div>
+      )}
     </div>
   );
 };
