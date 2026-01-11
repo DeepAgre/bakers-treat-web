@@ -60,7 +60,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
 
   return (
     <>
-      {/* 1. THE BUBBLE OVERLAY WITH LOGO & LOADING */}
+      {/* 1. THE BUBBLE OVERLAY - PINK THEME */}
       <AnimatePresence>
         {isTransitioning && (
           <motion.div
@@ -68,51 +68,51 @@ const Navbar = ({ cartCount, onOpenCart }) => {
             animate={{ clipPath: 'circle(150% at 50% 50%)' }}
             exit={{ clipPath: 'circle(0% at 50% 50%)' }}
             transition={{ duration: 0.9, ease: [0.83, 0, 0.17, 1] }}
-            className="fixed inset-0 z-[3000] bg-white pointer-events-none flex items-center justify-center overflow-hidden"
+            className="fixed inset-0 z-[3000] bg-[#E89EB8] pointer-events-none flex items-center justify-center overflow-hidden"
           >
             <div className="flex flex-col items-center gap-6">
               {/* Logo Animation */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1.1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="relative"
               >
                 <img 
                   src={logo} 
                   alt="Loading Logo" 
-                  className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-2 border-[#E89EB8]/20"
+                  className="w-28 h-28 md:w-36 md:h-36 rounded-full object-cover border-4 border-white/30 shadow-2xl"
                 />
                 <motion.div 
-                  animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.5, 0.2] }}
+                  animate={{ scale: [1, 1.25, 1], opacity: [0.3, 0.6, 0.3] }}
                   transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute inset-0 rounded-full border-2 border-[#E89EB8]"
+                  className="absolute inset-0 rounded-full border-2 border-white"
                 />
               </motion.div>
 
-              {/* Loading Text */}
+              {/* Loading Text - Switched to White for contrast against Pink */}
               <div className="flex flex-col items-center">
                 <motion.span 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
-                  className="text-black font-serif italic text-2xl md:text-3xl"
+                  className="text-white font-serif italic text-2xl md:text-4xl tracking-tight"
                 >
                   Delight Bakehouse
                 </motion.span>
                 <motion.div 
-                  className="mt-4 flex gap-1"
+                  className="mt-4 flex gap-1 items-baseline"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
                 >
-                  <span className="text-[10px] uppercase tracking-[0.4em] text-black/40 font-bold">
+                  <span className="text-[10px] md:text-[12px] uppercase tracking-[0.5em] text-white font-black">
                     Loading
                   </span>
                   <motion.span
                     animate={{ opacity: [0, 1, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity, times: [0, 0.5, 1] }}
-                    className="text-[10px] text-black/40 font-bold"
+                    className="text-[12px] text-white font-black"
                   >
                     ...
                   </motion.span>
