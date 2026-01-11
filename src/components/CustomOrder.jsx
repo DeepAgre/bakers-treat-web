@@ -10,7 +10,7 @@ const KineticBackground = memo(() => (
       className="text-[200px] md:text-[300px] font-serif font-black text-white whitespace-nowrap"
       style={{ translateZ: 0 }}
     >
-      Bakers Treat • ARCHITECTURAL CAKERY • THANE STUDIO • 
+      Delight Bakehouse • ARCHITECTURAL CAKERY • THANE STUDIO • 
     </motion.div>
   </div>
 ));
@@ -97,7 +97,7 @@ const CustomOrder = () => {
             className="relative group will-change-transform"
           >
             <button 
-              onClick={() => window.open(`https://wa.me/${KHUSHI_PHONE}?text=Hi Khushi! I want to discuss a custom Bakers Treat order.`, '_blank')}
+              onClick={() => window.open(`https://wa.me/${KHUSHI_PHONE}?text=Hi Khushi! I want to discuss a custom Delight Bakehouse order.`, '_blank')}
               className="w-full max-w-2xl bg-[#111] hover:bg-[#151515] border border-white/10 rounded-[2rem] p-10 md:p-14 text-left transition-colors duration-500 shadow-2xl relative overflow-hidden"
             >
               <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
@@ -159,7 +159,7 @@ const CustomOrder = () => {
                     </div>
                     
                     <button 
-                      onClick={() => window.open(`https://wa.me/${KHUSHI_PHONE}?text=Hi Khushi! I've visualized this Bakers Treat concept: ${image}`, '_blank')}
+                      onClick={() => window.open(`https://wa.me/${KHUSHI_PHONE}?text=Hi Khushi! I've visualized this Delight Bakehouse concept: ${image}`, '_blank')}
                       className="w-full py-3 bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20 rounded-lg font-bold uppercase tracking-widest text-[8px] hover:bg-[#25D366] hover:text-white transition-all"
                     >
                       Send to Studio

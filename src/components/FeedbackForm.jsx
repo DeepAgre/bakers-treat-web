@@ -72,7 +72,7 @@ const FeedbackForm = () => {
             
             <div className="space-y-6 max-w-lg">
               <p className="text-white/40 text-lg leading-relaxed font-light">
-                Every endorsement helps refine our craft. Share your thoughts on your latest <strong className="text-white font-medium">Bakers Treat</strong> creation from our Thane studio.
+                Every endorsement helps refine our craft. Share your thoughts on your latest <strong className="text-white font-medium">Delight Bakehouse</strong> creation from our Thane studio.
               </p>
               
               <div className="flex flex-wrap gap-2 pt-2">
@@ -169,7 +169,7 @@ const FeedbackForm = () => {
                     status === 'loading' ? 'bg-white/5 text-white/10' : 'bg-[#E89EB8] text-black hover:bg-white active:scale-[0.98]'
                   }`}
                 >
-                  {status === 'loading' ? 'Submitting...' : 'Send Testimony'}
+                  {status === 'loading' ? 'Submitting...' : 'Send Feedback'}
                 </button>
               </form>
             </motion.div>
