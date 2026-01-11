@@ -22,12 +22,11 @@ const Navbar = ({ cartCount, onOpenCart }) => {
     { name: 'Contact', href: 'contact' },
   ];
 
-  // Enhanced Transition Logic
+  // Transition for Page Changes
   const triggerTransition = (targetId = null) => {
     setIsTransitioning(true);
     setIsMenuOpen(false);
 
-    // Timing adjusted for a premium "expand and reveal" feel
     setTimeout(() => {
       if (targetId) {
         const element = document.getElementById(targetId);
@@ -41,7 +40,6 @@ const Navbar = ({ cartCount, onOpenCart }) => {
         window.scrollTo({ top: 0, behavior: 'auto' });
       }
       
-      // Delay closing slightly so the user sees the new page before bubble shrinks
       setTimeout(() => {
         setIsTransitioning(false);
       }, 700);
@@ -71,7 +69,6 @@ const Navbar = ({ cartCount, onOpenCart }) => {
             className="fixed inset-0 z-[3000] bg-[#E89EB8] pointer-events-none flex items-center justify-center overflow-hidden"
           >
             <div className="flex flex-col items-center gap-6">
-              {/* Logo Animation */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.7 }}
                 animate={{ opacity: 1, scale: 1.1 }}
@@ -90,7 +87,6 @@ const Navbar = ({ cartCount, onOpenCart }) => {
                 />
               </motion.div>
 
-              {/* Loading Text - Switched to White for contrast against Pink */}
               <div className="flex flex-col items-center">
                 <motion.span 
                   initial={{ opacity: 0 }}
@@ -171,7 +167,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
               </button>
             </div>
 
-            {/* CENTER: Navigation */}
+            {/* CENTER: Navigation (Desktop) */}
             <div className={`hidden lg:flex items-center gap-8 px-8 py-3 rounded-full transition-all duration-500 ${
               scrolled ? 'bg-black/10' : 'bg-white/10 backdrop-blur-md border border-white/10'
             }`}>
@@ -219,10 +215,14 @@ const Navbar = ({ cartCount, onOpenCart }) => {
                 </div>
               </motion.button>
 
-              <button className={`lg:hidden flex flex-col items-center justify-center gap-1.5 transition-colors ${scrolled ? 'text-black' : 'text-white'}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                <div className={`h-[2px] w-6 transition-all duration-500 ${scrolled ? 'bg-black' : 'bg-white'} ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-                <div className={`h-[2px] w-6 transition-all duration-500 ${scrolled ? 'bg-black' : 'bg-white'} ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
-                <div className={`h-[2px] w-6 transition-all duration-500 ${scrolled ? 'bg-black' : 'bg-white'} ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+              {/* Hamburger Button */}
+              <button 
+                className={`lg:hidden flex flex-col items-center justify-center gap-1.5 transition-colors ${scrolled ? 'text-black' : 'text-white'}`} 
+                onClick={() => setIsMenuOpen(true)}
+              >
+                <div className={`h-[2.5px] w-6 ${scrolled ? 'bg-black' : 'bg-white'}`} />
+                <div className={`h-[2.5px] w-6 ${scrolled ? 'bg-black' : 'bg-white'}`} />
+                <div className={`h-[2.5px] w-4 ml-auto ${scrolled ? 'bg-black' : 'bg-white'}`} />
               </button>
             </div>
           </div>
@@ -232,12 +232,24 @@ const Navbar = ({ cartCount, onOpenCart }) => {
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="fixed inset-0 z-[150] bg-[#E89EB8] flex flex-col justify-center p-12 lg:hidden"
+              initial={{ opacity: 0, x: '100%' }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed inset-0 z-[250] bg-[#E89EB8] flex flex-col justify-center p-12 lg:hidden"
             >
+              {/* CLOSE BUTTON (The "X") */}
+              <button 
+                onClick={() => setIsMenuOpen(false)}
+                className="absolute top-10 right-10 w-12 h-12 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 transition-colors"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18 6L6 18M6 6L18 18" stroke="black" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] font-serif font-black text-black/[0.05] pointer-events-none select-none">DB</div>
+              
               <div className="flex flex-col gap-8 relative z-10">
                 <p className="text-black/40 text-[10px] font-black uppercase tracking-[0.5em] mb-4">Navigation</p>
                 {navLinks.map((link, idx) => (
