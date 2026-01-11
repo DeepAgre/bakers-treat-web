@@ -23,7 +23,7 @@ const BakeryApp = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); 
   
-  // Optimization: Lazy initializer for state
+  // Lazy state init
   const [cartItems, setCartItems] = useState(() => {
     try {
       const saved = localStorage.getItem('Delight_Bakehouse_cart');
@@ -33,7 +33,6 @@ const BakeryApp = () => {
     }
   });
 
-  // Optimization: Effect to persist cart
   useEffect(() => {
     localStorage.setItem('Delight_Bakehouse_cart', JSON.stringify(cartItems));
   }, [cartItems]);
@@ -62,12 +61,9 @@ const BakeryApp = () => {
       }
       return [...prev, { ...productWithVariant, qty: 1 }];
     });
-    
-    // Toast performance fix
     setShowToast(true);
   }, []);
 
-  // Cleanup toast timer separately to avoid re-renders
   useEffect(() => {
     if (showToast) {
       const t = setTimeout(() => setShowToast(false), 3000);
@@ -85,7 +81,6 @@ const BakeryApp = () => {
     }).filter(item => item.qty > 0));
   }, []);
 
-  // Optimization: Memoize derived values
   const { cartTotal, cartCount } = useMemo(() => {
     const total = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
     const count = cartItems.reduce((acc, item) => acc + item.qty, 0);
@@ -115,18 +110,6 @@ const BakeryApp = () => {
     window.open(`https://wa.me/${khushiNumber}?text=${message}`, '_blank');
   }, [cartItems, formattedTotal]);
 
-  // Performance Hack: Close Modal/Cart on Escape key
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === 'Escape') {
-        setIsCartOpen(false);
-        setIsModalOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, []);
-
   return (
     <div className="relative w-full min-h-screen bg-[#080808] text-white selection:bg-[#E89EB8]/20 overflow-x-hidden">
       
@@ -155,43 +138,43 @@ const BakeryApp = () => {
         <Toast show={showToast} message="Added to your bag!" />
 
         {!isLoading && (
-          <Navbar cartCount={cartCount} onOpenCart={useCallback(() => setIsCartOpen(true), [])} />
+          <>
+            <Navbar cartCount={cartCount} onOpenCart={useCallback(() => setIsCartOpen(true), [])} />
+            
+            <main className="relative w-full animate-in fade-in duration-700">
+              <Hero isParentLoading={isLoading} />
+              
+              <div className="space-y-0 will-change-transform">
+                <Marquee />
+
+                <section id="about">
+                  <AboutKhushi />
+                </section>
+
+                <section id="ingredients">
+                  <Ingredients />
+                </section>
+
+                <section id="custom">
+                  <CustomOrder />
+                </section>
+
+                <section id="menu">
+                  <Menu onProductSelect={handleProductSelect} />
+                </section>
+
+                <section id="feedback">
+                  <Testimonials />
+                  <FeedbackForm />
+                </section>
+
+                <section id="contact">
+                  <Footer />
+                </section>
+              </div>
+            </main>
+          </>
         )}
-
-        {/* Use CSS transform for better GPU performance on mobile opacity transitions */}
-        <main className={`relative w-full transition-opacity duration-700 ease-in-out ${!isLoading ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-          
-          <Hero isParentLoading={isLoading} />
-          
-          <div className="space-y-0 will-change-transform">
-            <Marquee />
-
-            <section id="about" className="content-visibility-auto">
-              <AboutKhushi />
-            </section>
-
-            <section id="ingredients" className="content-visibility-auto">
-              <Ingredients />
-            </section>
-
-            <section id="custom" className="content-visibility-auto">
-              <CustomOrder />
-            </section>
-
-            <section id="menu" className="content-visibility-auto">
-              <Menu onProductSelect={handleProductSelect} />
-            </section>
-
-            <section id="feedback" className="content-visibility-auto">
-              <Testimonials />
-              <FeedbackForm />
-            </section>
-
-            <section id="contact">
-              <Footer />
-            </section>
-          </div>
-        </main>
       </SmoothScroll>
     </div>
   );
