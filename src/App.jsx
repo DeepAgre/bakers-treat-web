@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import SmoothScroll from './components/SmoothScroll';
 import Navbar from './components/Navbar';
@@ -16,8 +16,6 @@ import ProductModal from './components/ProductModal';
 import Toast from './components/Toast';
 import PreLoader from './components/PreLoader';
 
-// NOTE: AnnouncementBanner import removed as it's now integrated into Navbar
-
 const BakeryApp = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -25,11 +23,17 @@ const BakeryApp = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); 
   
+  // Optimization: Lazy initializer for state
   const [cartItems, setCartItems] = useState(() => {
-    const saved = localStorage.getItem('Delight_Bakehouse_cart');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem('Delight_Bakehouse_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
   });
 
+  // Optimization: Effect to persist cart
   useEffect(() => {
     localStorage.setItem('Delight_Bakehouse_cart', JSON.stringify(cartItems));
   }, [cartItems]);
@@ -41,14 +45,14 @@ const BakeryApp = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSkipIntro = () => setIsLoading(false);
+  const handleSkipIntro = useCallback(() => setIsLoading(false), []);
 
-  const handleProductSelect = (product) => {
+  const handleProductSelect = useCallback((product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const addToCart = (productWithVariant) => {
+  const addToCart = useCallback((productWithVariant) => {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === productWithVariant.id);
       if (existing) {
@@ -58,11 +62,20 @@ const BakeryApp = () => {
       }
       return [...prev, { ...productWithVariant, qty: 1 }];
     });
+    
+    // Toast performance fix
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
-  };
+  }, []);
 
-  const updateQty = (id, change) => {
+  // Cleanup toast timer separately to avoid re-renders
+  useEffect(() => {
+    if (showToast) {
+      const t = setTimeout(() => setShowToast(false), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [showToast]);
+
+  const updateQty = useCallback((id, change) => {
     setCartItems(prev => prev.map(item => {
       if (item.id === id) {
         const newQty = Math.max(0, item.qty + change);
@@ -70,16 +83,22 @@ const BakeryApp = () => {
       }
       return item;
     }).filter(item => item.qty > 0));
-  };
+  }, []);
 
-  const cartTotal = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
-  const formattedTotal = new Intl.NumberFormat('en-IN', {
-    style: 'currency', currency: 'INR', maximumFractionDigits: 0
-  }).format(cartTotal);
-  
-  const cartCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
+  // Optimization: Memoize derived values
+  const { cartTotal, cartCount } = useMemo(() => {
+    const total = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
+    const count = cartItems.reduce((acc, item) => acc + item.qty, 0);
+    return { cartTotal: total, cartCount: count };
+  }, [cartItems]);
 
-  const handleCheckout = (type, deliveryDate, address) => {
+  const formattedTotal = useMemo(() => 
+    new Intl.NumberFormat('en-IN', {
+      style: 'currency', currency: 'INR', maximumFractionDigits: 0
+    }).format(cartTotal), [cartTotal]
+  );
+
+  const handleCheckout = useCallback((type, deliveryDate, address) => {
     const khushiNumber = "919136371662"; 
     if (type === 'call') {
       window.location.href = `tel:+${khushiNumber}`;
@@ -94,26 +113,37 @@ const BakeryApp = () => {
       `Total: ${formattedTotal}`
     );
     window.open(`https://wa.me/${khushiNumber}?text=${message}`, '_blank');
-  };
+  }, [cartItems, formattedTotal]);
+
+  // Performance Hack: Close Modal/Cart on Escape key
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        setIsCartOpen(false);
+        setIsModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
 
   return (
-    <div className="relative w-full min-h-screen bg-[#080808] text-white selection:bg-[#E89EB8]/20">
+    <div className="relative w-full min-h-screen bg-[#080808] text-white selection:bg-[#E89EB8]/20 overflow-x-hidden">
       
-      {/* MODALS & OVERLAYS */}
       <Cart 
         isOpen={isCartOpen} 
-        onClose={() => setIsCartOpen(false)} 
+        onClose={useCallback(() => setIsCartOpen(false), [])} 
         items={cartItems} 
         total={formattedTotal} 
         updateQty={updateQty}
-        removeItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
+        removeItem={useCallback((id) => setCartItems(prev => prev.filter(i => i.id !== id)), [])}
         onCheckout={handleCheckout}
       />
 
       <ProductModal 
         product={selectedProduct} 
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={useCallback(() => setIsModalOpen(false), [])}
         onAddToBag={addToCart}
       />
 
@@ -125,45 +155,38 @@ const BakeryApp = () => {
         <Toast show={showToast} message="Added to your bag!" />
 
         {!isLoading && (
-          <Navbar cartCount={cartCount} onOpenCart={() => setIsCartOpen(true)} />
+          <Navbar cartCount={cartCount} onOpenCart={useCallback(() => setIsCartOpen(true), [])} />
         )}
 
-        <main className={`relative w-full ${!isLoading ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}`}>
+        {/* Use CSS transform for better GPU performance on mobile opacity transitions */}
+        <main className={`relative w-full transition-opacity duration-700 ease-in-out ${!isLoading ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
           
-          {/* 1. HERO PAGE */}
           <Hero isParentLoading={isLoading} />
           
-          <div className="space-y-0">
-            {/* Transition Marquee */}
+          <div className="space-y-0 will-change-transform">
             <Marquee />
 
-            {/* 2. ABOUT KHUSHI SECTION (id="about") */}
-            <section id="about">
+            <section id="about" className="content-visibility-auto">
               <AboutKhushi />
             </section>
 
-            {/* 3. INGREDIENTS SECTION (id="ingredients") */}
-            <section id="ingredients">
+            <section id="ingredients" className="content-visibility-auto">
               <Ingredients />
             </section>
 
-            {/* 4. CUSTOM ORDER SECTION (id="custom") */}
-            <section id="custom">
+            <section id="custom" className="content-visibility-auto">
               <CustomOrder />
             </section>
 
-            {/* 5. MENU SECTION (id="menu") */}
-            <section id="menu">
+            <section id="menu" className="content-visibility-auto">
               <Menu onProductSelect={handleProductSelect} />
             </section>
 
-            {/* 6. REVIEWS SECTION (id="feedback") */}
-            <section id="feedback">
+            <section id="feedback" className="content-visibility-auto">
               <Testimonials />
               <FeedbackForm />
             </section>
 
-            {/* 7. CONTACT / FOOTER (id="contact") */}
             <section id="contact">
               <Footer />
             </section>
