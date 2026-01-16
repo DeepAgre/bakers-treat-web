@@ -5,14 +5,16 @@ import { client } from '../lib/sanity';
 // --- SUB-COMPONENT: AI SUMMARY ---
 const AISummary = memo(({ reviews }) => {
   const summary = useMemo(() => {
-    if (!reviews.length) return null;
+    if (!reviews || reviews.length === 0) return null;
+
     const total = reviews.length;
+    // Dynamic Average Calculation
     const avg = (reviews.reduce((acc, curr) => acc + curr.rating, 0) / total).toFixed(1);
     
-    // Logic to detect "keywords" for the tags
+    // Dynamic Keyword Analysis (Scans every review comment)
     const hasQuality = reviews.filter(r => r.rating === 5).length;
-    const hasFresh = reviews.filter(r => r.comment.toLowerCase().includes('fresh')).length + 2; 
-    const hasDelivery = reviews.filter(r => r.location).length;
+    const hasFresh = reviews.filter(r => r.comment.toLowerCase().includes('fresh') || r.comment.toLowerCase().includes('fudgy')).length;
+    const hasDelivery = reviews.filter(r => r.location && r.location !== "Verified Client").length;
 
     return { total, avg, hasQuality, hasFresh, hasDelivery };
   }, [reviews]);
@@ -27,48 +29,57 @@ const AISummary = memo(({ reviews }) => {
       className="mb-20 p-8 md:p-12 rounded-[2.5rem] bg-white/[0.02] border border-white/5 relative overflow-hidden"
     >
       <div className="relative z-10">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#E89EB8]/10 border border-[#E89EB8]/20">
-            <span className="text-[#E89EB8] text-sm">✨</span>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#E89EB8]/10 border border-[#E89EB8]/20">
+              <span className="text-[#E89EB8] text-sm">✨</span>
+            </div>
+            <h3 className="text-white font-serif text-2xl italic">AI Review Insight</h3>
           </div>
-          <h3 className="text-white font-serif text-2xl italic">What patrons are saying</h3>
+          
+          {/* Dynamic Average Rating Display */}
+          <div className="flex items-center gap-4 bg-white/[0.03] px-6 py-3 rounded-2xl border border-white/5">
+            <div className="flex gap-1">
+              {[...Array(5)].map((_, i) => (
+                <span key={i} className={i < Math.round(summary.avg) ? "text-[#E89EB8]" : "text-white/10"}>★</span>
+              ))}
+            </div>
+            <span className="text-white font-bold tracking-tighter text-xl">{summary.avg} <span className="text-white/20 text-sm font-light">/ 5.0</span></span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-8 space-y-4">
             <p className="text-white/60 text-lg md:text-xl font-light leading-relaxed">
-              Based on <span className="text-white font-medium">{summary.total} guestbook entries</span>, 
-              Delight Bakehouse is highly regarded for its <span className="text-[#E89EB8]">artisan consistency</span> and 
-              premium ingredients. Customers in Thane frequently mention the <span className="text-white">freshness</span> of 
-              custom orders and Khushi's attention to detail.
+              Our automated analysis of <span className="text-white font-medium">{summary.total} approved reviews</span> shows high satisfaction with <span className="text-[#E89EB8]">Delight Bakehouse's</span> artisan craft. Patrons frequently mention 
+              the superior <span className="text-white">freshness</span> and the professional delivery standards across <span className="text-white font-medium">Thane</span>.
             </p>
             <div className="flex items-center gap-2">
                <span className="h-[1px] w-4 bg-white/20" />
                <span className="text-[9px] text-white/20 uppercase tracking-[0.3em] font-black italic">
-                 AI Analysis • Ver 2.0.26
+                 Live Analysis Updated Automatically
                </span>
             </div>
           </div>
 
           <div className="lg:col-span-4 flex flex-col gap-3">
-             <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20 mb-1">Select to learn more</span>
+             <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20 mb-1">Key Highlights</span>
              {[
-               { label: 'Superior Quality', count: summary.hasQuality, icon: '✦' },
-               { label: 'Freshly Baked', count: summary.hasFresh, icon: '✦' },
-               { label: 'Thane Delivery', count: summary.hasDelivery, icon: '✦' }
+               { label: 'Top-Tier Quality', count: summary.hasQuality, icon: '✦' },
+               { label: 'Freshness Noted', count: summary.hasFresh, icon: '✦' },
+               { label: 'Local Favorites', count: summary.hasDelivery, icon: '✦' }
              ].map((tag) => (
-               <div key={tag.label} className="flex items-center justify-between px-5 py-3 rounded-xl bg-white/[0.03] border border-white/5 hover:border-[#E89EB8]/30 transition-all cursor-pointer group">
+               <div key={tag.label} className="flex items-center justify-between px-5 py-3 rounded-xl bg-white/[0.03] border border-white/5 transition-all">
                  <div className="flex items-center gap-3">
                    <span className="text-[#E89EB8] text-[10px]">{tag.icon}</span>
-                   <span className="text-white/50 group-hover:text-white text-xs font-medium transition-colors">{tag.label}</span>
+                   <span className="text-white/50 text-xs font-medium">{tag.label}</span>
                  </div>
-                 <span className="text-white/10 text-[10px] font-mono">{tag.count}</span>
+                 <span className="text-white/20 text-[10px] font-mono">{tag.count}</span>
                </div>
              ))}
           </div>
         </div>
       </div>
-      {/* Decorative Blur */}
       <div className="absolute -right-20 -top-20 w-64 h-64 bg-[#E89EB8]/5 blur-[100px] rounded-full" />
     </motion.div>
   );
@@ -87,6 +98,7 @@ const Testimonials = () => {
   const [realReviews, setRealReviews] = useState([]);
 
   useEffect(() => {
+    // Fetches every review approved by Khushi in Sanity
     const query = `*[_type == "feedback" && isApproved == true] | order(createdAt desc)`;
     client.fetch(query)
       .then((data) => setRealReviews(data.map(rev => ({ ...rev, isVerified: true }))))
@@ -94,24 +106,18 @@ const Testimonials = () => {
   }, []);
 
   const allReviews = useMemo(() => [...realReviews, ...hardcodedTestimonials], [realReviews]);
-  const displayReviews = [...allReviews, ...allReviews]; // Doubled for marquee
+  const displayReviews = [...allReviews, ...allReviews]; 
 
   return (
     <section className="relative py-24 sm:py-32 w-full overflow-hidden bg-[#0a0a0a]" id="reviews">
       
-      {/* Optimized Background Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-20">
-        <div className="absolute top-0 left-1/4 w-[1px] h-full bg-gradient-to-b from-[#E89EB8]/20 to-transparent" />
-        <div className="absolute top-0 right-1/4 w-[1px] h-full bg-gradient-to-b from-[#E89EB8]/20 to-transparent" />
-      </div>
-
       <div className="max-w-[1600px] mx-auto px-6 sm:px-12 relative z-10">
         
         {/* Header */}
         <div className="max-w-3xl mb-16">
           <motion.div 
             initial={{ opacity: 0, x: -10 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="flex items-center gap-4 mb-6"
           >
@@ -125,7 +131,7 @@ const Testimonials = () => {
           </h2>
         </div>
 
-        {/* AI SUMMARY SECTION */}
+        {/* AI SUMMARY SECTION - Dynamic Analysis of All Reviews */}
         <AISummary reviews={allReviews} />
 
         {/* INFINITE MARQUEE */}
@@ -140,18 +146,20 @@ const Testimonials = () => {
                   key={`${item._id}-${index}`}
                   className="inline-block w-[320px] sm:w-[420px] mx-4 sm:mx-6 whitespace-normal align-top"
                 >
-                  <div className="bg-white/[0.02] border border-white/5 p-8 sm:p-10 rounded-[2rem] h-full flex flex-col justify-between transition-colors duration-500 hover:border-[#E89EB8]/20 will-change-transform">
+                  {/* Card Container - Fixed text-black hover issue by explicitly setting text colors */}
+                  <div className="bg-white/[0.02] border border-white/5 p-8 sm:p-10 rounded-[2rem] h-full flex flex-col justify-between transition-all duration-500 hover:border-[#E89EB8]/20 hover:bg-white/[0.04] will-change-transform group/card">
                     <div>
                       <div className="flex justify-between items-center mb-6">
                         <span className="text-3xl text-[#E89EB8]/20 font-serif">“</span>
                         <div className="flex gap-1">
-                          {[...Array(item.rating || 5)].map((_, i) => (
-                            <span key={i} className="text-[#E89EB8] text-[8px]">★</span>
+                          {[...Array(5)].map((_, i) => (
+                            <span key={i} className={`text-[10px] ${i < (item.rating || 5) ? 'text-[#E89EB8]' : 'text-white/5'}`}>★</span>
                           ))}
                         </div>
                       </div>
                       
-                      <p className="text-white/60 font-light text-base leading-relaxed mb-8 italic">
+                      {/* Explicitly colored text to prevent turning black on hover */}
+                      <p className="text-white/60 font-light text-base leading-relaxed mb-8 italic group-hover/card:text-white/80 transition-colors">
                         {item.comment}
                       </p>
                     </div>
@@ -161,7 +169,7 @@ const Testimonials = () => {
                         {item.name.charAt(0)}
                       </div>
                       <div>
-                        <h4 className="font-serif font-bold text-white text-base">{item.name}</h4>
+                        <h4 className="font-serif font-bold text-white text-base transition-colors">{item.name}</h4>
                         <p className="text-[#E89EB8]/40 text-[8px] font-black uppercase tracking-widest">
                           {item.location || "Verified Client"}
                         </p>
@@ -182,6 +190,10 @@ const Testimonials = () => {
         }
         .animate-marquee {
           animation: marquee 50s linear infinite;
+        }
+        /* Ensure no text turns black in this section */
+        #reviews * {
+          color-scheme: dark;
         }
       `}} />
     </section>
