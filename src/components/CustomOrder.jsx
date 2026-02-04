@@ -8,7 +8,7 @@ const KineticBackground = memo(() => (
       transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
       className="text-[200px] md:text-[300px] font-serif font-black text-white whitespace-nowrap"
     >
-      Bakers Treat • ARCHITECTURAL CAKERY • THANE STUDIO • 
+      Delight Bakehouse • ARCHITECTURAL CAKERY • THANE STUDIO • 
     </motion.div>
   </div>
 ));

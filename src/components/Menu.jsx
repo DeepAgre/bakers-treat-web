@@ -118,7 +118,7 @@ const Menu = ({ onProductSelect }) => {
             
             <h2 className="text-5xl md:text-8xl font-serif text-white tracking-tighter leading-none">
               Explore the <br />
-              <span className="italic text-[#E89EB8] font-light">Bakers Treat.</span>
+              <span className="italic text-[#E89EB8] font-light">Delight Bakehouse.</span>
             </h2>
           </div>
 
