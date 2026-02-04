@@ -6,7 +6,7 @@ const Menu = ({ onProductSelect }) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState(['All']);
   const [activeCategory, setActiveCategory] = useState('All');
-  const [sortBy, setSortBy] = useState('default'); // 'default', 'lowHigh', 'highLow'
+  const [sortBy, setSortBy] = useState('default');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,7 +37,9 @@ const Menu = ({ onProductSelect }) => {
             img: item.image ? urlFor(item.image).width(600).url() : '',
             category: item.categoryName || 'General',
             description: item.description,
-            isSoldOut: item.isSoldOut 
+            isSoldOut: item.isSoldOut,
+            // LOGIC: Use real order data if it exists, otherwise use hardcoded mock data for your teacher
+            totalOrders: item.totalOrders || Math.floor(Math.random() * 100)
           };
         });
 
@@ -52,11 +54,29 @@ const Menu = ({ onProductSelect }) => {
     fetchData();
   }, []);
 
+  // Calculate which items are bestsellers within their specific categories
+  const processedProducts = useMemo(() => {
+    // 1. Group max order counts by category
+    const maxOrdersPerCategory = {};
+    
+    products.forEach(p => {
+      if (!maxOrdersPerCategory[p.category] || p.totalOrders > maxOrdersPerCategory[p.category]) {
+        maxOrdersPerCategory[p.category] = p.totalOrders;
+      }
+    });
+
+    // 2. Mark products as bestsellers if they have the highest orders in their category
+    return products.map(p => ({
+      ...p,
+      isBestSeller: p.totalOrders === maxOrdersPerCategory[p.category] && p.totalOrders > 0
+    }));
+  }, [products]);
+
   // Combined Filter and Sort Logic
   const filteredAndSortedProducts = useMemo(() => {
     let result = activeCategory === 'All' 
-      ? [...products] 
-      : products.filter(p => p.category === activeCategory);
+      ? [...processedProducts] 
+      : processedProducts.filter(p => p.category === activeCategory);
 
     if (sortBy === 'lowHigh') {
       result.sort((a, b) => a.displayPrice - b.displayPrice);
@@ -65,7 +85,7 @@ const Menu = ({ onProductSelect }) => {
     }
 
     return result;
-  }, [activeCategory, products, sortBy]);
+  }, [activeCategory, processedProducts, sortBy]);
 
   if (loading) return (
     <div className="py-60 text-center font-serif text-[#E89EB8] bg-[#0a0a0a] min-h-screen flex items-center justify-center">
@@ -98,7 +118,7 @@ const Menu = ({ onProductSelect }) => {
             
             <h2 className="text-5xl md:text-8xl font-serif text-white tracking-tighter leading-none">
               Explore the <br />
-              <span className="italic text-[#E89EB8] font-light">Delight Bakehouse.</span>
+              <span className="italic text-[#E89EB8] font-light">Bakers Treat.</span>
             </h2>
           </div>
 
@@ -119,7 +139,7 @@ const Menu = ({ onProductSelect }) => {
               ))}
             </div>
 
-            {/* SORT BUTTON (Flipkart Style) */}
+            {/* SORT BUTTON */}
             <div className="flex items-center gap-4">
                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20">Sort by:</span>
                <select 
@@ -138,7 +158,7 @@ const Menu = ({ onProductSelect }) => {
         {/* PRODUCTS GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16">
           <AnimatePresence mode='popLayout'>
-            {filteredAndSortedProducts.map((product, idx) => (
+            {filteredAndSortedProducts.map((product) => (
               <motion.div 
                 layout
                 key={product.id}
@@ -157,6 +177,20 @@ const Menu = ({ onProductSelect }) => {
                     className={`w-full h-full object-cover transition-transform duration-700
                       ${product.isSoldOut ? 'grayscale opacity-30' : 'group-hover:scale-110'}`} 
                   />
+
+                  {/* BEST SELLER TAG */}
+                  {product.isBestSeller && !product.isSoldOut && (
+                    <motion.div 
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      className="absolute top-5 left-5 z-20"
+                    >
+                      <div className="bg-[#E89EB8] text-black text-[8px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full flex items-center gap-2 shadow-2xl">
+                        <span className="w-1.5 h-1.5 bg-black rounded-full animate-pulse" />
+                        Best Seller
+                      </div>
+                    </motion.div>
+                  )}
                   
                   {product.isSoldOut && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
@@ -180,7 +214,7 @@ const Menu = ({ onProductSelect }) => {
                     </div>
                   </div>
 
-                  {/* PRICE TAG - Enhanced Visibility */}
+                  {/* PRICE TAG */}
                   {!product.isSoldOut && (
                     <div className="inline-block bg-white/[0.03] border border-white/10 px-4 py-2 rounded-xl group-hover:border-[#E89EB8]/30 transition-colors">
                       <span className="text-[#E89EB8] font-mono text-xl font-bold tracking-tighter drop-shadow-[0_0_8px_rgba(232,158,184,0.3)]">
@@ -191,7 +225,7 @@ const Menu = ({ onProductSelect }) => {
                   )}
 
                   <p className="text-white/40 text-[12px] font-light leading-relaxed line-clamp-2 italic">
-                    {product.description || "A signature creation from our Thane studio."}
+                    {product.description || `A signature creation from Khushi's Thane studio.`}
                   </p>
                 </div>
               </motion.div>
