@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 // HELPER: This component prevents blank screens if AI fails
 const SafeImage = ({ src, alt, className }) => {
   const [error, setError] = useState(false);
-  // Elegant fallback image from Unsplash if AI 502s
   const fallback = "https://images.unsplash.com/photo-1621303837174-89787a7d4729?q=80&w=1000&auto=format&fit=crop";
 
   return (
@@ -39,15 +38,28 @@ const CustomOrder = () => {
 
   const KHUSHI_PHONE = "919136371662";
 
-  const getFallbackFlavor = (input) => {
-    const p = input.toLowerCase();
-    if (p.includes('resident') || p.includes('evil')) {
-        return { combo: "Zinfandel Soaked Velvet & Charcoal Ganache", reason: "A dark, atmospheric palette matching the survival horror aesthetic." };
+  // Pure AI Text Generation with dynamic retry
+  const fetchAiFlavor = async (userPrompt, attempt = 1) => {
+    try {
+      const textPrompt = `You are a world-class pastry chef at Delight Bakehouse. For the theme "${userPrompt}", create one completely unique, artistic gourmet cake flavor combination and a 1-sentence architectural reason. Format: Flavor: [Name] | Reason: [Reason]`;
+      
+      const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(textPrompt)}?model=openai&cache=false`);
+      
+      if (!res.ok) throw new Error("Text Service Busy");
+      
+      const text = await res.text();
+      if (text.includes("502") || text.includes("Cloudflare")) throw new Error("Gateway Error");
+
+      const [combo, reason] = text.replace('Flavor:', '').split('| Reason:');
+      return { 
+        combo: combo?.trim() || "Midnight Truffle & Gold Leaf", 
+        reason: reason?.trim() || "An elegant solution for this specific visual concept." 
+      };
+    } catch (err) {
+      if (attempt < 3) return fetchAiFlavor(userPrompt, attempt + 1);
+      // Absolute final fallback if internet/API is totally dead
+      return { combo: "Madagascar Vanilla & Belgian Praline", reason: "A timeless architectural pairing." };
     }
-    if (p.includes('valorant') || p.includes('omen') || p.includes('game')) {
-        return { combo: "Electric Blueberry & Neon Citrus Cream", reason: "Vibrant, high-energy flavors inspired by tactical ability effects." };
-    }
-    return { combo: "Madagascar Vanilla Bean & Belgian Dark Praline", reason: "A timeless, architectural pairing that works perfectly with any design." };
   };
 
   const generateEverything = async () => {
@@ -57,30 +69,21 @@ const CustomOrder = () => {
     setAiPairing(null);
 
     try {
-      // 1. GENERATE AI FLAVOR (With Error Catching)
-      try {
-        const textPrompt = `You are a world-class pastry chef. Suggest 1 gourmet cake flavor and 1 reason for theme "${prompt}". Format: Flavor: [Name] | Reason: [Reason]`;
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
+      // 1. GENERATE DYNAMIC AI FLAVOR
+      const flavorData = await fetchAiFlavor(prompt);
+      setAiPairing(flavorData);
 
-        const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(textPrompt)}`, { signal: controller.signal });
-        if (!res.ok) throw new Error();
-        const text = await res.text();
-        const [combo, reason] = text.replace('Flavor:', '').split('| Reason:');
-        setAiPairing({ combo: combo?.trim(), reason: reason?.trim() });
-        clearTimeout(timeoutId);
-      } catch (e) {
-        setAiPairing(getFallbackFlavor(prompt));
-      }
-
-      // 2. GENERATE 3 IMAGES (Staggered to prevent Rate Limit)
+      // 2. GENERATE 3 IMAGES (Staggered with unique IDs to bypass Rate Limits)
       const results = [];
       for (let i = 0; i < 3; i++) {
-        await new Promise(r => setTimeout(r, 1200)); // 1.2s gap between requests
-        const seed = Math.floor(Math.random() * 99999);
-        // We force the AI to think about "Cake Design" specifically
-        const enhancedPrompt = `${prompt} theme luxury gourmet cake design, cinematic food photography, highly detailed, 8k, sharp focus`;
-        results.push(`https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?seed=${seed}&width=1024&height=1024&nologo=true&t=${Date.now()}`);
+        // Wait 1.5s between requests to be extra safe with Pollinations rate limits
+        await new Promise(r => setTimeout(r, 1500)); 
+        
+        const randomSeed = Math.floor(Math.random() * 1000000);
+        const enhancedPrompt = `High-end luxury ${prompt} themed cake, professional food photography, architectural cake design, intricate details, moody lighting, 8k resolution, sharp focus, masterpiece`;
+        
+        // Using a dynamic timestamp 't' and a large random seed helps bypass the 502/Rate limit screens
+        results.push(`https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?seed=${randomSeed}&width=1024&height=1024&nologo=true&cache=false&t=${Date.now()}`);
       }
       setImages(results);
     } catch (error) {
@@ -96,7 +99,6 @@ const CustomOrder = () => {
 
       <div className="max-w-[1400px] mx-auto px-6 relative z-10">
         
-        {/* CONSULTATION BANNER */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-20">
           <div className="flex items-center gap-4 mb-6">
             <div className="h-[1px] w-12 bg-[#E89EB8]" />
@@ -118,7 +120,6 @@ const CustomOrder = () => {
           </div>
         </motion.div>
 
-        {/* AI LAB */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
           <div className="lg:col-span-4 space-y-8">
             <div className="space-y-2">
@@ -130,12 +131,17 @@ const CustomOrder = () => {
               <input 
                 type="text" 
                 placeholder="Theme (e.g. Resident Evil, Omen)"
-                className="w-full bg-black border border-white/10 rounded-xl p-5 text-white outline-none focus:border-[#E89EB8]/50"
+                className="w-full bg-black border border-white/10 rounded-xl p-5 text-white outline-none focus:border-[#E89EB8]/50 transition-colors"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && generateEverything()}
               />
-              <button onClick={generateEverything} disabled={loading} className="w-full py-5 bg-white text-black rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-[#E89EB8] transition-all disabled:opacity-30">
-                {loading ? "AI is Thinking..." : "Generate Concepts"}
+              <button 
+                onClick={generateEverything} 
+                disabled={loading} 
+                className="w-full py-5 bg-white text-black rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-[#E89EB8] transition-all disabled:opacity-30"
+              >
+                {loading ? "Chef AI is Dreaming..." : "Generate Concepts"}
               </button>
             </div>
           </div>
@@ -146,7 +152,7 @@ const CustomOrder = () => {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
                   {aiPairing && (
                     <div className="p-8 rounded-[2rem] bg-gradient-to-r from-[#E89EB8]/10 border border-[#E89EB8]/20">
-                      <span className="text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.4em] block mb-2">Chef's AI Suggestion</span>
+                      <span className="text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.4em] block mb-2">AI Patissier Suggestion</span>
                       <h4 className="text-2xl font-serif text-white mb-2">{aiPairing.combo}</h4>
                       <p className="text-white/40 text-xs italic">{aiPairing.reason}</p>
                     </div>
@@ -159,15 +165,15 @@ const CustomOrder = () => {
                         onClick={() => setSelectedImg(img)}
                         className={`relative aspect-square rounded-2xl overflow-hidden border-2 cursor-pointer transition-all ${selectedImg === img ? 'border-[#E89EB8]' : 'border-white/5'}`}
                       >
-                        <SafeImage src={img} className="w-full h-full object-cover" alt="AI Visual" />
-                        <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md px-2 py-1 rounded text-[8px] text-white">REF 0{i+1}</div>
+                        <SafeImage src={img} className="w-full h-full object-cover" alt={`AI Concept ${i}`} />
+                        <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md px-2 py-1 rounded text-[8px] text-white">CONCEPT 0{i+1}</div>
                       </motion.div>
                     ))}
                   </div>
                   <button 
                     onClick={() => {
                       const finalImg = selectedImg || images[0];
-                      const msg = `Hi Khushi! I used your AI Visualizer for "${prompt}". It suggested "${aiPairing?.combo}" flavor. Check this visual: ${finalImg}`;
+                      const msg = `Hi Khushi! I used the AI Concept Lab for "${prompt}". It suggested "${aiPairing?.combo}". I love this visual vibe: ${finalImg}`;
                       window.open(`https://wa.me/${KHUSHI_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
                     }}
                     className="w-full py-4 bg-white/5 border border-white/10 rounded-xl text-white/60 text-[10px] uppercase tracking-widest font-bold hover:bg-[#E89EB8] hover:text-black transition-all"
@@ -176,8 +182,13 @@ const CustomOrder = () => {
                   </button>
                 </motion.div>
               ) : (
-                <div className="h-[400px] border border-dashed border-white/10 rounded-[3rem] flex items-center justify-center">
-                  <span className="text-white/10 uppercase tracking-[0.5em] text-[10px] font-black italic">Lab Results Will Appear Here</span>
+                <div className="h-[450px] border border-dashed border-white/10 rounded-[3rem] flex items-center justify-center bg-white/[0.01]">
+                  <div className="text-center space-y-4">
+                    <div className="w-12 h-12 border-2 border-[#E89EB8]/20 border-t-[#E89EB8] rounded-full animate-spin mx-auto opacity-20" style={{ display: loading ? 'block' : 'none' }} />
+                    <span className="text-white/10 uppercase tracking-[0.5em] text-[10px] font-black italic block">
+                      {loading ? "Analyzing Aesthetic..." : "Awaiting Parameters"}
+                    </span>
+                  </div>
                 </div>
               )}
             </AnimatePresence>
