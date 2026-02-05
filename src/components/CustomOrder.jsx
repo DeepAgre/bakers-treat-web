@@ -15,65 +15,66 @@ const KineticBackground = memo(() => (
 
 const CustomOrder = () => {
   const [prompt, setPrompt] = useState('');
-  const [images, setImages] = useState([]);
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [aiPairing, setAiPairing] = useState(null);
 
   // SECURE ACCESS: Pulling the token from your .env file
   const HF_TOKEN = import.meta.env.VITE_HF_TOKEN; 
 
-  const generateEverything = async () => {
+  const generateConcept = async () => {
     if (!prompt || loading) return;
     setLoading(true);
-    setImages([]);
+    setImage(null);
     setAiPairing(null);
 
     try {
       // 1. DYNAMIC AI FLAVOR GENERATION
-      // We use Pollinations for text as it's faster for chat-style responses
       const textRes = await fetch(`https://text.pollinations.ai/${encodeURIComponent(
-        `You are a chef at Delight Bakehouse. For a ${prompt} themed cake, suggest 1 unique flavor and 1 reason. Format: Flavor: [Name] | Reason: [Reason]`
-      )}?model=openai&cache=false`);
+        `You are the head pastry chef at Delight Bakehouse. Based on the theme "${prompt}", invent a sophisticated, unique cake flavor combination. 
+        Return ONLY in this format: Flavor: [Name] | Reason: [Why it fits the theme]`
+      )}?model=openai&cache=false&seed=${Date.now()}`);
       
       const textData = await textRes.text();
-      // Split the string based on our custom format
-      const [flavor, reason] = textData.replace("Flavor:", "").split("| Reason:");
       
-      setAiPairing({ 
-        combo: flavor?.trim() || "Artisan Infusion", 
-        reason: reason?.trim() || "Designed to match your unique aesthetic." 
-      });
+      // Safety check: If API returns 502/HTML, use a premium fallback
+      if (textData.includes("<!DOCTYPE html>") || textData.includes("502")) {
+        setAiPairing({
+          combo: "Midnight Truffle & Himalayan Salt",
+          reason: "An architectural classic designed to match bold visual themes."
+        });
+      } else {
+        const [flavor, reason] = textData.replace("Flavor:", "").split("| Reason:");
+        setAiPairing({ 
+          combo: flavor?.trim() || "Artisan Signature Infusion", 
+          reason: reason?.trim() || "Crafted specifically for your architectural vision." 
+        });
+      }
 
       // 2. DYNAMIC IMAGE GENERATION (Hugging Face)
-      // Generating 3 distinct visuals
-      const imagePromises = [1, 2, 3].map(async (seed) => {
-        const response = await fetch(
-          "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
-          {
-            headers: { 
-              Authorization: `Bearer ${HF_TOKEN}`, 
-              "Content-Type": "application/json" 
-            },
-            method: "POST",
-            body: JSON.stringify({ 
-              inputs: `Luxury gourmet cake, theme: ${prompt}, architectural style, high-end pastry photography, 8k, bokeh background, sharp focus, intricate edible details`,
-              parameters: { seed: Math.floor(Math.random() * 100000) } // Randomizes each image
-            }),
-          }
-        );
+      // We generate only 1 high-quality visual now
+      const response = await fetch(
+        "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
+        {
+          headers: { 
+            Authorization: `Bearer ${HF_TOKEN}`, 
+            "Content-Type": "application/json" 
+          },
+          method: "POST",
+          body: JSON.stringify({ 
+            inputs: `Professional food photography of a luxury high-end cake, theme: ${prompt}, architectural design, edible art, highly detailed, 8k resolution, sharp focus, cinematic lighting, bokeh background`,
+            parameters: { seed: Math.floor(Math.random() * 100000) }
+          }),
+        }
+      );
 
-        if (!response.ok) throw new Error("Hugging Face API Busy");
+      if (!response.ok) throw new Error("Image API Busy");
 
-        const blob = await response.blob();
-        return URL.createObjectURL(blob); // Creates a local, secure URL for the generated image
-      });
-
-      const imageUrls = await Promise.all(imagePromises);
-      setImages(imageUrls);
+      const blob = await response.blob();
+      setImage(URL.createObjectURL(blob));
 
     } catch (error) {
       console.error("AI Lab Error:", error);
-      // Optional: Set a user-friendly error state here
     } finally {
       setLoading(false);
     }
@@ -89,24 +90,26 @@ const CustomOrder = () => {
           <p className="text-white/40 uppercase tracking-[0.3em] text-xs">The Future of Custom Commissions</p>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Left: Inputs & Flavor */}
           <div className="space-y-8">
             <div className="bg-white/[0.03] border border-white/10 p-8 rounded-[2rem] space-y-6">
               <div className="space-y-2">
                 <label className="text-[10px] uppercase tracking-widest text-white/30 font-bold ml-2">Define Your Theme</label>
                 <input 
                   className="w-full bg-black/40 border border-white/10 p-6 rounded-2xl outline-none focus:border-[#E89EB8] transition-all text-lg"
-                  placeholder="e.g. Omen Valorant, Neon Cyberpunk, Pastel Bloom"
+                  placeholder="e.g. Omen Valorant, Gothic Noir, Ethereal Gold"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && generateConcept()}
                 />
               </div>
               <button 
-                onClick={generateEverything}
+                onClick={generateConcept}
                 disabled={loading}
                 className="w-full bg-[#E89EB8] text-black py-6 rounded-2xl font-black uppercase tracking-widest hover:bg-[#f3b5ca] transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-xl shadow-[#E89EB8]/10"
               >
-                {loading ? "Chef AI is Visualizing..." : "Generate Concept Designs"}
+                {loading ? "Chef AI is Designing..." : "Generate Concept Design"}
               </button>
             </div>
 
@@ -125,36 +128,48 @@ const CustomOrder = () => {
             </AnimatePresence>
           </div>
 
-          <div className="relative min-h-[400px]">
-            {loading ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
-                <div className="w-12 h-12 border-2 border-[#E89EB8]/20 border-t-[#E89EB8] rounded-full animate-spin" />
-                <p className="text-white/20 text-[10px] uppercase tracking-[0.4em] animate-pulse">Rendering 3D Visuals</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-6">
-                <AnimatePresence>
-                  {images.length > 0 ? (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-3 gap-4">
-                      {images.map((src, i) => (
-                        <motion.div key={i} whileHover={{ scale: 1.05 }} className="group relative">
-                          <img 
-                            src={src} 
-                            alt="AI Cake" 
-                            className="rounded-2xl aspect-[4/5] object-cover border border-white/10 grayscale hover:grayscale-0 transition-all duration-500 cursor-zoom-in"
-                          />
-                          <div className="absolute inset-0 rounded-2xl bg-[#E89EB8]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                  ) : (
-                    <div className="h-full border border-dashed border-white/10 rounded-[3rem] flex items-center justify-center">
-                      <span className="text-white/10 uppercase tracking-[0.5em] text-[10px] font-black italic">Awaiting Parameters</span>
-                    </div>
-                  )}
-                </AnimatePresence>
-              </div>
-            )}
+          {/* Right: Visual Display */}
+          <div className="relative aspect-square md:aspect-[4/5] w-full max-w-md mx-auto">
+            <AnimatePresence mode="wait">
+              {loading ? (
+                <motion.div 
+                  key="loader"
+                  initial={{ opacity: 0 }} 
+                  animate={{ opacity: 1 }} 
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 flex flex-col items-center justify-center space-y-4 border border-white/10 rounded-[3rem] bg-white/[0.01]"
+                >
+                  <div className="w-12 h-12 border-2 border-[#E89EB8]/20 border-t-[#E89EB8] rounded-full animate-spin" />
+                  <p className="text-white/20 text-[10px] uppercase tracking-[0.4em] animate-pulse text-center px-6">
+                    Analyzing theme &<br/>Generating Architectural Visuals
+                  </p>
+                </motion.div>
+              ) : image ? (
+                <motion.div 
+                  key="image"
+                  initial={{ opacity: 0, scale: 0.95 }} 
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="relative h-full w-full"
+                >
+                  <img 
+                    src={image} 
+                    alt="AI Cake Concept" 
+                    className="rounded-[3rem] w-full h-full object-cover border border-white/10 shadow-2xl"
+                  />
+                  <div className="absolute inset-0 rounded-[3rem] bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-8 left-8">
+                    <span className="text-white/40 text-[9px] uppercase tracking-widest font-bold">Concept Visual 01</span>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  key="empty"
+                  className="h-full border border-dashed border-white/10 rounded-[3rem] flex items-center justify-center bg-white/[0.01]"
+                >
+                  <span className="text-white/10 uppercase tracking-[0.5em] text-[10px] font-black italic">Awaiting Parameters</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
