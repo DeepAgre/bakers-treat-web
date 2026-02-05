@@ -1,28 +1,12 @@
-import React, { useState, memo, useCallback } from 'react';
+import React, { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// HELPER: Improved SafeImage with a "Retry" trigger
-const SafeImage = ({ src, alt, className }) => {
-  const [error, setError] = useState(false);
-  const fallback = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1000&auto=format&fit=crop";
-
-  return (
-    <img 
-      src={error ? fallback : src} 
-      alt={alt} 
-      className={className}
-      onError={() => setError(true)}
-      loading="eager"
-    />
-  );
-};
-
 const KineticBackground = memo(() => (
-  <div className="absolute inset-0 pointer-events-none select-none overflow-hidden opacity-[0.02] will-change-transform">
+  <div className="absolute inset-0 pointer-events-none select-none overflow-hidden opacity-[0.02]">
     <motion.div 
       animate={{ x: [0, -1000] }} 
       transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-      className="text-[200px] md:text-[300px] font-serif font-black text-white whitespace-nowrap"
+      className="text-[200px] font-serif font-black text-white whitespace-nowrap"
     >
       Delight Bakehouse • ARCHITECTURAL CAKERY • THANE STUDIO • 
     </motion.div>
@@ -33,10 +17,10 @@ const CustomOrder = () => {
   const [prompt, setPrompt] = useState('');
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedImg, setSelectedImg] = useState(null);
   const [aiPairing, setAiPairing] = useState(null);
 
-  const KHUSHI_PHONE = "919136371662";
+  // SECURE ACCESS: Pulling the token from your .env file
+  const HF_TOKEN = import.meta.env.VITE_HF_TOKEN; 
 
   const generateEverything = async () => {
     if (!prompt || loading) return;
@@ -45,160 +29,132 @@ const CustomOrder = () => {
     setAiPairing(null);
 
     try {
-      // 1. DYNAMIC AI FLAVOR GENERATION (No hardcoded fallbacks)
-      const fetchFlavor = async () => {
-        const chefPrompt = `You are a creative patissier for Delight Bakehouse. Based on the theme "${prompt}", invent a one-of-a-kind gourmet cake flavor. 
-        Return ONLY in this format: 
-        Flavor: [Unique Combination] | Reason: [Why it matches the theme]`;
-
-        const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(chefPrompt)}?model=openai&cache=false&seed=${Date.now()}`);
-        const text = await response.text();
-        
-        // Parsing the AI response
-        const parts = text.split('|');
-        const flavorPart = parts[0]?.replace('Flavor:', '').trim();
-        const reasonPart = parts[1]?.replace('Reason:', '').trim();
-
-        return { 
-          combo: flavorPart || "Custom Infusion", 
-          reason: reasonPart || "Crafted specifically for your theme." 
-        };
-      };
-
-      // 2. STAGGERED IMAGE GENERATION (Anti-Rate Limit)
-      const generateImages = async () => {
-        const urls = [];
-        for (let i = 0; i < 3; i++) {
-          // Delay to prevent hitting rate limits (1.2 seconds between calls)
-          await new Promise(resolve => setTimeout(resolve, i * 1200));
-          
-          const seed = Math.floor(Math.random() * 9999999);
-          const visualPrompt = `Professional close-up food photography of a luxury ${prompt} themed architectural cake, highly detailed sugar work, artistic edible sculpture, masterpiece, 8k, moody cinematic lighting`;
-          
-          // Use random seed and timestamp to force the server to generate a new image instead of a 502/Rate limit page
-          urls.push(`https://image.pollinations.ai/prompt/${encodeURIComponent(visualPrompt)}?seed=${seed}&width=1024&height=1024&nologo=true&model=flux&cache=false`);
-        }
-        return urls;
-      };
-
-      // Run both in parallel for speed
-      const [flavorResult, imageResults] = await Promise.all([fetchFlavor(), generateImages()]);
+      // 1. DYNAMIC AI FLAVOR GENERATION
+      // We use Pollinations for text as it's faster for chat-style responses
+      const textRes = await fetch(`https://text.pollinations.ai/${encodeURIComponent(
+        `You are a chef at Delight Bakehouse. For a ${prompt} themed cake, suggest 1 unique flavor and 1 reason. Format: Flavor: [Name] | Reason: [Reason]`
+      )}?model=openai&cache=false`);
       
-      setAiPairing(flavorResult);
-      setImages(imageResults);
+      const textData = await textRes.text();
+      // Split the string based on our custom format
+      const [flavor, reason] = textData.replace("Flavor:", "").split("| Reason:");
+      
+      setAiPairing({ 
+        combo: flavor?.trim() || "Artisan Infusion", 
+        reason: reason?.trim() || "Designed to match your unique aesthetic." 
+      });
+
+      // 2. DYNAMIC IMAGE GENERATION (Hugging Face)
+      // Generating 3 distinct visuals
+      const imagePromises = [1, 2, 3].map(async (seed) => {
+        const response = await fetch(
+          "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
+          {
+            headers: { 
+              Authorization: `Bearer ${HF_TOKEN}`, 
+              "Content-Type": "application/json" 
+            },
+            method: "POST",
+            body: JSON.stringify({ 
+              inputs: `Luxury gourmet cake, theme: ${prompt}, architectural style, high-end pastry photography, 8k, bokeh background, sharp focus, intricate edible details`,
+              parameters: { seed: Math.floor(Math.random() * 100000) } // Randomizes each image
+            }),
+          }
+        );
+
+        if (!response.ok) throw new Error("Hugging Face API Busy");
+
+        const blob = await response.blob();
+        return URL.createObjectURL(blob); // Creates a local, secure URL for the generated image
+      });
+
+      const imageUrls = await Promise.all(imagePromises);
+      setImages(imageUrls);
 
     } catch (error) {
       console.error("AI Lab Error:", error);
+      // Optional: Set a user-friendly error state here
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section id="custom" className="py-24 sm:py-32 relative overflow-hidden min-h-screen bg-[#080808]">
+    <section className="py-24 relative overflow-hidden min-h-screen bg-[#080808] text-white">
       <KineticBackground />
-
-      <div className="max-w-[1400px] mx-auto px-6 relative z-10">
+      
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
+        <div className="mb-16">
+          <h2 className="text-5xl md:text-7xl font-serif text-[#E89EB8] mb-4">AI Concept Lab</h2>
+          <p className="text-white/40 uppercase tracking-[0.3em] text-xs">The Future of Custom Commissions</p>
+        </div>
         
-        {/* BANNER */}
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-20">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="h-[1px] w-12 bg-[#E89EB8]" />
-            <span className="text-[#E89EB8] uppercase tracking-[0.6em] text-[10px] font-black">Direct Consultation</span>
-          </div>
-          <div className="bg-white/[0.03] border border-white/10 rounded-[3rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-10 backdrop-blur-md">
-            <div className="max-w-2xl">
-              <h2 className="text-5xl md:text-7xl font-serif text-white mb-6">The Custom <span className="italic text-[#E89EB8]">Commission.</span></h2>
-              <p className="text-white/50 text-lg font-light leading-relaxed">
-                Connect with Khushi to translate your vision into edible architecture. Our Thane studio specializes in high-concept thematic artistry.
-              </p>
-            </div>
-            <button 
-              onClick={() => window.open(`https://wa.me/${KHUSHI_PHONE}?text=Hi Khushi! I want to discuss a custom cake order.`, '_blank')}
-              className="bg-[#E89EB8] text-black px-12 py-8 rounded-full font-black uppercase tracking-widest text-xs hover:scale-105 transition-all shadow-[0_0_40px_rgba(232,158,184,0.2)]"
-            >
-              Consult with Khushi →
-            </button>
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-          <div className="lg:col-span-4 space-y-8">
-            <div className="space-y-2">
-              <h3 className="text-white font-serif text-3xl italic">AI Concept Lab</h3>
-              <p className="text-white/30 text-[10px] uppercase tracking-[0.3em]">Experimental Visualizer</p>
-            </div>
-
-            <div className="bg-white/[0.02] p-8 rounded-[2rem] border border-white/5 space-y-6">
-              <input 
-                type="text" 
-                placeholder="Theme (e.g. Cyberpunk, Vintage Rose)"
-                className="w-full bg-black border border-white/10 rounded-xl p-5 text-white outline-none focus:border-[#E89EB8]/50 transition-all"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-              />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="space-y-8">
+            <div className="bg-white/[0.03] border border-white/10 p-8 rounded-[2rem] space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase tracking-widest text-white/30 font-bold ml-2">Define Your Theme</label>
+                <input 
+                  className="w-full bg-black/40 border border-white/10 p-6 rounded-2xl outline-none focus:border-[#E89EB8] transition-all text-lg"
+                  placeholder="e.g. Omen Valorant, Neon Cyberpunk, Pastel Bloom"
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                />
+              </div>
               <button 
-                onClick={generateEverything} 
-                disabled={loading} 
-                className="w-full py-5 bg-white text-black rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-[#E89EB8] disabled:opacity-30 transition-all"
+                onClick={generateEverything}
+                disabled={loading}
+                className="w-full bg-[#E89EB8] text-black py-6 rounded-2xl font-black uppercase tracking-widest hover:bg-[#f3b5ca] transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-xl shadow-[#E89EB8]/10"
               >
-                {loading ? "Chef AI is Creating..." : "Generate Concepts"}
+                {loading ? "Chef AI is Visualizing..." : "Generate Concept Designs"}
               </button>
             </div>
-          </div>
 
-          <div className="lg:col-span-8">
-            <AnimatePresence mode="wait">
-              {images.length > 0 ? (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-                  {aiPairing && (
-                    <motion.div 
-                      initial={{ y: 10, opacity: 0 }} 
-                      animate={{ y: 0, opacity: 1 }}
-                      className="p-8 rounded-[2rem] bg-gradient-to-r from-[#E89EB8]/10 border border-[#E89EB8]/20"
-                    >
-                      <span className="text-[#E89EB8] text-[9px] font-black uppercase tracking-[0.4em] block mb-2">AI Patissier Pairing</span>
-                      <h4 className="text-2xl font-serif text-white mb-2">{aiPairing.combo}</h4>
-                      <p className="text-white/40 text-xs italic">{aiPairing.reason}</p>
-                    </motion.div>
-                  )}
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {images.map((img, i) => (
-                      <motion.div 
-                        key={i}
-                        whileHover={{ y: -5 }}
-                        onClick={() => setSelectedImg(img)}
-                        className={`relative aspect-square rounded-2xl overflow-hidden border-2 cursor-pointer transition-all ${selectedImg === img ? 'border-[#E89EB8]' : 'border-white/5'}`}
-                      >
-                        <SafeImage src={img} className="w-full h-full object-cover" alt={`AI Visual ${i}`} />
-                        <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md px-2 py-1 rounded text-[8px] text-white font-bold uppercase">Option 0{i+1}</div>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  <button 
-                    onClick={() => {
-                      const finalImg = selectedImg || images[0];
-                      const msg = `Hi Khushi! I used the AI Concept Lab for "${prompt}". It suggested the "${aiPairing?.combo}" flavor. I love this design: ${finalImg}`;
-                      window.open(`https://wa.me/${KHUSHI_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
-                    }}
-                    className="w-full py-4 bg-white/5 border border-white/10 rounded-xl text-white/60 text-[10px] uppercase tracking-widest font-bold hover:bg-[#E89EB8] hover:text-black transition-all"
-                  >
-                    Send this concept to Khushi
-                  </button>
+            <AnimatePresence>
+              {aiPairing && (
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }} 
+                  animate={{ opacity: 1, x: 0 }}
+                  className="p-8 bg-gradient-to-br from-white/[0.05] to-transparent border-l-4 border-[#E89EB8] rounded-r-3xl"
+                >
+                  <h4 className="text-[#E89EB8] text-[10px] font-black uppercase mb-3 tracking-[0.2em]">Flavor Profile Suggestion</h4>
+                  <div className="text-3xl font-serif mb-3 leading-tight">{aiPairing.combo}</div>
+                  <p className="text-white/50 italic text-sm leading-relaxed">"{aiPairing.reason}"</p>
                 </motion.div>
-              ) : (
-                <div className="h-[450px] border border-dashed border-white/10 rounded-[3rem] flex items-center justify-center bg-white/[0.01]">
-                  <div className="text-center space-y-4">
-                    {loading && <div className="w-8 h-8 border-2 border-[#E89EB8] border-t-transparent rounded-full animate-spin mx-auto mb-4" />}
-                    <span className="text-white/10 uppercase tracking-[0.5em] text-[10px] font-black italic block">
-                      {loading ? "Visualizing your vision..." : "Awaiting Parameters"}
-                    </span>
-                  </div>
-                </div>
               )}
             </AnimatePresence>
+          </div>
+
+          <div className="relative min-h-[400px]">
+            {loading ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
+                <div className="w-12 h-12 border-2 border-[#E89EB8]/20 border-t-[#E89EB8] rounded-full animate-spin" />
+                <p className="text-white/20 text-[10px] uppercase tracking-[0.4em] animate-pulse">Rendering 3D Visuals</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6">
+                <AnimatePresence>
+                  {images.length > 0 ? (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-3 gap-4">
+                      {images.map((src, i) => (
+                        <motion.div key={i} whileHover={{ scale: 1.05 }} className="group relative">
+                          <img 
+                            src={src} 
+                            alt="AI Cake" 
+                            className="rounded-2xl aspect-[4/5] object-cover border border-white/10 grayscale hover:grayscale-0 transition-all duration-500 cursor-zoom-in"
+                          />
+                          <div className="absolute inset-0 rounded-2xl bg-[#E89EB8]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  ) : (
+                    <div className="h-full border border-dashed border-white/10 rounded-[3rem] flex items-center justify-center">
+                      <span className="text-white/10 uppercase tracking-[0.5em] text-[10px] font-black italic">Awaiting Parameters</span>
+                    </div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
         </div>
       </div>
