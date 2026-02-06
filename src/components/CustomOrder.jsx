@@ -19,6 +19,7 @@ const CustomOrder = () => {
   const [loading, setLoading] = useState(false);
   const [aiPairing, setAiPairing] = useState(null);
 
+  // Accessing your token from the .env file
   const HF_TOKEN = import.meta.env.VITE_HF_TOKEN; 
 
   const generateConcept = async () => {
@@ -28,13 +29,14 @@ const CustomOrder = () => {
     setAiPairing(null);
 
     try {
-      // 1. DYNAMIC AI FLAVOR GENERATION (Strictly from Prompt)
+      // 1. DYNAMIC AI FLAVOR GENERATION (No Hardcoding)
       const textRes = await fetch(`https://text.pollinations.ai/${encodeURIComponent(
-        `As a chef at Delight Bakehouse, suggest 1 unique flavor and 1 reason for a ${prompt} cake. Format: Flavor: [Name] | Reason: [Reason]`
+        `Chef Khushi, suggest 1 unique flavor and 1 reason for a ${prompt} cake. Format: Flavor: [Name] | Reason: [Reason]`
       )}?model=openai&cache=false&seed=${Date.now()}`);
       
       const textData = await textRes.text();
       
+      // We only set the pairing if the AI actually returns a valid response
       if (!textData.includes("502") && !textData.includes("<!DOCTYPE html>")) {
         const [flavor, reason] = textData.replace("Flavor:", "").split("| Reason:");
         setAiPairing({ 
@@ -43,18 +45,18 @@ const CustomOrder = () => {
         });
       }
 
-      // 2. DYNAMIC IMAGE GENERATION (Strictly from Prompt)
+      // 2. DYNAMIC IMAGE GENERATION (With "Wait for Model" fix)
       const response = await fetch(
         "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
         {
           headers: { 
-            Authorization: `Bearer ${HF_TOKEN}`, 
+            "Authorization": `Bearer ${HF_TOKEN}`, 
             "Content-Type": "application/json" 
           },
           method: "POST",
           body: JSON.stringify({ 
-            inputs: `Professional architectural cake photography, theme: ${prompt}, luxury edible art, hyper-realistic, 8k, cinematic lighting, studio background`,
-            parameters: { seed: Math.floor(Math.random() * 100000) }
+            inputs: `Luxurious architectural cake photography, theme: ${prompt}, edible art, hyper-realistic, 8k resolution, cinematic lighting, studio background`,
+            options: { wait_for_model: true } // Crucial for making the image actually show up
           }),
         }
       );
@@ -62,6 +64,8 @@ const CustomOrder = () => {
       if (response.ok) {
         const blob = await response.blob();
         setImage(URL.createObjectURL(blob));
+      } else {
+        console.error("HF Response Error:", await response.text());
       }
     } catch (error) {
       console.error("AI Generation Error:", error);
@@ -81,12 +85,12 @@ const CustomOrder = () => {
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         
-        {/* PRIMARY SECTION: THE COMMISSION */}
-        <div className="mb-24 flex flex-col items-start max-w-4xl">
+        {/* PRIMARY SECTION: THE COMMISSION (Bigger & More Premium) */}
+        <div className="mb-32 flex flex-col items-start max-w-5xl">
           <motion.span 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-[#E89EB8] uppercase tracking-[0.5em] text-xs font-bold mb-6"
+            className="text-[#E89EB8] uppercase tracking-[0.5em] text-xs font-black mb-6"
           >
             Bespoke Edible Architecture
           </motion.span>
@@ -94,7 +98,7 @@ const CustomOrder = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-6xl md:text-8xl font-serif leading-[0.9] mb-8"
+            className="text-7xl md:text-9xl font-serif leading-[0.85] mb-10"
           >
             The Custom <br /> Commission.
           </motion.h2>
@@ -102,39 +106,39 @@ const CustomOrder = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-white/50 text-xl max-w-2xl mb-10 leading-relaxed"
+            className="text-white/50 text-xl md:text-2xl max-w-3xl mb-12 leading-relaxed"
           >
-            Collaborate with Chef Khushi Manjrekar to bring your structural vision to life. From Thane Studio to your celebration, we craft cakes that defy gravity and expectations.
+            Collaborate with **Chef Khushi Manjrekar** to bring your structural vision to life. From our Thane Studio, we craft bespoke masterpieces that merge fine art with high-end pastry.
           </motion.p>
           
           <motion.button 
             onClick={handleConsultation}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-white text-black px-12 py-5 rounded-full font-black uppercase tracking-widest text-sm hover:bg-[#E89EB8] transition-colors shadow-2xl"
+            className="bg-white text-black px-16 py-6 rounded-full font-black uppercase tracking-widest text-sm hover:bg-[#E89EB8] transition-all shadow-2xl"
           >
-            Consult with Khushi
+            Start Your Consultation
           </motion.button>
         </div>
 
-        <hr className="border-white/10 mb-24" />
+        <div className="w-full h-px bg-white/10 mb-32" />
 
-        {/* SECONDARY SECTION: THE AI VISUALIZER */}
+        {/* SECONDARY SECTION: THE AI VISUALIZER (Secondary Function) */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
-          <div className="space-y-10">
+          <div className="space-y-12">
             <div>
-              <h3 className="text-3xl font-serif mb-4">Visualize Your Idea</h3>
-              <p className="text-white/40 leading-relaxed">
-                Use our AI laboratory to preview textures, color palettes, and flavor profiles based on your specific theme.
+              <h3 className="text-4xl font-serif mb-6">AI Concept Visualizer</h3>
+              <p className="text-white/40 text-lg leading-relaxed max-w-lg">
+                Not sure where to start? Use our AI lab to brainstorm color palettes, structural forms, and flavor profiles tailored to your specific theme.
               </p>
             </div>
 
-            <div className="bg-white/[0.03] border border-white/10 p-10 rounded-[2.5rem] space-y-8">
+            <div className="bg-white/[0.03] border border-white/10 p-10 rounded-[3rem] space-y-8 backdrop-blur-sm">
               <div className="space-y-3">
-                <label className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-bold ml-2">Theme Architecture</label>
+                <label className="text-[10px] uppercase tracking-[0.4em] text-white/30 font-black ml-2">Define Theme Architecture</label>
                 <input 
-                  className="w-full bg-black/60 border border-white/10 p-6 rounded-2xl outline-none focus:border-[#E89EB8] transition-all text-lg"
-                  placeholder="e.g. Cyberpunk structure, Marble Flow..."
+                  className="w-full bg-black/40 border border-white/10 p-7 rounded-2xl outline-none focus:border-[#E89EB8] transition-all text-xl"
+                  placeholder="e.g. Victorian Gothic, Neon Skyline, Bio-Organic..."
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                 />
@@ -142,46 +146,52 @@ const CustomOrder = () => {
               <button 
                 onClick={generateConcept}
                 disabled={loading}
-                className="w-full border border-[#E89EB8] text-[#E89EB8] py-6 rounded-2xl font-black uppercase tracking-widest hover:bg-[#E89EB8] hover:text-black transition-all disabled:opacity-20"
+                className="w-full bg-transparent border border-[#E89EB8] text-[#E89EB8] py-6 rounded-2xl font-black uppercase tracking-widest hover:bg-[#E89EB8] hover:text-black transition-all disabled:opacity-30"
               >
-                {loading ? "Generating Concept..." : "Generate AI Visual"}
+                {loading ? "Chef AI is Rendering..." : "Generate AI Visual"}
               </button>
             </div>
 
             <AnimatePresence>
               {aiPairing && (
                 <motion.div 
-                  initial={{ opacity: 0, y: 20 }} 
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-10 bg-white/[0.02] border-l-2 border-[#E89EB8] rounded-r-3xl backdrop-blur-md"
+                  initial={{ opacity: 0, x: -20 }} 
+                  animate={{ opacity: 1, x: 0 }}
+                  className="p-10 bg-white/[0.02] border-l-4 border-[#E89EB8] rounded-r-[2rem]"
                 >
-                  <h4 className="text-[#E89EB8] text-[10px] font-black uppercase mb-4 tracking-[0.2em]">Chef's AI Flavor Recommendation</h4>
-                  <div className="text-4xl font-serif mb-4 text-white/90">{aiPairing.combo}</div>
-                  <p className="text-white/40 italic leading-relaxed text-lg">{aiPairing.reason}</p>
+                  <h4 className="text-[#E89EB8] text-[10px] font-black uppercase mb-4 tracking-[0.3em]">AI Flavor Suggestion</h4>
+                  <div className="text-4xl font-serif mb-4 leading-tight">{aiPairing.combo}</div>
+                  <p className="text-white/40 italic text-lg leading-relaxed">"{aiPairing.reason}"</p>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
+          {/* AI Output Display */}
           <div className="relative">
             <div className="sticky top-10">
               <AnimatePresence mode="wait">
                 {loading ? (
-                  <motion.div key="l" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="aspect-[4/5] bg-white/[0.02] border border-white/10 rounded-[3rem] flex items-center justify-center">
+                  <motion.div key="l" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="aspect-[4/5] bg-white/[0.02] border border-white/10 rounded-[3rem] flex flex-col items-center justify-center space-y-6">
                     <div className="w-16 h-16 border-t-2 border-[#E89EB8] rounded-full animate-spin" />
+                    <span className="text-white/20 text-[10px] uppercase tracking-[0.5em] animate-pulse">Processing Edible Architecture</span>
                   </motion.div>
                 ) : image ? (
-                  <motion.div key="i" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="relative group">
-                    <img src={image} className="rounded-[3rem] w-full aspect-[4/5] object-cover border border-white/10 shadow-2xl grayscale group-hover:grayscale-0 transition-all duration-700" alt="Concept" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent rounded-[3rem]" />
-                    <div className="absolute bottom-10 left-10">
-                      <p className="text-[10px] uppercase tracking-widest text-[#E89EB8] font-black mb-2">AI Generated Preview</p>
-                      <h5 className="text-2xl font-serif uppercase tracking-tighter">{prompt}</h5>
+                  <motion.div key="i" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="relative group">
+                    <img 
+                      src={image} 
+                      className="rounded-[3rem] w-full aspect-[4/5] object-cover border border-white/10 shadow-2xl grayscale group-hover:grayscale-0 transition-all duration-1000" 
+                      alt="AI Concept" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent rounded-[3rem]" />
+                    <div className="absolute bottom-12 left-12">
+                      <p className="text-[10px] uppercase tracking-widest text-[#E89EB8] font-black mb-3">Concept Preview 01</p>
+                      <h5 className="text-3xl font-serif uppercase tracking-tighter">{prompt}</h5>
                     </div>
                   </motion.div>
                 ) : (
-                  <div className="aspect-[4/5] border border-dashed border-white/10 rounded-[3rem] flex items-center justify-center text-white/10 uppercase tracking-[1em] text-[10px]">
-                    Design Preview Area
+                  <div className="aspect-[4/5] border border-dashed border-white/10 rounded-[3rem] flex items-center justify-center text-white/5 uppercase tracking-[0.8em] text-[10px] font-black italic">
+                    Visual Studio Awaiting Input
                   </div>
                 )}
               </AnimatePresence>
