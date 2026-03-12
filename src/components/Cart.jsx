@@ -14,12 +14,12 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem }) => {
 
   const isAddressValid = address.trim().length >= 1;
 
+  const phoneNumber = "919136371662";
+
   const cleanPrice = (val) => {
     if (!val) return "0";
     return val.toString().replace(/₹/g, '').trim();
   };
-
-  const phoneNumber = "919999999999"; // CHANGE THIS
 
   const handleCheckout = () => {
 
@@ -82,11 +82,11 @@ Thank you.`;
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-screen w-full max-w-md bg-white z-[9999] flex flex-col shadow-2xl"
+            className="fixed right-0 top-0 h-[100dvh] w-full max-w-md bg-white z-[9999] flex flex-col shadow-2xl"
           >
 
             {/* HEADER */}
-            <div className="p-6 border-b flex justify-between items-center">
+            <div className="p-6 border-b flex justify-between items-center shrink-0">
 
               <h2 className="text-2xl font-bold text-black">
                 Your Bag
@@ -101,8 +101,11 @@ Thank you.`;
 
             </div>
 
-            {/* CART ITEMS */}
-            <div className="flex-1 overflow-y-auto">
+            {/* SCROLLABLE ITEMS AREA */}
+            <div
+              className="flex-1 overflow-y-auto overscroll-contain"
+              style={{ WebkitOverflowScrolling: "touch" }}
+            >
 
               <div className="p-6 space-y-4">
 
@@ -177,12 +180,11 @@ Thank you.`;
             {/* FOOTER */}
             {items.length > 0 && (
 
-              <div className="p-6 border-t">
+              <div className="p-6 border-t shrink-0 bg-white">
 
                 <div className="space-y-4 mb-6">
 
                   {/* DATE */}
-
                   <div>
 
                     <label className="text-xs font-bold text-gray-600">
@@ -200,7 +202,6 @@ Thank you.`;
                   </div>
 
                   {/* ADDRESS */}
-
                   <div>
 
                     <label className={`text-xs font-bold ${showError ? 'text-red-500' : 'text-gray-600'}`}>
@@ -225,7 +226,6 @@ Thank you.`;
                 </div>
 
                 {/* TOTAL */}
-
                 <div className="flex justify-between mb-4">
 
                   <span className="text-gray-700">
@@ -239,7 +239,6 @@ Thank you.`;
                 </div>
 
                 {/* WHATSAPP BUTTON */}
-
                 <button
                   onClick={handleCheckout}
                   disabled={!isAddressValid}
@@ -253,7 +252,6 @@ Thank you.`;
                 </button>
 
                 {/* EXTRA BUTTONS */}
-
                 <div className="grid grid-cols-2 gap-3">
 
                   <button
