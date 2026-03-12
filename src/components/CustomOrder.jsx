@@ -28,8 +28,7 @@ const CustomOrder = () => {
     setAiPairing(null);
 
     try {
-      // 1. FULLY AUTONOMOUS AI FLAVOR GENERATION
-      // Using a clean prompt to ensure the AI creates a unique pairing every time
+      // 1. AUTONOMOUS AI FLAVOR GENERATION (Keeping your preferred logic)
       const textRes = await fetch(`https://text.pollinations.ai/${encodeURIComponent(
         `You are Chef Khushi. Create 1 unique, gourmet cake flavor and 1 logical reason why it fits the theme: "${prompt}". 
         Return ONLY in this format: Flavor: [Name] | Reason: [Why it fits]`
@@ -37,9 +36,7 @@ const CustomOrder = () => {
       
       const textData = await textRes.text();
       
-      // ERROR-FREE LOGIC: Strips out technical errors/HTML before displaying
       if (textData && !textData.includes("<!DOCTYPE html>") && !textData.includes("502")) {
-        // Cleaning the response to handle potential extra spaces or prefixes
         const cleanData = textData.replace(/^(AI:|Chef:|Response:)/i, "").trim();
         const [flavor, reason] = cleanData.replace("Flavor:", "").split("| Reason:");
         
@@ -51,37 +48,49 @@ const CustomOrder = () => {
         }
       }
 
-      // 2. HUGGING FACE IMAGE GENERATION (With Wait-For-Model Fix)
-      const response = await fetch(
-        "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
-        {
-          headers: { 
-            "Authorization": `Bearer ${HF_TOKEN}`, 
-            "Content-Type": "application/json" 
-          },
-          method: "POST",
-          body: JSON.stringify({ 
-            inputs: `Professional food photography of a high-end architectural cake, theme: ${prompt}, edible art, hyper-realistic, 8k, cinematic lighting, studio background`,
-            options: { wait_for_model: true } 
-          }),
-        }
-      );
+      // 2. ROBUST IMAGE GENERATION (With Retry Mechanism)
+      const fetchWithRetry = async (retries = 3) => {
+        const response = await fetch(
+          "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
+          {
+            headers: { 
+              "Authorization": `Bearer ${HF_TOKEN}`, 
+              "Content-Type": "application/json" 
+            },
+            method: "POST",
+            body: JSON.stringify({ 
+              inputs: `Professional food photography of a high-end architectural cake, theme: ${prompt}, edible art, hyper-realistic, 8k, cinematic lighting, studio background`,
+              options: { wait_for_model: true } 
+            }),
+          }
+        );
 
-      if (response.ok) {
-        const blob = await response.blob();
-        setImage(URL.createObjectURL(blob));
-      } else {
-        console.error("HF Image Error:", await response.text());
-      }
+        // If 503 (Model Loading), wait 5 seconds and try again
+        if (response.status === 503 && retries > 0) {
+          await new Promise(res => setTimeout(res, 5000));
+          return fetchWithRetry(retries - 1);
+        }
+
+        if (response.ok) {
+          const blob = await response.blob();
+          return URL.createObjectURL(blob);
+        }
+        
+        throw new Error("Failed to generate image after retries");
+      };
+
+      const imageUrl = await fetchWithRetry();
+      if (imageUrl) setImage(imageUrl);
+
     } catch (error) {
-      console.error("System Error:", error);
+      console.error("AI Generation Error:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleConsultation = () => {
-    const message = `Hi Khushi, I used your AI Visualizer for a ${prompt || 'bespoke'} cake concept and I'd like to discuss a custom order!`;
+    const message = `Hi Khushi, I'm interested in a custom ${prompt || 'bespoke'} cake from Delight Bakehouse! I loved the AI concept.`;
     window.open(`https://wa.me/919833503525?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -91,7 +100,7 @@ const CustomOrder = () => {
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         
-        {/* PRIMARY SECTION: PREMIUM CUSTOM COMMISSION */}
+        {/* PRIMARY SECTION: THE COMMISSION */}
         <div className="mb-32 flex flex-col items-start max-w-5xl">
           <motion.span 
             initial={{ opacity: 0, y: 20 }}
@@ -144,7 +153,7 @@ const CustomOrder = () => {
                 <label className="text-[10px] uppercase tracking-[0.4em] text-white/30 font-black ml-2">Theme Architecture</label>
                 <input 
                   className="w-full bg-black/40 border border-white/10 p-7 rounded-2xl outline-none focus:border-[#E89EB8] transition-all text-xl"
-                  placeholder="e.g. Omen Valorant, Gothic Arch, Marble Flow..."
+                  placeholder="e.g. Cyberpunk, Gothic Arch, Marble Flow..."
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                 />
