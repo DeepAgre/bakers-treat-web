@@ -103,6 +103,7 @@ Thank you.`;
 
             {/* SCROLLABLE ITEMS AREA */}
             <div
+              data-lenis-prevent
               className="flex-1 overflow-y-auto overscroll-contain"
               style={{ WebkitOverflowScrolling: "touch" }}
             >
@@ -205,9 +206,7 @@ Thank you.`;
                   <div>
 
                     <label className={`text-xs font-bold ${showError ? 'text-red-500' : 'text-gray-600'}`}>
-
                       {showError ? 'Please enter delivery address' : 'Delivery Address'}
-
                     </label>
 
                     <textarea
