@@ -19,6 +19,8 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem }) => {
     return val.toString().replace(/₹/g, '').trim();
   };
 
+  const phoneNumber = "919999999999"; // CHANGE THIS
+
   const handleCheckout = () => {
 
     if (!isAddressValid) {
@@ -52,68 +54,83 @@ ${address}
 
 Thank you.`;
 
-    const encodedMessage = encodeURIComponent(message);
+    const encoded = encodeURIComponent(message);
 
-    const phoneNumber = "919999999999"; // replace with bakery whatsapp number
+    window.open(`https://wa.me/${phoneNumber}?text=${encoded}`, "_blank");
+  };
 
-    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-    window.open(whatsappURL, "_blank");
+  const handleCall = () => {
+    window.location.href = `tel:${phoneNumber}`;
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* BACKDROP */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[9998]"
+            className="fixed inset-0 bg-black/60 z-[9998]"
           />
 
+          {/* CART PANEL */}
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-[100dvh] w-full max-w-md bg-white z-[9999] shadow-2xl flex flex-col overflow-hidden"
+            className="fixed right-0 top-0 h-screen w-full max-w-md bg-white z-[9999] flex flex-col shadow-2xl"
           >
 
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
-              <h2 className="text-2xl font-serif font-bold text-slate-900">Your Bag</h2>
+            {/* HEADER */}
+            <div className="p-6 border-b flex justify-between items-center">
 
-              <button onClick={onClose} className="p-3 bg-slate-50 rounded-full">
+              <h2 className="text-2xl font-bold text-black">
+                Your Bag
+              </h2>
+
+              <button
+                onClick={onClose}
+                className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-black text-xl"
+              >
                 ✕
               </button>
+
             </div>
 
-            <div className="flex-1 overflow-y-auto bg-white">
+            {/* CART ITEMS */}
+            <div className="flex-1 overflow-y-auto">
 
               <div className="p-6 space-y-4">
 
                 {items.length === 0 ? (
-                  <div className="text-center py-24 text-slate-400">
-                    Your bag is empty.
+                  <div className="text-center py-24 text-gray-400">
+                    Your bag is empty
                   </div>
                 ) : (
                   items.map((item) => (
-                    <div key={item.id} className="flex gap-4 items-center bg-slate-50 p-4 rounded-xl">
+
+                    <div
+                      key={item.id}
+                      className="flex gap-4 items-center bg-gray-100 p-4 rounded-xl"
+                    >
 
                       <img
                         src={item.img}
                         alt={item.name}
-                        className="w-16 h-16 rounded-xl object-cover"
+                        className="w-16 h-16 rounded-lg object-cover"
                       />
 
                       <div className="flex-1">
 
-                        <h4 className="font-bold text-sm">
+                        <h4 className="font-bold text-black text-sm">
                           {item.name}
                         </h4>
 
-                        <p className="text-[#E89EB8] font-bold">
+                        <p className="text-pink-500 font-bold">
                           ₹{cleanPrice(item.price)}
                         </p>
 
@@ -121,21 +138,24 @@ Thank you.`;
 
                           <button
                             onClick={() => updateQty(item.id, -1)}
-                            className="w-8 h-8 border rounded"
+                            className="w-8 h-8 border border-gray-300 rounded text-black"
                           >
                             -
                           </button>
 
-                          <span>{item.qty}</span>
+                          <span className="font-bold text-black w-6 text-center">
+                            {item.qty}
+                          </span>
 
                           <button
                             onClick={() => updateQty(item.id, 1)}
-                            className="w-8 h-8 border rounded"
+                            className="w-8 h-8 border border-gray-300 rounded text-black"
                           >
                             +
                           </button>
 
                         </div>
+
                       </div>
 
                       <button
@@ -146,21 +166,26 @@ Thank you.`;
                       </button>
 
                     </div>
+
                   ))
                 )}
 
               </div>
+
             </div>
 
+            {/* FOOTER */}
             {items.length > 0 && (
 
               <div className="p-6 border-t">
 
                 <div className="space-y-4 mb-6">
 
+                  {/* DATE */}
+
                   <div>
 
-                    <label className="text-xs font-bold text-slate-500">
+                    <label className="text-xs font-bold text-gray-600">
                       Delivery Date
                     </label>
 
@@ -169,55 +194,83 @@ Thank you.`;
                       min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
                       value={deliveryDate}
                       onChange={(e) => setDeliveryDate(e.target.value)}
-                      className="w-full p-3 border rounded-lg"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-black"
                     />
 
                   </div>
 
+                  {/* ADDRESS */}
+
                   <div>
 
-                    <label className={`text-xs font-bold ${showError ? 'text-red-500' : 'text-slate-500'}`}>
+                    <label className={`text-xs font-bold ${showError ? 'text-red-500' : 'text-gray-600'}`}>
 
                       {showError ? 'Please enter delivery address' : 'Delivery Address'}
 
                     </label>
 
                     <textarea
-                      placeholder="Building, Flat, Area..."
+                      placeholder="Building, Flat No, Area..."
                       value={address}
                       onChange={(e) => {
                         setAddress(e.target.value);
-                        if(showError) setShowError(false);
+                        if (showError) setShowError(false);
                       }}
                       rows="2"
-                      className="w-full p-3 border rounded-lg"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-black"
                     />
 
                   </div>
 
                 </div>
 
+                {/* TOTAL */}
+
                 <div className="flex justify-between mb-4">
 
-                  <span>Total</span>
+                  <span className="text-gray-700">
+                    Estimated Total
+                  </span>
 
-                  <span className="font-bold text-xl">
+                  <span className="font-bold text-xl text-black">
                     ₹{cleanPrice(total)}
                   </span>
 
                 </div>
 
+                {/* WHATSAPP BUTTON */}
+
                 <button
                   onClick={handleCheckout}
                   disabled={!isAddressValid}
-                  className={`w-full py-4 rounded-xl font-bold
-                    ${isAddressValid
+                  className={`w-full py-4 rounded-xl font-bold mb-3
+                  ${isAddressValid
                       ? 'bg-[#25D366] text-white'
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     }`}
                 >
                   Send Order via WhatsApp
                 </button>
+
+                {/* EXTRA BUTTONS */}
+
+                <div className="grid grid-cols-2 gap-3">
+
+                  <button
+                    onClick={handleCall}
+                    className="bg-black text-white py-3 rounded-xl font-bold text-sm"
+                  >
+                    Direct Call
+                  </button>
+
+                  <button
+                    onClick={onClose}
+                    className="border border-gray-300 py-3 rounded-xl font-bold text-sm text-black"
+                  >
+                    Keep Browsing
+                  </button>
+
+                </div>
 
               </div>
 
