@@ -26,12 +26,25 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
       return;
     }
 
-    // Generate item summary for the order message
-    const itemSummary = items.map(item => 
-      `• ${item.name} (x${item.qty}) - ₹${cleanPrice(item.price * item.qty)}`
-    ).join('\n');
+    // Format individual items with line totals
+    const itemDetails = items.map(item => {
+      const lineTotal = cleanPrice(item.price * item.qty);
+      return `• ${item.name} x ${item.qty} = ₹${lineTotal}`;
+    }).join('\n');
 
-    onCheckout('whatsapp', deliveryDate, address, itemSummary);
+    // Create the full message for Khushi
+    const fullOrderSummary = 
+`Hii Khushi, I want to order some products:
+
+${itemDetails}
+
+--------------------------
+Final Total: ₹${cleanPrice(total)}
+--------------------------
+📅 Delivery Date: ${deliveryDate}
+📍 Address: ${address}`;
+
+    onCheckout('whatsapp', deliveryDate, address, fullOrderSummary);
   };
 
   return (
