@@ -16,6 +16,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
 
   const cleanPrice = (val) => {
     if (!val) return "0";
+    // Handles both string and number inputs safely
     return val.toString().replace(/₹/g, '').trim();
   };
 
@@ -26,13 +27,13 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
       return;
     }
 
-    // Format individual items with line totals
+    // 1. Format individual items with line totals (e.g., Product x 2 = ₹620)
     const itemDetails = items.map(item => {
       const lineTotal = cleanPrice(item.price * item.qty);
       return `• ${item.name} x ${item.qty} = ₹${lineTotal}`;
     }).join('\n');
 
-    // Create the full message for Khushi
+    // 2. Create the full message for Khushi including the Address and Date
     const fullOrderSummary = 
 `Hii Khushi, I want to order some products:
 
@@ -42,8 +43,12 @@ ${itemDetails}
 Final Total: ₹${cleanPrice(total)}
 --------------------------
 📅 Delivery Date: ${deliveryDate}
-📍 Address: ${address}`;
+📍 Address: ${address}
 
+Thank you!`;
+
+    // 3. Send the formatted message to the onCheckout handler
+    // Make sure your parent component's onCheckout function uses this summary for the WhatsApp URL
     onCheckout('whatsapp', deliveryDate, address, fullOrderSummary);
   };
 
@@ -89,7 +94,7 @@ Final Total: ₹${cleanPrice(total)}
             >
               <div className="p-6 space-y-4">
                 {items.length === 0 ? (
-                  <div className="text-center py-24 text-slate-400">Your bag is empty.</div>
+                  <div className="text-center py-24 text-slate-400 font-medium">Your bag is empty.</div>
                 ) : (
                   items.map((item) => (
                     <div key={item.id} className="flex gap-4 items-center bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
@@ -98,7 +103,7 @@ Final Total: ₹${cleanPrice(total)}
                         <h4 className="font-bold text-slate-900 text-sm truncate">{item.name}</h4>
                         <p className="text-[#E89EB8] font-black text-sm">₹{cleanPrice(item.price)}</p>
                         
-                        {/* Quantity Controls - Fixed Visibility */}
+                        {/* Quantity Controls */}
                         <div className="flex items-center gap-2 mt-2">
                           <button 
                             onClick={() => updateQty(item.id, -1)} 
@@ -129,7 +134,7 @@ Final Total: ₹${cleanPrice(total)}
               <div className="p-6 bg-white border-t border-slate-100 shrink-0 shadow-[0_-15px_30px_rgba(0,0,0,0.08)] pb-safe">
                 <div className="space-y-4 mb-6">
                   <div className="grid grid-cols-1 gap-4">
-                    {/* Date Input - Fixed Visibility */}
+                    {/* Date Input */}
                     <div>
                       <label className="text-[10px] uppercase font-black tracking-widest text-slate-500 mb-1.5 block">Delivery Date</label>
                       <input 
@@ -141,12 +146,13 @@ Final Total: ₹${cleanPrice(total)}
                         style={{ colorScheme: 'light' }}
                       />
                     </div>
+                    {/* Address Input */}
                     <div>
                       <label className={`text-[10px] uppercase font-black tracking-widest mb-1.5 block transition-colors ${showError ? 'text-red-500' : 'text-slate-500'}`}>
                         {showError ? 'Please provide a delivery address' : 'Delivery Address'}
                       </label>
                       <textarea 
-                        placeholder="e.g. Hiranandani Estate, Majiwada..." 
+                        placeholder="e.g. Building Name, Flat No, Landmark, Area..." 
                         value={address}
                         onChange={(e) => {
                           setAddress(e.target.value);
