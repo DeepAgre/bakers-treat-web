@@ -3,38 +3,62 @@ import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 
 const SmoothScroll = ({ children, isPaused }) => {
+
   const lenisRef = useRef(null);
 
   useEffect(() => {
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      // This is the secret: it allows elements with this attribute to scroll normally
-      prevent: (node) => node.hasAttribute('data-lenis-prevent') || node.closest('[data-lenis-prevent]'),
+
+      // Allow specific elements to scroll normally
+      prevent: (node) =>
+        node.hasAttribute('data-lenis-prevent') ||
+        node.closest('[data-lenis-prevent]')
     });
 
     lenisRef.current = lenis;
 
-    function raf(time) {
+    let rafId;
+
+    const raf = (time) => {
       lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
+      rafId = requestAnimationFrame(raf);
+    };
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
-    return () => lenis.destroy();
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+
   }, []);
 
-  // Pause background scroll when Cart or Modal is open
+  // Pause background scrolling when overlays open
   useEffect(() => {
-    if (lenisRef.current) {
-      if (isPaused) {
-        lenisRef.current.stop();
-      } else {
-        lenisRef.current.start();
-      }
+
+    const lenis = lenisRef.current;
+    if (!lenis) return;
+
+    if (isPaused) {
+
+      // stop smooth scrolling
+      lenis.stop();
+
+      // allow browser scroll inside overlays
+      document.documentElement.style.overflow = 'hidden';
+
+    } else {
+
+      lenis.start();
+
+      document.documentElement.style.overflow = '';
+
     }
+
   }, [isPaused]);
 
   return <>{children}</>;
