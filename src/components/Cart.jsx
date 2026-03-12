@@ -14,18 +14,24 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
   // Requirement: Enable as soon as 1 character is typed
   const isAddressValid = address.trim().length >= 1;
 
+  const cleanPrice = (val) => {
+    if (!val) return "0";
+    return val.toString().replace(/₹/g, '').trim();
+  };
+
   const handleCheckout = () => {
     if (!isAddressValid) {
       setShowError(true);
       setTimeout(() => setShowError(false), 3000);
       return;
     }
-    onCheckout('whatsapp', deliveryDate, address);
-  };
 
-  const cleanPrice = (val) => {
-    if (!val) return "0";
-    return val.toString().replace(/₹/g, '').trim();
+    // Generate item summary for the order message
+    const itemSummary = items.map(item => 
+      `• ${item.name} (x${item.qty}) - ₹${cleanPrice(item.price * item.qty)}`
+    ).join('\n');
+
+    onCheckout('whatsapp', deliveryDate, address, itemSummary);
   };
 
   return (
