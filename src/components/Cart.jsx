@@ -11,7 +11,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
   const [address, setAddress] = useState('');
   const [showError, setShowError] = useState(false);
 
-  // Updated requirement: Enable as soon as 1 character is typed
+  // Requirement: Enable as soon as 1 character is typed
   const isAddressValid = address.trim().length >= 1;
 
   const handleCheckout = () => {
@@ -32,7 +32,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop - High Z-index to stay above everything */}
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -54,15 +54,12 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                 <h2 className="text-2xl font-serif font-bold text-slate-900">Your Bag</h2>
                 <p className="text-[10px] text-[#E89EB8] uppercase tracking-[0.3em] font-black italic">Delight Bakehouse Studio</p>
               </div>
-              <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-slate-100 rounded-full transition-all">
+              <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-slate-100 rounded-full transition-all text-slate-900">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
 
-            {/* SCROLLABLE PRODUCT LIST 
-                data-lenis-prevent: Tells SmoothScroll to leave this div alone.
-                flex-1 + overflow-y-auto: Standard CSS for internal scrolling.
-            */}
+            {/* SCROLLABLE PRODUCT LIST */}
             <div 
               data-lenis-prevent
               className="flex-1 overflow-y-auto overflow-x-hidden bg-white custom-scrollbar"
@@ -81,13 +78,25 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-slate-900 text-sm truncate">{item.name}</h4>
                         <p className="text-[#E89EB8] font-black text-sm">₹{cleanPrice(item.price)}</p>
+                        
+                        {/* Quantity Controls - Fixed Visibility */}
                         <div className="flex items-center gap-2 mt-2">
-                          <button onClick={() => updateQty(item.id, -1)} className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white hover:bg-[#E89EB8] hover:text-white transition-all">-</button>
-                          <span className="w-8 text-center font-black text-xs">{item.qty}</span>
-                          <button onClick={() => updateQty(item.id, 1)} className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white hover:bg-[#E89EB8] hover:text-white transition-all">+</button>
+                          <button 
+                            onClick={() => updateQty(item.id, -1)} 
+                            className="w-8 h-8 rounded-lg border-2 border-slate-300 flex items-center justify-center bg-white text-slate-900 hover:bg-[#E89EB8] hover:border-[#E89EB8] hover:text-white transition-all font-bold"
+                          >
+                            <span className="mb-0.5">−</span>
+                          </button>
+                          <span className="w-8 text-center font-black text-slate-900 text-xs">{item.qty}</span>
+                          <button 
+                            onClick={() => updateQty(item.id, 1)} 
+                            className="w-8 h-8 rounded-lg border-2 border-slate-300 flex items-center justify-center bg-white text-slate-900 hover:bg-[#E89EB8] hover:border-[#E89EB8] hover:text-white transition-all font-bold"
+                          >
+                            <span className="mb-0.5">+</span>
+                          </button>
                         </div>
                       </div>
-                      <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-red-500 p-2">
+                      <button onClick={() => removeItem(item.id)} className="text-slate-400 hover:text-red-500 p-2 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                       </button>
                     </div>
@@ -101,18 +110,20 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
               <div className="p-6 bg-white border-t border-slate-100 shrink-0 shadow-[0_-15px_30px_rgba(0,0,0,0.08)] pb-safe">
                 <div className="space-y-4 mb-6">
                   <div className="grid grid-cols-1 gap-4">
+                    {/* Date Input - Fixed Visibility */}
                     <div>
-                      <label className="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-1.5 block">Delivery Date</label>
+                      <label className="text-[10px] uppercase font-black tracking-widest text-slate-500 mb-1.5 block">Delivery Date</label>
                       <input 
                         type="date" 
                         min={new Date(Date.now() + 86400000).toISOString().split('T')[0]} 
                         value={deliveryDate}
                         onChange={(e) => setDeliveryDate(e.target.value)}
-                        className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none focus:border-[#E89EB8] transition-colors"
+                        className="w-full p-3 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-900 font-bold text-xs outline-none focus:border-[#E89EB8] transition-colors appearance-none"
+                        style={{ colorScheme: 'light' }}
                       />
                     </div>
                     <div>
-                      <label className={`text-[9px] uppercase font-black tracking-widest mb-1.5 block transition-colors ${showError ? 'text-red-500' : 'text-slate-400'}`}>
+                      <label className={`text-[10px] uppercase font-black tracking-widest mb-1.5 block transition-colors ${showError ? 'text-red-500' : 'text-slate-500'}`}>
                         {showError ? 'Please provide a delivery address' : 'Delivery Address'}
                       </label>
                       <textarea 
@@ -123,7 +134,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                           if(showError) setShowError(false);
                         }} 
                         rows="2"
-                        className={`w-full p-3 rounded-xl border bg-slate-50 text-xs outline-none resize-none transition-all ${showError ? 'border-red-300 ring-2 ring-red-50' : 'border-slate-200 focus:border-[#E89EB8]'}`}
+                        className={`w-full p-3 rounded-xl border-2 bg-slate-50 text-slate-900 text-xs outline-none resize-none transition-all placeholder:text-slate-400 ${showError ? 'border-red-300 ring-2 ring-red-50' : 'border-slate-200 focus:border-[#E89EB8]'}`}
                       />
                     </div>
                   </div>
@@ -153,7 +164,7 @@ const Cart = ({ isOpen, onClose, items, total, updateQty, removeItem, onCheckout
                   
                   <div className="grid grid-cols-2 gap-3">
                     <button onClick={() => onCheckout('call')} className="bg-slate-900 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-800 transition-colors">Direct Call</button>
-                    <button onClick={onClose} className="border border-slate-200 text-slate-500 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-50 transition-colors">Keep Browsing</button>
+                    <button onClick={onClose} className="border-2 border-slate-200 text-slate-600 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-50 transition-colors">Keep Browsing</button>
                   </div>
                 </div>
               </div>
