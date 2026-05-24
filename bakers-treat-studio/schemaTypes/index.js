@@ -1,7 +1,6 @@
-// index.js
-import category from './category'
-import product from './product'
-import feedback from './feedback' // 1. Import the feedback file
-import adminAuth from './adminAuth'
+import {product} from './product'
+import {category} from './category'
+import {feedback} from './feedback'
+import {adminAuth} from './adminAuth' // Ensure the import matches your filename
 
-export const schemaTypes = [product, category, feedback, adminAuth] // 2. Add it here
+export const schemaTypes = [product, category, feedback, adminAuth]
