@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../assets/delight.jpeg';
 
-const Navbar = ({ cartCount, onOpenCart }) => {
+const Navbar = ({ cartCount, onOpenCart, onAdminClick }) => {
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -188,7 +188,23 @@ const Navbar = ({ cartCount, onOpenCart }) => {
             </div>
 
             {/* RIGHT: Actions */}
-            <div className="flex-1 flex justify-end items-center gap-6">
+            <div className="flex-1 flex justify-end items-center gap-4">
+              {/* Secure Workspace Entry Portal Button (Desktop) */}
+              <button 
+                onClick={onAdminClick}
+                className={`hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all text-[9px] font-black uppercase tracking-widest ${
+                  scrolled 
+                  ? 'border-black/35 text-black hover:bg-black hover:text-white' 
+                  : 'border-white/20 text-white hover:bg-white hover:text-black'
+                }`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                Console
+              </button>
+
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -236,7 +252,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-0 z-[250] bg-[#E89EB8] flex flex-col justify-center p-12 lg:hidden"
+              className="fixed inset-0 z-[250] bg-[#E89EB8] flex flex-col justify-between p-12 lg:hidden"
             >
               {/* CLOSE BUTTON (The "X") */}
               <button 
@@ -250,7 +266,7 @@ const Navbar = ({ cartCount, onOpenCart }) => {
 
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] font-serif font-black text-black/[0.05] pointer-events-none select-none">DB</div>
               
-              <div className="flex flex-col gap-8 relative z-10">
+              <div className="flex flex-col gap-8 relative z-10 mt-16">
                 <p className="text-black/40 text-[10px] font-black uppercase tracking-[0.5em] mb-4">Navigation</p>
                 {navLinks.map((link, idx) => (
                   <motion.button 
@@ -264,6 +280,23 @@ const Navbar = ({ cartCount, onOpenCart }) => {
                     {link.name}
                   </motion.button>
                 ))}
+              </div>
+
+              {/* Secure Workspace Entry Portal Button (Mobile Menu) */}
+              <div className="relative z-10 pt-8 border-t border-black/10 mt-auto">
+                <button 
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    onAdminClick();
+                  }}
+                  className="w-full flex items-center justify-center gap-3 bg-black text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-black/90 active:scale-[0.98] transition-all"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                  Chef Management Workspace
+                </button>
               </div>
             </motion.div>
           )}
