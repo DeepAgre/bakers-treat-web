@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// Import the client and url builder from your active configuration
-import { client, urlFor } from '../sanityClient';
+// Connected directly to your active configuration (sanity.js)
+import { client, urlFor } from '../sanity';
 
 export default function ClientDashboard({ onBackToStore }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [passcode, setPasscode] = useState('');
   const [loginError, setLoginError] = useState(false);
   
-  // Dashboard & Database states
+  // Dynamic states populated from Sanity
   const [activeTab, setActiveTab] = useState('orders');
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
@@ -18,16 +18,23 @@ export default function ClientDashboard({ onBackToStore }) {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   
-  // Editing state for variants
+  // Product creation state
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [newProductName, setNewProductName] = useState('');
+  const [newProductDesc, setNewProductDesc] = useState('');
+  const [newProductCategory, setNewProductCategory] = useState('');
+  const [newProductVariants, setNewProductVariants] = useState([{ size: '500g', price: 0 }]);
+  const [newProductSeasonal, setNewProductSeasonal] = useState(false);
+
+  // Variant editing state
   const [editingProductId, setEditingProductId] = useState(null);
   const [editingVariantIndex, setEditingVariantIndex] = useState(null);
   const [editPrice, setEditPrice] = useState('');
 
-  // 1. FETCH LIVE DATA FROM SANITY
+  // 1. FETCH LIVE DATA DIRECTLY FROM SANITY
   const fetchAllSanityData = async () => {
     setLoading(true);
     try {
-      // Fetching categories, products (with resolved category reference), feedback reviews, and custom orders
       const [fetchedProducts, fetchedFeedbacks, fetchedOrders, fetchedCategories] = await Promise.all([
         client.fetch(`*[_type == "product"]{
           _id,
@@ -37,7 +44,7 @@ export default function ClientDashboard({ onBackToStore }) {
           variants,
           isSeasonal,
           isSoldOut,
-          category->{ title }
+          category->{ _id, title }
         } | order(name asc)`),
         client.fetch(`*[_type == "feedback"] | order(createdAt desc)`),
         client.fetch(`*[_type == "order"] | order(deliveryDate asc)`),
@@ -49,7 +56,7 @@ export default function ClientDashboard({ onBackToStore }) {
       setOrders(fetchedOrders || []);
       setCategories(fetchedCategories || []);
     } catch (err) {
-      console.error("Sanity Fetch Error:", err);
+      console.error("Sanity Database Query Error:", err);
     } finally {
       setLoading(false);
     }
@@ -61,7 +68,7 @@ export default function ClientDashboard({ onBackToStore }) {
     }
   }, [isAuthenticated]);
 
-  // 2. VERIFY PIN
+  // 2. VERIFY PIN (Using custom lock logic)
   const handleLogin = (e) => {
     e.preventDefault();
     if (passcode === "1212") {
@@ -73,7 +80,7 @@ export default function ClientDashboard({ onBackToStore }) {
     }
   };
 
-  // 3. MUTATION: Toggle Sold Out Status
+  // 3. MUTATION: Toggle "Sold Out" Status
   const toggleSoldOut = async (productId, currentStatus) => {
     setActionLoading(true);
     try {
@@ -86,20 +93,19 @@ export default function ClientDashboard({ onBackToStore }) {
         prev.map(p => p._id === productId ? { ...p, isSoldOut: !currentStatus } : p)
       );
     } catch (err) {
-      console.error("Failed to toggle Sold Out status:", err);
+      console.error("Failed to commit sold-out mutation:", err);
     } finally {
       setActionLoading(false);
     }
   };
 
-  // 4. MUTATION: Update Variant Price
+  // 4. MUTATION: Edit Existing Variant Price
   const saveVariantPrice = async (productId, variantIndex) => {
     const targetProduct = products.find(p => p._id === productId);
     if (!targetProduct) return;
 
     setActionLoading(true);
     try {
-      // Create a modified copy of the variants array
       const updatedVariants = [...targetProduct.variants];
       updatedVariants[variantIndex] = {
         ...updatedVariants[variantIndex],
@@ -117,13 +123,59 @@ export default function ClientDashboard({ onBackToStore }) {
       setEditingProductId(null);
       setEditingVariantIndex(null);
     } catch (err) {
-      console.error("Failed to update variant price:", err);
+      console.error("Failed to commit variant price change:", err);
     } finally {
       setActionLoading(false);
     }
   };
 
-  // 5. MUTATION: Approve / Moderate Customer Feedback Reviews
+  // 5. MUTATION: Add New Product to Sanity (Matching schema layout)
+  const handleCreateProduct = async (e) => {
+    e.preventDefault();
+    if (!newProductName || !newProductCategory || newProductVariants.some(v => v.price <= 0)) {
+      alert("Please fill in all product details and variants.");
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const newDoc = {
+        _type: 'product',
+        name: newProductName,
+        description: newProductDesc,
+        category: {
+          _type: 'reference',
+          _ref: newProductCategory
+        },
+        variants: newProductVariants.map(v => ({
+          _type: 'variant',
+          size: v.size,
+          price: Number(v.price)
+        })),
+        isSeasonal: newProductSeasonal,
+        isSoldOut: false
+      };
+
+      const result = await client.create(newDoc);
+      
+      // Clear inputs
+      setNewProductName('');
+      setNewProductDesc('');
+      setNewProductCategory('');
+      setNewProductVariants([{ size: '500g', price: 0 }]);
+      setNewProductSeasonal(false);
+      setShowAddProductModal(false);
+      
+      // Refresh local view
+      fetchAllSanityData();
+    } catch (err) {
+      console.error("Failed to create product in Sanity:", err);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // 6. MUTATION: Moderate / Approve Customer Testimonials
   const toggleFeedbackApproval = async (feedbackId, currentStatus) => {
     setActionLoading(true);
     try {
@@ -136,15 +188,15 @@ export default function ClientDashboard({ onBackToStore }) {
         prev.map(f => f._id === feedbackId ? { ...f, isApproved: !currentStatus } : f)
       );
     } catch (err) {
-      console.error("Failed to update feedback status:", err);
+      console.error("Failed to moderate review:", err);
     } finally {
       setActionLoading(false);
     }
   };
 
-  // 6. MUTATION: Delete Spam / Inappropriate Feedback
+  // 7. MUTATION: Delete Spam / Inappropriate Feedback
   const deleteFeedback = async (feedbackId) => {
-    if (!window.confirm("Are you sure you want to permanently delete this review?")) return;
+    if (!window.confirm("Are you sure you want to permanently delete this customer review?")) return;
     setActionLoading(true);
     try {
       await client.delete(feedbackId);
@@ -156,7 +208,7 @@ export default function ClientDashboard({ onBackToStore }) {
     }
   };
 
-  // 7. MUTATION: Update Order Status
+  // 8. MUTATION: Update Order Lifecycle Status
   const updateOrderStatus = async (orderId, newStatus) => {
     setActionLoading(true);
     try {
@@ -167,13 +219,13 @@ export default function ClientDashboard({ onBackToStore }) {
       
       setOrders(prev => prev.map(o => o._id === orderId ? { ...o, status: newStatus } : o));
     } catch (err) {
-      console.error("Failed to update order status:", err);
+      console.error("Failed to update status in Sanity:", err);
     } finally {
       setActionLoading(false);
     }
   };
 
-  // Calculations
+  // Metric aggregates
   const totalRevenue = orders.reduce((acc, curr) => curr.status === 'Completed' ? acc + Number(curr.total) : acc, 0);
   const activeOrdersCount = orders.filter(o => o.status !== 'Completed').length;
   const pendingFeedbackCount = feedbacks.filter(f => !f.isApproved).length;
@@ -426,7 +478,16 @@ export default function ClientDashboard({ onBackToStore }) {
             {/* TAB 2: INVENTORY & STOCK MANAGER */}
             {activeTab === 'inventory' && (
               <div className="space-y-6">
-                <h2 className="text-2xl font-serif font-black">Digital Display Menu Controls</h2>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-serif font-black">Digital Display Menu Controls</h2>
+                  <button 
+                    onClick={() => setShowAddProductModal(true)}
+                    className="bg-[#E89EB8] text-black font-black uppercase tracking-widest px-6 py-3.5 rounded-xl text-xs hover:brightness-105 active:scale-95 transition-all"
+                  >
+                    + Add New Product
+                  </button>
+                </div>
+
                 <div className="bg-[#121212]/30 border border-white/10 rounded-3xl overflow-hidden">
                   <table className="w-full text-left border-collapse">
                     <thead>
@@ -435,18 +496,23 @@ export default function ClientDashboard({ onBackToStore }) {
                         <th className="p-6">Category</th>
                         <th className="p-6">Pricing Variants</th>
                         <th className="p-6">Studio Stock Status</th>
+                        <th className="p-6 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5 text-sm">
                       {products.map((product) => (
                         <tr key={product._id} className="hover:bg-white/[0.01] transition-colors">
                           <td className="p-6 flex items-center gap-4">
-                            {product.image && (
+                            {product.image ? (
                               <img 
                                 src={urlFor(product.image).width(80).height(80).url()} 
                                 alt={product.name} 
                                 className="w-12 h-12 rounded-xl object-cover border border-white/10 shrink-0"
                               />
+                            ) : (
+                              <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/5 shrink-0 flex items-center justify-center text-xs text-white/40">
+                                No Img
+                              </div>
                             )}
                             <div>
                               <p className="font-bold text-white text-base">{product.name}</p>
@@ -512,6 +578,19 @@ export default function ClientDashboard({ onBackToStore }) {
                               }`}
                             >
                               {!product.isSoldOut ? "● Active In Stock" : "○ Sold Out"}
+                            </button>
+                          </td>
+                          <td className="p-6 text-right">
+                            <button 
+                              onClick={async () => {
+                                if (window.confirm(`Are you sure you want to delete "${product.name}" from your Sanity database?`)) {
+                                  await client.delete(product._id);
+                                  setProducts(prev => prev.filter(p => p._id !== product._id));
+                                }
+                              }}
+                              className="text-red-400 hover:text-red-500 text-xs font-bold transition-all"
+                            >
+                              Remove Product
                             </button>
                           </td>
                         </tr>
@@ -583,6 +662,149 @@ export default function ClientDashboard({ onBackToStore }) {
           </>
         )}
       </main>
+
+      {/* 9. MODAL: ADD PRODUCT WORKSPACE */}
+      <AnimatePresence>
+        {showAddProductModal && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              onClick={() => setShowAddProductModal(false)}
+              className="fixed inset-0 bg-black/80 backdrop-blur-md z-[2000]"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }} 
+              animate={{ scale: 1, opacity: 1 }} 
+              exit={{ scale: 0.9, opacity: 0 }} 
+              className="fixed inset-x-4 md:inset-x-auto top-10 md:top-20 mx-auto max-w-lg w-full bg-[#121212] border border-white/10 p-8 rounded-[2.5rem] z-[2010] text-white shadow-2xl max-h-[85vh] overflow-y-auto"
+            >
+              <h3 className="text-2xl font-serif font-black mb-6">Create Menu Product</h3>
+              
+              <form onSubmit={handleCreateProduct} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[9px] uppercase tracking-wider text-white/40">Product Name</label>
+                  <input 
+                    type="text" 
+                    value={newProductName}
+                    onChange={(e) => setNewProductName(e.target.value)}
+                    className="w-full bg-black/60 border border-white/10 p-4 rounded-xl outline-none focus:border-[#E89EB8] text-sm"
+                    placeholder="e.g. Classic Red Velvet"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[9px] uppercase tracking-wider text-white/40">Category (From Sanity)</label>
+                  <select 
+                    value={newProductCategory}
+                    onChange={(e) => setNewProductCategory(e.target.value)}
+                    className="w-full bg-black/60 border border-white/10 p-4 rounded-xl outline-none focus:border-[#E89EB8] text-sm"
+                    required
+                  >
+                    <option value="">Select Category...</option>
+                    {categories.map(c => (
+                      <option key={c._id} value={c._id}>{c.title}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[9px] uppercase tracking-wider text-white/40">Description</label>
+                  <textarea 
+                    value={newProductDesc}
+                    onChange={(e) => setNewProductDesc(e.target.value)}
+                    rows="2"
+                    className="w-full bg-black/60 border border-white/10 p-4 rounded-xl outline-none focus:border-[#E89EB8] text-sm resize-none"
+                    placeholder="Brief description of flavours..."
+                  />
+                </div>
+
+                {/* Variants Creator */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[9px] uppercase tracking-wider text-white/40">Pricing Variants</label>
+                    <button 
+                      type="button"
+                      onClick={() => setNewProductVariants([...newProductVariants, { size: '1kg', price: 0 }])}
+                      className="text-[#E89EB8] text-[10px] font-bold"
+                    >
+                      + Add Size Variant
+                    </button>
+                  </div>
+                  
+                  {newProductVariants.map((variant, index) => (
+                    <div key={index} className="flex gap-3 items-center">
+                      <input 
+                        type="text" 
+                        value={variant.size}
+                        onChange={(e) => {
+                          const updated = [...newProductVariants];
+                          updated[index].size = e.target.value;
+                          setNewProductVariants(updated);
+                        }}
+                        placeholder="Size (e.g. 500g)"
+                        className="flex-1 bg-black/60 border border-white/10 p-3 rounded-xl text-xs outline-none focus:border-[#E89EB8]"
+                        required
+                      />
+                      <input 
+                        type="number" 
+                        value={variant.price || ''}
+                        onChange={(e) => {
+                          const updated = [...newProductVariants];
+                          updated[index].price = Number(e.target.value);
+                          setNewProductVariants(updated);
+                        }}
+                        placeholder="Price in ₹"
+                        className="w-28 bg-black/60 border border-white/10 p-3 rounded-xl text-xs outline-none focus:border-[#E89EB8]"
+                        required
+                      />
+                      {newProductVariants.length > 1 && (
+                        <button 
+                          type="button" 
+                          onClick={() => setNewProductVariants(newProductVariants.filter((_, i) => i !== index))}
+                          className="text-red-400 text-xs px-2"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input 
+                    type="checkbox" 
+                    id="newProductSeasonal"
+                    checked={newProductSeasonal}
+                    onChange={(e) => setNewProductSeasonal(e.target.checked)}
+                    className="accent-[#E89EB8] h-4 w-4"
+                  />
+                  <label htmlFor="newProductSeasonal" className="text-xs text-white/75">Mark as Seasonal Drop</label>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                  <button 
+                    type="button" 
+                    onClick={() => setShowAddProductModal(false)}
+                    className="border border-white/10 text-white/60 py-4 rounded-xl text-xs font-bold hover:bg-white/5 transition-all"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    disabled={actionLoading}
+                    className="bg-[#E89EB8] text-black font-black uppercase tracking-wider py-4 rounded-xl text-xs hover:brightness-105 active:scale-95 transition-all"
+                  >
+                    {actionLoading ? "Uploading..." : "Publish To Sanity"}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
