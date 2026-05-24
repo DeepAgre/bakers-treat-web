@@ -4,10 +4,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { client, urlFor } from '../sanity';
 
 export default function ClientDashboard({ onBackToStore }) {
+  // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loginId, setLoginId] = useState('');
   const [passcode, setPasscode] = useState('');
   const [loginError, setLoginError] = useState(false);
   
+  // Persisted credentials state (Defaults: khushi112233 / 1212)
+  const [storedLoginId, setStoredLoginId] = useState(() => {
+    return localStorage.getItem('db_admin_login_id') || 'khushi112233';
+  });
+  const [storedPasscode, setStoredPasscode] = useState(() => {
+    return localStorage.getItem('db_admin_passcode') || '1212';
+  });
+
+  // Settings change form state
+  const [newLoginId, setNewLoginId] = useState(storedLoginId);
+  const [newPasscode, setNewPasscode] = useState(storedPasscode);
+  const [settingsSuccess, setSettingsSuccess] = useState(false);
+
   // Real database states fetched directly from Sanity
   const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState([]);
@@ -68,16 +83,31 @@ export default function ClientDashboard({ onBackToStore }) {
     }
   }, [isAuthenticated]);
 
-  // Lockscreen verify
+  // Lockscreen verify with custom/default ID and password
   const handleLogin = (e) => {
     e.preventDefault();
-    if (passcode === "1212") {
+    if (loginId.trim() === storedLoginId && passcode === storedPasscode) {
       setIsAuthenticated(true);
       setLoginError(false);
     } else {
       setLoginError(true);
       setPasscode('');
     }
+  };
+
+  // Update Login Credentials Mutation
+  const handleUpdateCredentials = (e) => {
+    e.preventDefault();
+    if (!newLoginId.trim() || !newPasscode.trim()) {
+      alert("Credentials cannot be empty.");
+      return;
+    }
+    localStorage.setItem('db_admin_login_id', newLoginId.trim());
+    localStorage.setItem('db_admin_passcode', newPasscode.trim());
+    setStoredLoginId(newLoginId.trim());
+    setStoredPasscode(newPasscode.trim());
+    setSettingsSuccess(true);
+    setTimeout(() => setSettingsSuccess(false), 3000);
   };
 
   // 2. MUTATIONS: PRODUCTS
@@ -290,17 +320,32 @@ export default function ClientDashboard({ onBackToStore }) {
           
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-3 text-left">
+              <label className="text-[10px] uppercase tracking-wider text-white/40 ml-2">Login ID</label>
+              <input 
+                type="text"
+                className="w-full bg-black/60 border border-white/10 p-4 rounded-xl text-center text-sm outline-none focus:border-[#E89EB8] transition-all text-white"
+                value={loginId}
+                onChange={(e) => {
+                  setLoginId(e.target.value);
+                  if (loginError) setLoginError(false);
+                }}
+                placeholder="e.g. khushi112233"
+                required
+              />
+            </div>
+
+            <div className="space-y-3 text-left">
               <label className="text-[10px] uppercase tracking-wider text-white/40 ml-2">Enter Secure PIN</label>
               <input 
                 type="password"
-                maxLength="4"
-                className="w-full bg-black/60 border border-white/10 p-5 rounded-2xl text-center text-3xl tracking-[1em] outline-none focus:border-[#E89EB8] transition-all"
+                className="w-full bg-black/60 border border-white/10 p-4 rounded-xl text-center text-xl tracking-[0.25em] outline-none focus:border-[#E89EB8] transition-all text-white"
                 value={passcode}
                 onChange={(e) => {
-                  setPasscode(e.target.value.replace(/\D/g, ''));
+                  setPasscode(e.target.value);
                   if (loginError) setLoginError(false);
                 }}
                 placeholder="••••"
+                required
               />
             </div>
 
@@ -375,6 +420,12 @@ export default function ClientDashboard({ onBackToStore }) {
               </span>
             )}
           </button>
+          <button 
+            onClick={() => setActiveTab('settings')}
+            className={`px-5 py-2.5 rounded-lg font-black uppercase tracking-wider text-[10px] transition-all ${activeTab === 'settings' ? 'bg-[#E89EB8] text-black shadow' : 'text-white/40 hover:text-white'}`}
+          >
+            Settings ⚙️
+          </button>
         </div>
 
         <button 
@@ -387,39 +438,41 @@ export default function ClientDashboard({ onBackToStore }) {
 
       {/* METRIC SUMMARIES */}
       <main className="flex-1 overflow-y-auto p-8 max-w-7xl w-full mx-auto space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-[#121212]/40 border border-white/10 p-6 rounded-2xl flex items-center justify-between">
-            <div>
-              <p className="text-[10px] uppercase font-bold tracking-wider text-white/40 mb-1">Total Catalog Products</p>
-              <h3 className="text-3xl font-black font-serif text-[#E89EB8]">{products.length}</h3>
+        {activeTab !== 'settings' && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-[#121212]/40 border border-white/10 p-6 rounded-2xl flex items-center justify-between">
+              <div>
+                <p className="text-[10px] uppercase font-bold tracking-wider text-white/40 mb-1">Total Catalog Products</p>
+                <h3 className="text-3xl font-black font-serif text-[#E89EB8]">{products.length}</h3>
+              </div>
+              <div className="p-4 rounded-xl bg-[#E89EB8]/10 text-[#E89EB8]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="3" width="7" height="9" /><rect x="14" y="3" width="7" height="5" /><rect x="14" y="12" width="7" height="9" /><rect x="3" y="16" width="7" height="5" /></svg>
+              </div>
             </div>
-            <div className="p-4 rounded-xl bg-[#E89EB8]/10 text-[#E89EB8]">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="3" width="7" height="9" /><rect x="14" y="3" width="7" height="5" /><rect x="14" y="12" width="7" height="9" /><rect x="3" y="16" width="7" height="5" /></svg>
+            
+            <div className="bg-[#121212]/40 border border-white/10 p-6 rounded-2xl flex items-center justify-between">
+              <div>
+                <p className="text-[10px] uppercase font-bold tracking-wider text-white/40 mb-1">Total Categories</p>
+                <h3 className="text-3xl font-black font-serif text-white">{categories.length}</h3>
+              </div>
+              <div className="p-4 rounded-xl bg-white/10 text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line></svg>
+              </div>
             </div>
-          </div>
-          
-          <div className="bg-[#121212]/40 border border-white/10 p-6 rounded-2xl flex items-center justify-between">
-            <div>
-              <p className="text-[10px] uppercase font-bold tracking-wider text-white/40 mb-1">Total Categories</p>
-              <h3 className="text-3xl font-black font-serif text-white">{categories.length}</h3>
-            </div>
-            <div className="p-4 rounded-xl bg-white/10 text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line></svg>
-            </div>
-          </div>
 
-          <div className="bg-[#121212]/40 border border-white/10 p-6 rounded-2xl flex items-center justify-between">
-            <div>
-              <p className="text-[10px] uppercase font-bold tracking-wider text-white/40 mb-1">Feedback Moderation Inbox</p>
-              <h3 className="text-3xl font-black font-serif text-amber-400">{pendingReviewsCount} Pending</h3>
-            </div>
-            <div className="p-4 rounded-xl bg-amber-400/10 text-amber-400">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <div className="bg-[#121212]/40 border border-white/10 p-6 rounded-2xl flex items-center justify-between">
+              <div>
+                <p className="text-[10px] uppercase font-bold tracking-wider text-white/40 mb-1">Feedback Moderation Inbox</p>
+                <h3 className="text-3xl font-black font-serif text-amber-400">{pendingReviewsCount} Pending</h3>
+              </div>
+              <div className="p-4 rounded-xl bg-amber-400/10 text-amber-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {loading ? (
+        {loading && activeTab !== 'settings' ? (
           <div className="flex flex-col items-center justify-center py-32 space-y-4">
             <div className="w-10 h-10 border-t-2 border-[#E89EB8] rounded-full animate-spin"></div>
             <span className="text-xs text-white/40 uppercase tracking-widest font-bold">Syncing with Sanity Studio...</span>
@@ -676,6 +729,62 @@ export default function ClientDashboard({ onBackToStore }) {
                     ))
                   )}
                 </div>
+              </div>
+            )}
+
+            {/* TAB 4: WORKSPACE SETTINGS */}
+            {activeTab === 'settings' && (
+              <div className="space-y-6 max-w-md">
+                <h2 className="text-2xl font-serif font-black">Workspace Security Settings</h2>
+                <p className="text-xs text-white/40 leading-relaxed">
+                  Update your Delight Bakehouse admin workspace credentials. The changes are saved securely and take effect immediately.
+                </p>
+
+                <form onSubmit={handleUpdateCredentials} className="space-y-6 bg-[#121212]/50 border border-white/10 p-8 rounded-3xl">
+                  <div className="space-y-2">
+                    <label className="text-[9px] uppercase tracking-wider text-white/40">Login ID</label>
+                    <input 
+                      type="text"
+                      className="w-full bg-black/60 border border-white/10 p-4 rounded-xl text-sm outline-none focus:border-[#E89EB8] text-white"
+                      value={newLoginId}
+                      onChange={(e) => setNewLoginId(e.target.value)}
+                      placeholder="Enter new Login ID"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[9px] uppercase tracking-wider text-white/40">Secure Password (PIN)</label>
+                    <input 
+                      type="password"
+                      className="w-full bg-black/60 border border-white/10 p-4 rounded-xl text-sm outline-none focus:border-[#E89EB8] text-white"
+                      value={newPasscode}
+                      onChange={(e) => setNewPasscode(e.target.value)}
+                      placeholder="Enter new Password / PIN"
+                      required
+                    />
+                  </div>
+
+                  <AnimatePresence>
+                    {settingsSuccess && (
+                      <motion.p 
+                        initial={{ opacity: 0, y: -10 }} 
+                        animate={{ opacity: 1, y: 0 }} 
+                        exit={{ opacity: 0 }}
+                        className="text-emerald-400 text-xs font-bold"
+                      >
+                        ✓ Login credentials updated successfully!
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+
+                  <button 
+                    type="submit"
+                    className="w-full bg-[#E89EB8] text-black font-black uppercase tracking-widest py-4 rounded-xl text-xs hover:brightness-105 transition-all"
+                  >
+                    Save Changes
+                  </button>
+                </form>
               </div>
             )}
           </>
