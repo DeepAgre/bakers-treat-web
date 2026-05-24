@@ -33,7 +33,7 @@ export default function ClientDashboard({ onBackToStore }) {
   const [editingVariantIndex, setEditingVariantIndex] = useState(null);
   const [editPrice, setEditPrice] = useState('');
 
-  // 1. FETCH ACTUAL SANITY DATA
+  // 1. FETCH ACTUAL SANITY DATA (No hardcoded records)
   const fetchAllSanityData = async () => {
     setLoading(true);
     try {
@@ -708,7 +708,7 @@ export default function ClientDashboard({ onBackToStore }) {
                     type="text" 
                     value={newProductName}
                     onChange={(e) => setNewProductName(e.target.value)}
-                    className="w-full bg-black/60 border border-white/10 p-4 rounded-xl outline-none focus:border-[#E89EB8] text-sm"
+                    className="w-full bg-black/60 border border-white/10 p-4 rounded-xl outline-none focus:border-[#E89EB8] text-sm text-white"
                     placeholder="e.g. Raspberry Pistachio Cake"
                     required
                   />
@@ -719,7 +719,7 @@ export default function ClientDashboard({ onBackToStore }) {
                   <select 
                     value={newProductCategory}
                     onChange={(e) => setNewProductCategory(e.target.value)}
-                    className="w-full bg-black/60 border border-white/10 p-4 rounded-xl outline-none focus:border-[#E89EB8] text-sm"
+                    className="w-full bg-black/60 border border-white/10 p-4 rounded-xl outline-none focus:border-[#E89EB8] text-sm text-white font-bold"
                     required
                   >
                     <option value="">Select Category...</option>
@@ -735,7 +735,7 @@ export default function ClientDashboard({ onBackToStore }) {
                     value={newProductDesc}
                     onChange={(e) => setNewProductDesc(e.target.value)}
                     rows="2"
-                    className="w-full bg-black/60 border border-white/10 p-4 rounded-xl outline-none focus:border-[#E89EB8] text-sm resize-none"
+                    className="w-full bg-black/60 border border-white/10 p-4 rounded-xl outline-none focus:border-[#E89EB8] text-sm resize-none text-white"
                     placeholder="Describe textures, layers or dietary specifications..."
                   />
                 </div>
@@ -764,7 +764,7 @@ export default function ClientDashboard({ onBackToStore }) {
                           setNewProductVariants(updated);
                         }}
                         placeholder="Size (e.g. 500g)"
-                        className="flex-1 bg-black/60 border border-white/10 p-3 rounded-xl text-xs outline-none focus:border-[#E89EB8]"
+                        className="flex-1 bg-black/60 border border-white/10 p-3 rounded-xl text-xs outline-none focus:border-[#E89EB8] text-white"
                         required
                       />
                       <input 
@@ -776,7 +776,7 @@ export default function ClientDashboard({ onBackToStore }) {
                           setNewProductVariants(updated);
                         }}
                         placeholder="Price in ₹"
-                        className="w-28 bg-black/60 border border-white/10 p-3 rounded-xl text-xs outline-none focus:border-[#E89EB8]"
+                        className="w-28 bg-black/60 border border-white/10 p-3 rounded-xl text-xs outline-none focus:border-[#E89EB8] text-white"
                         required
                       />
                       {newProductVariants.length > 1 && (
